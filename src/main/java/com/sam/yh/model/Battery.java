@@ -7,11 +7,13 @@ public class Battery {
 
     private String sn;
 
-    private Byte status;
+    private String status;
 
     private Boolean btyType;
 
     private String imei;
+
+    private String salt;
 
     private String simNo;
 
@@ -45,12 +47,12 @@ public class Battery {
         this.sn = sn == null ? null : sn.trim();
     }
 
-    public Byte getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = status == null ? null : status.trim();
     }
 
     public Boolean getBtyType() {
@@ -67,6 +69,14 @@ public class Battery {
 
     public void setImei(String imei) {
         this.imei = imei == null ? null : imei.trim();
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt == null ? null : salt.trim();
     }
 
     public String getSimNo() {

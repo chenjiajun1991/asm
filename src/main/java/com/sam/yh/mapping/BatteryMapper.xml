@@ -4,9 +4,10 @@
   <resultMap id="BaseResultMap" type="com.sam.yh.model.Battery" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="sn" property="sn" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="CHAR" />
     <result column="bty_type" property="btyType" jdbcType="BIT" />
     <result column="imei" property="imei" jdbcType="VARCHAR" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
     <result column="sim_no" property="simNo" jdbcType="VARCHAR" />
     <result column="reseller_id" property="resellerId" jdbcType="INTEGER" />
     <result column="sale_status" property="saleStatus" jdbcType="BIT" />
@@ -17,8 +18,8 @@
     <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, sn, status, bty_type, imei, sim_no, reseller_id, sale_status, country_id, create_date, 
-    sale_date, warning_date, expiry_date
+    id, sn, status, bty_type, imei, salt, sim_no, reseller_id, sale_status, country_id, 
+    create_date, sale_date, warning_date, expiry_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -32,15 +33,15 @@
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.Battery" >
     insert into battery (id, sn, status, 
-      bty_type, imei, sim_no, reseller_id, 
-      sale_status, country_id, create_date, 
-      sale_date, warning_date, expiry_date
-      )
-    values (#{id,jdbcType=INTEGER}, #{sn,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{btyType,jdbcType=BIT}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, #{resellerId,jdbcType=INTEGER}, 
-      #{saleStatus,jdbcType=BIT}, #{countryId,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{saleDate,jdbcType=TIMESTAMP}, #{warningDate,jdbcType=TIMESTAMP}, #{expiryDate,jdbcType=TIMESTAMP}
-      )
+      bty_type, imei, salt, sim_no, 
+      reseller_id, sale_status, country_id, 
+      create_date, sale_date, warning_date, 
+      expiry_date)
+    values (#{id,jdbcType=INTEGER}, #{sn,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
+      #{btyType,jdbcType=BIT}, #{imei,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, 
+      #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{countryId,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{warningDate,jdbcType=TIMESTAMP}, 
+      #{expiryDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.sam.yh.model.Battery" >
     insert into battery
@@ -59,6 +60,9 @@
       </if>
       <if test="imei != null" >
         imei,
+      </if>
+      <if test="salt != null" >
+        salt,
       </if>
       <if test="simNo != null" >
         sim_no,
@@ -93,13 +97,16 @@
         #{sn,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
-        #{status,jdbcType=TINYINT},
+        #{status,jdbcType=CHAR},
       </if>
       <if test="btyType != null" >
         #{btyType,jdbcType=BIT},
       </if>
       <if test="imei != null" >
         #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        #{salt,jdbcType=VARCHAR},
       </if>
       <if test="simNo != null" >
         #{simNo,jdbcType=VARCHAR},
@@ -134,13 +141,16 @@
         sn = #{sn,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
-        status = #{status,jdbcType=TINYINT},
+        status = #{status,jdbcType=CHAR},
       </if>
       <if test="btyType != null" >
         bty_type = #{btyType,jdbcType=BIT},
       </if>
       <if test="imei != null" >
         imei = #{imei,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        salt = #{salt,jdbcType=VARCHAR},
       </if>
       <if test="simNo != null" >
         sim_no = #{simNo,jdbcType=VARCHAR},
@@ -172,9 +182,10 @@
   <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.Battery" >
     update battery
     set sn = #{sn,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT},
+      status = #{status,jdbcType=CHAR},
       bty_type = #{btyType,jdbcType=BIT},
       imei = #{imei,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
       sim_no = #{simNo,jdbcType=VARCHAR},
       reseller_id = #{resellerId,jdbcType=INTEGER},
       sale_status = #{saleStatus,jdbcType=BIT},

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sam.yh.model.User;
-import com.sam.yh.service.UserService;
+import com.sam.yh.model.UserExample;
+import com.sam.yh.service.UserExampleService;
 
 /**
  * @author nate
@@ -17,12 +17,12 @@ import com.sam.yh.service.UserService;
 @RequestMapping("/user")
 public class UserController {
     @Resource
-    private UserService userService;
+    private UserExampleService userExampleService;
 
     @RequestMapping("/showUser")
     public String toIndex(HttpServletRequest request, Model model) {
         int userId = Integer.parseInt(request.getParameter("id"));
-        User user = this.userService.getUserById(userId);
+        UserExample user = this.userExampleService.getUserById(userId);
         model.addAttribute("user", user);
         return "showUser";
     }

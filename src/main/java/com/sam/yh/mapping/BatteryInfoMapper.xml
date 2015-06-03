@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.BatteryInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.BatteryInfo" >
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="longitude" property="longitude" jdbcType="VARCHAR" />
+    <result column="latitude" property="latitude" jdbcType="VARCHAR" />
+    <result column="temperatures" property="temperatures" jdbcType="VARCHAR" />
+    <result column="voltage" property="voltage" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
+    <result column="sample_date" property="sampleDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    battery_id, longitude, latitude, temperatures, voltage, status, receive_date, sample_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery_info
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from battery_info
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sam.yh.model.BatteryInfo" >
+    insert into battery_info (battery_id, longitude, latitude, 
+      temperatures, voltage, status, 
+      receive_date, sample_date)
+    values (#{batteryId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, 
+      #{temperatures,jdbcType=VARCHAR}, #{voltage,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, 
+      #{receiveDate,jdbcType=TIMESTAMP}, #{sampleDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sam.yh.model.BatteryInfo" >
+    insert into battery_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+      <if test="temperatures != null" >
+        temperatures,
+      </if>
+      <if test="voltage != null" >
+        voltage,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="receiveDate != null" >
+        receive_date,
+      </if>
+      <if test="sampleDate != null" >
+        sample_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="temperatures != null" >
+        #{temperatures,jdbcType=VARCHAR},
+      </if>
+      <if test="voltage != null" >
+        #{voltage,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="receiveDate != null" >
+        #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sampleDate != null" >
+        #{sampleDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.BatteryInfo" >
+    update battery_info
+    <set >
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=VARCHAR},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=VARCHAR},
+      </if>
+      <if test="temperatures != null" >
+        temperatures = #{temperatures,jdbcType=VARCHAR},
+      </if>
+      <if test="voltage != null" >
+        voltage = #{voltage,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="receiveDate != null" >
+        receive_date = #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sampleDate != null" >
+        sample_date = #{sampleDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.BatteryInfo" >
+    update battery_info
+    set longitude = #{longitude,jdbcType=VARCHAR},
+      latitude = #{latitude,jdbcType=VARCHAR},
+      temperatures = #{temperatures,jdbcType=VARCHAR},
+      voltage = #{voltage,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      receive_date = #{receiveDate,jdbcType=TIMESTAMP},
+      sample_date = #{sampleDate,jdbcType=TIMESTAMP}
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+</mapper>

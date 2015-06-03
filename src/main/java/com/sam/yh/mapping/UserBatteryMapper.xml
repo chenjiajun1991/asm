@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.UserBatteryMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.UserBattery" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    user_id, battery_id, buy_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.sam.yh.model.UserBatteryKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_battery
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserBatteryKey" >
+    delete from user_battery
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sam.yh.model.UserBattery" >
+    insert into user_battery (user_id, battery_id, buy_date
+      )
+    values (#{userId,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{buyDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.sam.yh.model.UserBattery" >
+    insert into user_battery
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+      <if test="buyDate != null" >
+        buy_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+      <if test="buyDate != null" >
+        #{buyDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    <set >
+      <if test="buyDate != null" >
+        buy_date = #{buyDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    set buy_date = #{buyDate,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+</mapper>

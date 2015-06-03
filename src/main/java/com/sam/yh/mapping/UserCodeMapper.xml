@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.UserCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.UserCode" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="dynamic_code" property="dynamicCode" jdbcType="VARCHAR" />
+    <result column="code_type" property="codeType" jdbcType="INTEGER" />
+    <result column="send_times" property="sendTimes" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="send_date" property="sendDate" jdbcType="TIMESTAMP" />
+    <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, mobile_phone, dynamic_code, code_type, send_times, status, send_date, expiry_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_code
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_code
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sam.yh.model.UserCode" >
+    insert into user_code (id, mobile_phone, dynamic_code, 
+      code_type, send_times, status, 
+      send_date, expiry_date)
+    values (#{id,jdbcType=INTEGER}, #{mobilePhone,jdbcType=VARCHAR}, #{dynamicCode,jdbcType=VARCHAR}, 
+      #{codeType,jdbcType=INTEGER}, #{sendTimes,jdbcType=INTEGER}, #{status,jdbcType=BIT}, 
+      #{sendDate,jdbcType=TIMESTAMP}, #{expiryDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sam.yh.model.UserCode" >
+    insert into user_code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="mobilePhone != null" >
+        mobile_phone,
+      </if>
+      <if test="dynamicCode != null" >
+        dynamic_code,
+      </if>
+      <if test="codeType != null" >
+        code_type,
+      </if>
+      <if test="sendTimes != null" >
+        send_times,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="sendDate != null" >
+        send_date,
+      </if>
+      <if test="expiryDate != null" >
+        expiry_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="mobilePhone != null" >
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamicCode != null" >
+        #{dynamicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="codeType != null" >
+        #{codeType,jdbcType=INTEGER},
+      </if>
+      <if test="sendTimes != null" >
+        #{sendTimes,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="sendDate != null" >
+        #{sendDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expiryDate != null" >
+        #{expiryDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.UserCode" >
+    update user_code
+    <set >
+      <if test="mobilePhone != null" >
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamicCode != null" >
+        dynamic_code = #{dynamicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="codeType != null" >
+        code_type = #{codeType,jdbcType=INTEGER},
+      </if>
+      <if test="sendTimes != null" >
+        send_times = #{sendTimes,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="sendDate != null" >
+        send_date = #{sendDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expiryDate != null" >
+        expiry_date = #{expiryDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.UserCode" >
+    update user_code
+    set mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      dynamic_code = #{dynamicCode,jdbcType=VARCHAR},
+      code_type = #{codeType,jdbcType=INTEGER},
+      send_times = #{sendTimes,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      send_date = #{sendDate,jdbcType=TIMESTAMP},
+      expiry_date = #{expiryDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

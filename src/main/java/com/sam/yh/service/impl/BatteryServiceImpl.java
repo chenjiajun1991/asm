@@ -4,39 +4,50 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
+import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.BatteryMapper;
-import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.model.Battery;
-import com.sam.yh.req.bean.vo.SubmitBatteryReqVo;
+import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.req.bean.BatteryInfoReq;
 import com.sam.yh.service.BatteryService;
 
+@Service
 public class BatteryServiceImpl implements BatteryService {
 
-	@Resource
-	private BatteryMapper batteryMapper;
+    @Resource
+    private BatteryMapper batteryMapper;
 
-	@Transactional
-	@Override
-	public Battery submitBattery(SubmitBatteryReqVo submitBatteryReqVo) {
-		// TODO Auto-generated method stub
-		Battery battery = new Battery();
-        // battery.setSn(submitBatteryReqVo.getBatterySN());
-        // battery.setStatus(BatteryStatus.NORMAL.getStatus());
-        // battery.setBtyType(BooleanUtils.toBoolean(submitBatteryReqVo
-        // .getBatteryType()));
-        // battery.setImei(submitBatteryReqVo.getImei());
-        // battery.setSimNo(submitBatteryReqVo.getSimNo());
-        // // battery.setResellerId(resellerId);
-        // battery.setSaleStatus(true);
-        // battery.setCreateDate(new Date());
-        // battery.setSaleDate(new Date());
+    @Resource
+    private BatteryInfoMapper batteryInfoMapper;
 
-		batteryMapper.insert(battery);
+    @Override
+    public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) {
+        Battery battery = batteryMapper.selectByIMEI(batteryInfoReqVo.getImei());
+        if (battery == null) {
 
-		return battery;
-	}
+        }
+        BatteryInfo info = new BatteryInfo();
+        info.setBatteryId(battery.getId());
+        info.setLongitude(batteryInfoReqVo.getLongitude());
+        info.setLatitude(batteryInfoReqVo.getLatitude());
+        info.setTemperature(batteryInfoReqVo.getTemperature());
+        info.setVoltage(batteryInfoReqVo.getVoltage());
+        // TODO
+        // info.setSampleDate(batteryInfoReqVo.getSampleDate());
+        info.setSampleDate(new Date());
+        info.setStatus(getBatteryStatus(batteryInfoReqVo));
+        info.setReceiveDate(new Date());
+
+        batteryInfoMapper.insert(info);
+
+        return battery;
+    }
+
+    private boolean getBatteryStatus(BatteryInfoReq batteryInfoReqVo) {
+        // TODO
+        return true;
+    }
 
 }

@@ -14,4 +14,6 @@ public interface BatteryMapper {
     int updateByPrimaryKeySelective(Battery record);
 
     int updateByPrimaryKey(Battery record);
+
+    Battery selectByIMEI(String imei);
 }

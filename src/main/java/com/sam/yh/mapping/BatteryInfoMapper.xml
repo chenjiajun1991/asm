@@ -5,14 +5,14 @@
     <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
     <result column="longitude" property="longitude" jdbcType="VARCHAR" />
     <result column="latitude" property="latitude" jdbcType="VARCHAR" />
-    <result column="temperatures" property="temperatures" jdbcType="VARCHAR" />
+    <result column="temperature" property="temperature" jdbcType="VARCHAR" />
     <result column="voltage" property="voltage" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="BIT" />
     <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
     <result column="sample_date" property="sampleDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    battery_id, longitude, latitude, temperatures, voltage, status, receive_date, sample_date
+    battery_id, longitude, latitude, temperature, voltage, status, receive_date, sample_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -26,10 +26,10 @@
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.BatteryInfo" >
     insert into battery_info (battery_id, longitude, latitude, 
-      temperatures, voltage, status, 
+      temperature, voltage, status, 
       receive_date, sample_date)
     values (#{batteryId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR}, 
-      #{temperatures,jdbcType=VARCHAR}, #{voltage,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, 
+      #{temperature,jdbcType=VARCHAR}, #{voltage,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, 
       #{receiveDate,jdbcType=TIMESTAMP}, #{sampleDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.sam.yh.model.BatteryInfo" >
@@ -44,8 +44,8 @@
       <if test="latitude != null" >
         latitude,
       </if>
-      <if test="temperatures != null" >
-        temperatures,
+      <if test="temperature != null" >
+        temperature,
       </if>
       <if test="voltage != null" >
         voltage,
@@ -70,8 +70,8 @@
       <if test="latitude != null" >
         #{latitude,jdbcType=VARCHAR},
       </if>
-      <if test="temperatures != null" >
-        #{temperatures,jdbcType=VARCHAR},
+      <if test="temperature != null" >
+        #{temperature,jdbcType=VARCHAR},
       </if>
       <if test="voltage != null" >
         #{voltage,jdbcType=VARCHAR},
@@ -96,8 +96,8 @@
       <if test="latitude != null" >
         latitude = #{latitude,jdbcType=VARCHAR},
       </if>
-      <if test="temperatures != null" >
-        temperatures = #{temperatures,jdbcType=VARCHAR},
+      <if test="temperature != null" >
+        temperature = #{temperature,jdbcType=VARCHAR},
       </if>
       <if test="voltage != null" >
         voltage = #{voltage,jdbcType=VARCHAR},
@@ -118,7 +118,7 @@
     update battery_info
     set longitude = #{longitude,jdbcType=VARCHAR},
       latitude = #{latitude,jdbcType=VARCHAR},
-      temperatures = #{temperatures,jdbcType=VARCHAR},
+      temperature = #{temperature,jdbcType=VARCHAR},
       voltage = #{voltage,jdbcType=VARCHAR},
       status = #{status,jdbcType=BIT},
       receive_date = #{receiveDate,jdbcType=TIMESTAMP},

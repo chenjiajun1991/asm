@@ -61,11 +61,13 @@ public class ClientTest {
         params.add("param2", param2);
         params.add(Constants.PARAM_DIGEST, HmacSHA256Utils.digest(key, params));
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/hello.json").queryParams(params).build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/api/hello.json").queryParams(params).build().toUriString();
 
         logger.info("Request URL:" + url);
 
         ResponseEntity responseEntity = restTemplate.getForEntity(url, String.class);
+
+        logger.info("ResponseStatus:" + responseEntity.getStatusCode().value());
 
         logger.info("ResponseBody:" + responseEntity.getBody());
 

@@ -9,7 +9,7 @@ public class BatteryInfo {
 
     private String latitude;
 
-    private String temperatures;
+    private String temperature;
 
     private String voltage;
 
@@ -43,12 +43,12 @@ public class BatteryInfo {
         this.latitude = latitude == null ? null : latitude.trim();
     }
 
-    public String getTemperatures() {
-        return temperatures;
+    public String getTemperature() {
+        return temperature;
     }
 
-    public void setTemperatures(String temperatures) {
-        this.temperatures = temperatures == null ? null : temperatures.trim();
+    public void setTemperature(String temperature) {
+        this.temperature = temperature == null ? null : temperature.trim();
     }
 
     public String getVoltage() {

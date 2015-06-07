@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.sam.yh.req.bean.vo.SubmitBatteryReqVo;
+import com.sam.yh.req.bean.SubmitBatteryReq;
 
 @Controller
 public class SubmitBatteryController {
@@ -15,7 +15,7 @@ public class SubmitBatteryController {
     public static final Logger logger = LoggerFactory.getLogger(SubmitBatteryController.class);
 
     @RequestMapping(value = "/submitbattery", method = RequestMethod.POST)
-    public String submitBattery(@RequestBody final SubmitBatteryReqVo submitBatteryReqVo) {
+    public String submitBattery(@RequestBody final SubmitBatteryReq submitBatteryReqVo) {
         logger.info("----------");
         return null;
     }

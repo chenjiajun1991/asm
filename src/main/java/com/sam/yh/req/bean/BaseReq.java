@@ -1,6 +1,6 @@
-package com.sam.yh.req.bean.vo;
+package com.sam.yh.req.bean;
 
-public class BaseReqVo {
+public class BaseReq {
 
 	private String appName;
 	private String version;

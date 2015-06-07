@@ -1,6 +1,6 @@
-package com.sam.yh.req.bean.vo;
+package com.sam.yh.req.bean;
 
-public class SubmitBatteryReqVo extends BaseReqVo {
+public class SubmitBatteryReq extends BaseReq {
 
 	private String userName;
 	private String userPhone;

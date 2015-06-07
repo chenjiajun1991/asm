@@ -42,7 +42,7 @@
 	<!-- ensure that Shiro works in subsequent filters in the filter chain: -->
 	<filter-mapping>
 		<filter-name>shiroFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/api/*</url-pattern>
 		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 	<!-- Spring监听器 -->

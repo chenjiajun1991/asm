@@ -27,6 +27,12 @@
     from battery
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByIMEI" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where imei = #{imei,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from battery
     where id = #{id,jdbcType=INTEGER}

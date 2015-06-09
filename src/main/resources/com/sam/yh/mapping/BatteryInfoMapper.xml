@@ -22,6 +22,14 @@
     from battery_info
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery_info
+    where battery_id = #{btyId,jdbcType=INTEGER}
+    order by sample_date
+    limit 1
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from battery_info
     where id = #{id,jdbcType=INTEGER}
@@ -97,46 +105,4 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.BatteryInfo" >
-    update battery_info
-    <set >
-      <if test="batteryId != null" >
-        battery_id = #{batteryId,jdbcType=INTEGER},
-      </if>
-      <if test="longitude != null" >
-        longitude = #{longitude,jdbcType=VARCHAR},
-      </if>
-      <if test="latitude != null" >
-        latitude = #{latitude,jdbcType=VARCHAR},
-      </if>
-      <if test="temperature != null" >
-        temperature = #{temperature,jdbcType=VARCHAR},
-      </if>
-      <if test="voltage != null" >
-        voltage = #{voltage,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=BIT},
-      </if>
-      <if test="receiveDate != null" >
-        receive_date = #{receiveDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="sampleDate != null" >
-        sample_date = #{sampleDate,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.BatteryInfo" >
-    update battery_info
-    set battery_id = #{batteryId,jdbcType=INTEGER},
-      longitude = #{longitude,jdbcType=VARCHAR},
-      latitude = #{latitude,jdbcType=VARCHAR},
-      temperature = #{temperature,jdbcType=VARCHAR},
-      voltage = #{voltage,jdbcType=VARCHAR},
-      status = #{status,jdbcType=BIT},
-      receive_date = #{receiveDate,jdbcType=TIMESTAMP},
-      sample_date = #{sampleDate,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 </mapper>

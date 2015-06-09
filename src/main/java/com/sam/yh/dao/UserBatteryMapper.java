@@ -1,5 +1,7 @@
 package com.sam.yh.dao;
 
+import java.util.List;
+
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.UserBatteryKey;
 
@@ -15,4 +17,6 @@ public interface UserBatteryMapper {
     int updateByPrimaryKeySelective(UserBattery record);
 
     int updateByPrimaryKey(UserBattery record);
+
+    List<UserBattery> selectByUserId(Integer userId);
 }

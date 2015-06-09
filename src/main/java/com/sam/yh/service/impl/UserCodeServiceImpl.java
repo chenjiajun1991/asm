@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserCodeServiceImpl implements UserCodeService {
     private UserCodeMapper userCodeMapper;
 
     @Override
-    public String genAndSaveUserSalt(String userName) {
+    public String genAndSaveUserSalt(String userName, int type) {
         UserCode userCode = fetchByUserName(userName, UserCodeType.USER_SALT.getType());
         String salt = RandomCodeUtils.genSalt();
         Date now = new Date();
@@ -49,16 +50,19 @@ public class UserCodeServiceImpl implements UserCodeService {
         return salt;
     }
 
+    /**
+     * 短信验证码发送
+     */
     @Override
-    public void sendAndSaveSmsCode(String userName) throws SmsCodeSendException {
-        UserCode userCode = fetchByUserName(userName, UserCodeType.SIGNUP_CODE.getType());
+    public void sendAndSaveSmsCode(String userName, int type) throws SmsCodeSendException {
+        UserCode userCode = fetchByUserName(userName, type);
 
         String smsCode = RandomCodeUtils.genSmsCode();
         Date now = new Date();
         if (userCode == null) {
             userCode = new UserCode();
             userCode.setMobilePhone(userName);
-            userCode.setCodeType(UserCodeType.SIGNUP_CODE.getType());
+            userCode.setCodeType(type);
             userCode.setDynamicCode(smsCode);
             userCode.setSendTimes(1);
             userCode.setStatus(true);
@@ -100,6 +104,20 @@ public class UserCodeServiceImpl implements UserCodeService {
     @Override
     public UserCode fetchByUserName(String userName, int type) {
         return userCodeMapper.selectByUserNameAndType(userName, type);
+    }
+
+    @Override
+    public boolean verifyAuthCode(String userName, int type, String authCode) {
+        UserCode userCode = fetchByUserName(userName, type);
+        Date now = new Date();
+
+        if (userCode != null && userCode.getStatus() && now.before(userCode.getExpiryDate()) && StringUtils.equals(userCode.getDynamicCode(), authCode)) {
+            userCode.setStatus(false);
+            userCodeMapper.updateByPrimaryKey(userCode);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

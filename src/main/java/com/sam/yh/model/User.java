@@ -17,6 +17,8 @@ public class User {
 
     private String passportNo;
 
+    private Boolean lockStatus;
+
     private String deviceInfo;
 
     private Date createDate;
@@ -77,6 +79,14 @@ public class User {
 
     public void setPassportNo(String passportNo) {
         this.passportNo = passportNo == null ? null : passportNo.trim();
+    }
+
+    public Boolean getLockStatus() {
+        return lockStatus;
+    }
+
+    public void setLockStatus(Boolean lockStatus) {
+        this.lockStatus = lockStatus;
     }
 
     public String getDeviceInfo() {

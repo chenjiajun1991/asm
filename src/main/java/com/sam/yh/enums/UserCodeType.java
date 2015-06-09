@@ -2,9 +2,9 @@ package com.sam.yh.enums;
 
 public enum UserCodeType {
 
-    BTY_SALT(1, "电池盐"), 
+    BTY_SALT(1, "电池盐"),
     USER_SALT(2, "注册盐"), 
-    SIGNUP_CODE(2, "注册短信验证码");
+    SIGNUP_CODE(3, "注册短信验证码");
 
     private int type;
     private String desc;

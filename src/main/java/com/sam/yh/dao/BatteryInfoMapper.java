@@ -11,7 +11,6 @@ public interface BatteryInfoMapper {
 
     BatteryInfo selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(BatteryInfo record);
+    BatteryInfo selectByBtyId(Integer btyId);
 
-    int updateByPrimaryKey(BatteryInfo record);
 }

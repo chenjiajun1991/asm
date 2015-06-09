@@ -23,7 +23,7 @@
 		</javaModelGenerator>
 
 		<sqlMapGenerator targetPackage="com.sam.yh.mapping"
-			targetProject="src/main/java">
+			targetProject="src/main/resources">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 

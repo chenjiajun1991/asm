@@ -15,7 +15,7 @@ import com.sam.yh.service.UserExampleService;
  */
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserExampleController {
     @Resource
     private UserExampleService userExampleService;
 

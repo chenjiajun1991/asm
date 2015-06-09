@@ -3,6 +3,8 @@ package com.sam.yh.model;
 import java.util.Date;
 
 public class BatteryInfo {
+    private Integer id;
+
     private Integer batteryId;
 
     private String longitude;
@@ -18,6 +20,14 @@ public class BatteryInfo {
     private Date receiveDate;
 
     private Date sampleDate;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getBatteryId() {
         return batteryId;

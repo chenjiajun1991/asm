@@ -12,7 +12,7 @@ import org.apache.shiro.web.filter.AccessControlFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sam.yh.common.Constants;
+import com.sam.yh.common.SamConstants;
 import com.sam.yh.realm.StatelessToken;
 
 public class StatelessAuthcFilter extends AccessControlFilter {
@@ -26,11 +26,11 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        String clientDigest = request.getParameter(Constants.PARAM_DIGEST);
-        String userName = request.getParameter(Constants.PARAM_USERNAME);
+        String clientDigest = request.getParameter(SamConstants.PARAM_DIGEST);
+        String userName = request.getParameter(SamConstants.PARAM_USERNAME);
 
         Map<String, String[]> params = new HashMap<String, String[]>(request.getParameterMap());
-        params.remove(Constants.PARAM_DIGEST);
+        params.remove(SamConstants.PARAM_DIGEST);
 
         StatelessToken token = new StatelessToken(userName, params, clientDigest);
 

@@ -20,6 +20,12 @@
     from user_code
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByUserNameAndType" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_code
+    where mobile_phone = #{0,jdbcType=VARCHAR} and code_type = #{1,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_code
     where id = #{id,jdbcType=INTEGER}

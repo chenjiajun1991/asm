@@ -13,8 +13,6 @@ public class Battery {
 
     private String imei;
 
-    private String salt;
-
     private String simNo;
 
     private Integer resellerId;
@@ -69,14 +67,6 @@ public class Battery {
 
     public void setImei(String imei) {
         this.imei = imei == null ? null : imei.trim();
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt == null ? null : salt.trim();
     }
 
     public String getSimNo() {

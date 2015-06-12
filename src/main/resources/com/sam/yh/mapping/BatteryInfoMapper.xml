@@ -27,7 +27,7 @@
     <include refid="Base_Column_List" />
     from battery_info
     where battery_id = #{btyId,jdbcType=INTEGER}
-    order by sample_date
+    order by sample_date desc
     limit 1
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

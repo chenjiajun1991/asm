@@ -2,6 +2,7 @@ package com.sam.yh.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.common.PwdUtils;
+import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.enums.UserCodeType;
+import com.sam.yh.model.User;
+import com.sam.yh.req.bean.IllegalRepParamsException;
 import com.sam.yh.req.bean.SysSaltReq;
 import com.sam.yh.req.bean.UserSignupReq;
+import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.resp.bean.SysSaltResp;
+import com.sam.yh.resp.bean.UserInfoResp;
 import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
 
@@ -57,19 +65,49 @@ public class UserSignupController {
 
         UserSignupReq req = JSON.parseObject(jsonReq, UserSignupReq.class);
 
-        SamResponse resp = new SamResponse();
         try {
-            int userId = userService.signup(req.getUserName(), req.getAuthCode(), req.getHashPwd(), req.getDeviceInfo());
-            resp.setData(String.valueOf(userId));
+            validateSignupArgs(req);
+
+            User user = userService.signup(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
+
+            UserInfoResp respData = new UserInfoResp();
+            respData.setUserId(user.getUserId());
+
+            return ResponseUtils.getNormalResp(respData);
+        } catch (IllegalRepParamsException e) {
+            return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
+            logger.error("signup exception, " + req.getUserPhone(), e);
             if (e instanceof UserSignupException) {
-                resp.setData(e.getMessage());
+                return ResponseUtils.getServiceErrorResp(e.getMessage());
+            } else if (e instanceof AuthCodeVerifyException) {
+                return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else {
-                resp.setData("");
-                resp.setResCode(SamResponse.RESCODE_UNKNOW_EXCEPTION);
+                return ResponseUtils.getSysErrorResp();
             }
+        } catch (Exception e) {
+            logger.error("signup exception, " + req.getUserPhone(), e);
+            return ResponseUtils.getSysErrorResp();
         }
 
-        return resp;
+    }
+
+    private void validateSignupArgs(UserSignupReq userSignupReq) throws IllegalRepParamsException {
+        if (!MobilePhoneUtils.isValidPhone(userSignupReq.getUserPhone())) {
+            throw new IllegalRepParamsException("请输入正确的手机号码");
+        }
+
+        if (StringUtils.isBlank(userSignupReq.getPassword1()) || StringUtils.isBlank(userSignupReq.getPassword2())) {
+            throw new IllegalRepParamsException("密码不能为空");
+        }
+
+        if (!PwdUtils.isValidPwd(userSignupReq.getPassword1())) {
+            throw new IllegalRepParamsException("密码长度为8-20位字符");
+        }
+
+        if (!StringUtils.equals(userSignupReq.getPassword1(), userSignupReq.getPassword2())) {
+            throw new IllegalRepParamsException("密码输入不一致");
+        }
+
     }
 }

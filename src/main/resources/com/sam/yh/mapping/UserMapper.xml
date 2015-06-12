@@ -24,32 +24,29 @@
     from user
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
-  <select id="selectByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from user
-    where mobile_phone = #{userName,jdbcType=VARCHAR}
+    where mobile_phone = #{mobilePhone,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.sam.yh.model.User" >
-    insert into user (user_id, uuid, user_name, 
+  <insert id="insert" parameterType="com.sam.yh.model.User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+    insert into user (uuid, user_name, 
       salt, password, mobile_phone, 
       passport_no, lock_status, device_info, 
       create_date, login_date)
-    values (#{userId,jdbcType=INTEGER}, #{uuid,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+    values (#{uuid,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
       #{salt,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, 
       #{passportNo,jdbcType=VARCHAR}, #{lockStatus,jdbcType=BIT}, #{deviceInfo,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{loginDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.sam.yh.model.User" >
+  <insert id="insertSelective" parameterType="com.sam.yh.model.User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="userId != null" >
-        user_id,
-      </if>
       <if test="uuid != null" >
         uuid,
       </if>
@@ -82,9 +79,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="userId != null" >
-        #{userId,jdbcType=INTEGER},
-      </if>
       <if test="uuid != null" >
         #{uuid,jdbcType=VARCHAR},
       </if>

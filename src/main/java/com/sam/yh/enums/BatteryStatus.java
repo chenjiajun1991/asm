@@ -2,31 +2,31 @@ package com.sam.yh.enums;
 
 public enum BatteryStatus {
 
-	NORMAL(1, "Õý³£"), 
-	ABNORMAL(2, "Òì³£");
+    NORMAL("1", "æ­£å¸¸"), 
+    ABNORMAL("2", "å¼‚å¸¸");
 
-	private int status;
-	private String desc;
+    private String status;
+    private String desc;
 
-	private BatteryStatus(int status, String desc) {
-		this.status = status;
-		this.desc = desc;
-	}
+    private BatteryStatus(String status, String desc) {
+        this.status = status;
+        this.desc = desc;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getDesc() {
-		return desc;
-	}
+    public String getDesc() {
+        return desc;
+    }
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
 }

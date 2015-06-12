@@ -2,8 +2,8 @@ package com.sam.yh.enums;
 
 public enum BatteryType {
 
-	Normal_BATTERY(0, "ÆÕÍ¨µç³Ø"), 
-	CLOUD_BATTERY(1, "ÔÆµç³Ø");
+	NOEMAL_BATTERY(0, "æ™®é€šè“„ç”µæ± "), 
+	CLOUD_BATTERY(1, "äº‘ç”µæ± ");
 
 	private int type;
 	private String desc;

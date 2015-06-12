@@ -9,4 +9,10 @@ public interface BatteryService {
 
     @Transactional
     public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo);
+
+    @Transactional
+    public Battery addBattery(Battery battery);
+
+    @Transactional
+    public Battery fetchBtyByIMEI(String imei);
 }

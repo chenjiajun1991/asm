@@ -2,7 +2,6 @@ package com.sam.yh.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,60 +12,66 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
-import com.sam.yh.enums.UserCodeType;
+import com.sam.yh.model.User;
 import com.sam.yh.req.bean.IllegalRepParamsException;
-import com.sam.yh.req.bean.SmsAuthCodeReq;
+import com.sam.yh.req.bean.UserSigninReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
-import com.sam.yh.service.UserCodeService;
+import com.sam.yh.resp.bean.UserInfoResp;
+import com.sam.yh.service.UserService;
 
 @RestController
 @RequestMapping("/user")
-public class AuthCodeController {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthCodeController.class);
+public class UserSigninController {
 
     @Autowired
-    UserCodeService userCodeService;
+    UserService userService;
 
-    @RequestMapping(value = "/sendmsg", method = RequestMethod.POST)
-    public SamResponse sendSmsCode(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+    private static final Logger logger = LoggerFactory.getLogger(UserSigninController.class);
+
+    @RequestMapping(value = "/signin", method = RequestMethod.POST)
+    public SamResponse getSalt(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.debug("Request json String:" + jsonReq);
 
-        SmsAuthCodeReq req = JSON.parseObject(jsonReq, SmsAuthCodeReq.class);
+        UserSigninReq req = JSON.parseObject(jsonReq, UserSigninReq.class);
 
         try {
-            validateSmsArgs(req);
+            validateSigninArgs(req);
 
-            userCodeService.sendAndSaveSmsCode(req.getUserPhone(), Integer.valueOf(req.getAuthType()));
+            User user = userService.signin(req.getUserPhone(), req.getPassword(), req.getDeviceInfo());
 
-            return ResponseUtils.getNormalResp("短信已成功发送");
+            UserInfoResp respData = new UserInfoResp();
+            respData.setUserId(user.getUserId());
+
+            return ResponseUtils.getNormalResp(respData);
         } catch (IllegalRepParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
-            logger.error("send sms exception, " + req.getUserPhone(), e);
+            logger.error("signin exception, " + req.getUserPhone(), e);
             if (e instanceof UserSignupException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else {
                 return ResponseUtils.getSysErrorResp();
             }
         } catch (Exception e) {
-            logger.error("send sms exception, " + req.getUserPhone(), e);
+            logger.error("signin exception, " + req.getUserPhone(), e);
             return ResponseUtils.getSysErrorResp();
         }
     }
 
-    private void validateSmsArgs(SmsAuthCodeReq smsAuthCodeReq) throws IllegalRepParamsException {
-        if (!MobilePhoneUtils.isValidPhone(smsAuthCodeReq.getUserPhone())) {
+    private void validateSigninArgs(UserSigninReq userSigninReq) throws IllegalRepParamsException {
+        if (!MobilePhoneUtils.isValidPhone(userSigninReq.getUserPhone())) {
             throw new IllegalRepParamsException("请输入正确的手机号码");
         }
 
-        if (!StringUtils.isNumeric(smsAuthCodeReq.getAuthType()) || !UserCodeType.isValidType(Integer.parseInt(smsAuthCodeReq.getAuthType()))) {
-            throw new IllegalRepParamsException("无法发送此类型的验证码");
+        if (!PwdUtils.isValidPwd(userSigninReq.getPassword())) {
+            throw new IllegalRepParamsException("密码长度为8-20位字符");
         }
 
     }
+
 }

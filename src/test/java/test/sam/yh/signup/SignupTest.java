@@ -83,7 +83,7 @@ public class SignupTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserName("15618672987");
+        reqObj.setUserPhone("15618672987");
         reqObj.setAuthType("3");
         String jsonReq = JSON.toJSONString(reqObj);
         logger.info("Reuqest json String:" + jsonReq);
@@ -108,10 +108,11 @@ public class SignupTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserName("15618672987");
+        reqObj.setUserPhone("15618672987");
         reqObj.setAuthCode("453138");
         reqObj.setDeviceInfo("AAAAAAAAAAAA");
-        reqObj.setHashPwd("123456789");
+        reqObj.setPassword1("123456789");
+        reqObj.setPassword2("123456789");
         String jsonReq = JSON.toJSONString(reqObj);
         logger.info("Reuqest json String:" + jsonReq);
 

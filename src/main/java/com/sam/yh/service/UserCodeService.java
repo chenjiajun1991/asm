@@ -8,15 +8,15 @@ import com.sam.yh.model.UserCode;
 public interface UserCodeService {
 
     @Transactional
-    public String genAndSaveUserSalt(String userName, int type);
+    public String genAndSaveUserSalt(String mobilePhone, int type);
 
     @Transactional
-    public void sendAndSaveSmsCode(String userName, int type) throws CrudException;
+    public void sendAndSaveSmsCode(String mobilePhone, int type) throws CrudException;
 
     @Transactional
-    public UserCode fetchByUserName(String userName, int type);
+    public UserCode fetchByUserName(String mobilePhone, int type);
 
     @Transactional
-    public boolean verifyAuthCode(String userName, int type, String authCode);
+    public boolean verifyAuthCode(String mobilePhone, int type, String authCode) throws CrudException;
 
 }

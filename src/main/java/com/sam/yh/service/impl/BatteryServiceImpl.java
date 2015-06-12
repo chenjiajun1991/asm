@@ -24,7 +24,7 @@ public class BatteryServiceImpl implements BatteryService {
 
     @Override
     public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) {
-        Battery battery = batteryMapper.selectByIMEI(batteryInfoReqVo.getImei());
+        Battery battery = fetchBtyByIMEI(batteryInfoReqVo.getImei());
         if (battery == null) {
 
         }
@@ -48,6 +48,17 @@ public class BatteryServiceImpl implements BatteryService {
     private boolean getBatteryStatus(BatteryInfoReq batteryInfoReqVo) {
         // TODO
         return true;
+    }
+
+    @Override
+    public Battery addBattery(Battery battery) {
+        batteryMapper.insertSelective(battery);
+        return battery;
+    }
+
+    @Override
+    public Battery fetchBtyByIMEI(String imei) {
+        return batteryMapper.selectByIMEI(imei);
     }
 
 }

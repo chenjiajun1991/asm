@@ -28,6 +28,6 @@ public class ServiceController {
         // TODO
 
         httpServletResponse.setContentType("application/json;charset=UTF-8");
-        httpServletResponse.getWriter().write("Hello" + param1[0] + param1[1] + param2);
+        httpServletResponse.getWriter().write("hello" + param1[0] + param1[1] + param2);
     }
 }

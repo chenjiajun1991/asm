@@ -1,10 +1,20 @@
 package com.sam.yh.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum UserCodeType {
 
     BTY_SALT(1, "电池盐"),
     USER_SALT(2, "注册盐"), 
     SIGNUP_CODE(3, "注册短信验证码");
+    private static List<Integer> types = new ArrayList<Integer>();
+
+    static {
+        for (UserCodeType type : UserCodeType.values()) {
+            types.add(type.getType());
+        }
+    }
 
     private int type;
     private String desc;
@@ -28,6 +38,10 @@ public enum UserCodeType {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public static boolean isValidType(int type) {
+        return types.contains(type);
     }
 
 }

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
@@ -18,7 +19,6 @@ import com.sam.yh.enums.UserCodeType;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
-import com.sam.yh.model.UserCode;
 import com.sam.yh.service.UserBatteryService;
 import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
@@ -39,51 +39,82 @@ public class UserServiceImpl implements UserService {
     private BatteryInfoMapper batteryInfoMapper;
 
     @Override
-    public int signup(String userName, String authCode, String hassPwd, String deviceInfo) throws CrudException {
+    public User signup(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
 
-        boolean auth = userCodeService.verifyAuthCode(userName, UserCodeType.SIGNUP_CODE.getType(), authCode);
+        User user = fetchUserByPhone(mobilePhone);
+        if (user != null && !user.getLockStatus()) {
+            throw new UserSignupException("手机号码已使用");
+        }
+        boolean auth = userCodeService.verifyAuthCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType(), authCode);
         if (!auth) {
             throw new UserSignupException("短信验证码错误");
         }
-
-        UserCode userCode = userCodeService.fetchByUserName(userName, UserCodeType.USER_SALT.getType());
         Date now = new Date();
         String uuid = UUID.randomUUID().toString();
-        User user = new User();
-        user.setUuid(StringUtils.replace(uuid, "-", ""));
-        user.setUserName(userName);
-        user.setSalt(userCode.getDynamicCode());
-        user.setPassword(hassPwd);
-        user.setMobilePhone(userName);
-        user.setLockStatus(false);
+        String salt = RandomCodeUtils.genSalt();
+
+        if (user == null) {
+            user = new User();
+            user.setUuid(StringUtils.replace(uuid, "-", ""));
+            user.setUserName(mobilePhone);
+            user.setSalt(salt);
+
+            user.setPassword(getHashPwd(mobilePhone, salt, hassPwd));
+            user.setMobilePhone(mobilePhone);
+            user.setLockStatus(false);
+            user.setDeviceInfo(deviceInfo);
+            user.setCreateDate(now);
+            user.setLoginDate(now);
+
+            userMapper.insert(user);
+        } else {
+            user.setSalt(salt);
+
+            user.setPassword(getHashPwd(mobilePhone, salt, hassPwd));
+            user.setLockStatus(false);
+            user.setDeviceInfo(deviceInfo);
+            user.setLoginDate(now);
+
+            userMapper.updateByPrimaryKeySelective(user);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User signin(String mobilePhone, String hassPwd, String deviceInfo) throws CrudException {
+
+        User user = fetchUserByPhone(mobilePhone);
+        if (user == null || user.getLockStatus()) {
+            throw new UserSignupException("用户不存在");
+        }
+
+        if (!StringUtils.equals(user.getPassword(), getHashPwd(mobilePhone, user.getSalt(), hassPwd))) {
+            throw new UserSignupException("用户名或密码错误");
+        }
+
+        user.setLoginDate(new Date());
         user.setDeviceInfo(deviceInfo);
-        user.setCreateDate(now);
-        user.setLoginDate(now);
+        userMapper.updateByPrimaryKeySelective(user);
 
-        return userMapper.insert(user);
+        return user;
     }
 
     @Override
-    public int signin(String userName, String randCode, String hassPwd, String deviceInfo) throws CrudException {
+    public int resetPwd(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public int resetPwd(String userName, String authCode, String hassPwd, String deviceInfo) throws CrudException {
+    public int updatePwd(String mobilePhone, String authCode, String oldHassPwd, String newHashPwd, String deviceInfo) throws CrudException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public int updatePwd(String userName, String authCode, String oldHassPwd, String newHashPwd, String deviceInfo) throws CrudException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public List<BatteryInfo> fetchBtyInfo(String userName) {
-        User user = userMapper.selectByUserName(userName);
+    public List<BatteryInfo> fetchBtyInfo(String mobilePhone) {
+        User user = fetchUserByPhone(mobilePhone);
         List<UserBattery> btys = userBatteryService.fetchUserBattery(user.getUserId());
         List<BatteryInfo> btyInfo = new ArrayList<BatteryInfo>();
         for (UserBattery userBattery : btys) {
@@ -91,4 +122,15 @@ public class UserServiceImpl implements UserService {
         }
         return btyInfo;
     }
+
+    @Override
+    public User fetchUserByPhone(String mobilePhone) {
+        return userMapper.selectByPhone(mobilePhone);
+    }
+
+    private String getHashPwd(String mobilePhone, String salt, String password) {
+        // TODO
+        return password;
+    }
+
 }

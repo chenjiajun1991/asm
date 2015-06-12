@@ -17,14 +17,14 @@ import com.sam.yh.req.bean.BatteryInfoReq;
 import com.sam.yh.service.BatteryService;
 
 @Controller
-public class UploadBatteryInfoController {
+public class UploadBtyInfoController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UploadBatteryInfoController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UploadBtyInfoController.class);
 
     @Autowired
     BatteryService batteryService;
 
-    @RequestMapping(value = "/upload/batteryinfo", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/upload/batteryinfo", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json")
     public @ResponseBody
     String uploadBatteryInfo(HttpServletRequest httpServletRequest, BatteryInfoReq batteryInfoReqVo) throws IOException {
 

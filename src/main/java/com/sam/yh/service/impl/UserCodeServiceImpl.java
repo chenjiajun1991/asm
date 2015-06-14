@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
+import com.sam.yh.common.msg.SmsSendUtils;
 import com.sam.yh.crud.exception.AuthCodeSendException;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
@@ -56,7 +57,7 @@ public class UserCodeServiceImpl implements UserCodeService {
      * 短信验证码发送
      */
     @Override
-    public void sendAndSaveSmsCode(String mobilePhone, int type) throws AuthCodeSendException {
+    public boolean sendAndSaveSmsCode(String mobilePhone, int type) throws AuthCodeSendException {
         UserCode userCode = fetchByUserName(mobilePhone, type);
 
         String smsCode = RandomCodeUtils.genSmsCode();
@@ -72,7 +73,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
 
             userCodeMapper.insert(userCode);
-            sendSms(mobilePhone, smsCode);
+            return sendSms(mobilePhone, smsCode);
         }
 
         if (userCode.getSendTimes() >= SamConstants.MXA_SMS_SEND_TIME && DateUtils.isSameDay(now, userCode.getSendDate())) {
@@ -89,15 +90,13 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
 
             userCodeMapper.updateByPrimaryKey(userCode);
-            sendSms(mobilePhone, userCode.getDynamicCode());
-            return;
+            return sendSms(mobilePhone, userCode.getDynamicCode());
         } else {
             // 验证码有效，重新发送相同的验证码
             userCode.setSendTimes(sendTimes);
 
             userCodeMapper.updateByPrimaryKey(userCode);
-            sendSms(mobilePhone, userCode.getDynamicCode());
-            return;
+            return sendSms(mobilePhone, userCode.getDynamicCode());
         }
 
     }
@@ -108,7 +107,7 @@ public class UserCodeServiceImpl implements UserCodeService {
     }
 
     @Override
-    public boolean verifyAuthCode(String mobilePhone, int type, String authCode) throws CrudException{
+    public boolean verifyAuthCode(String mobilePhone, int type, String authCode) throws CrudException {
         UserCode userCode = fetchByUserName(mobilePhone, type);
         Date now = new Date();
 
@@ -117,7 +116,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCodeMapper.updateByPrimaryKey(userCode);
             return true;
         } else {
-           throw new AuthCodeVerifyException("验证码错误");
+            throw new AuthCodeVerifyException("验证码错误");
         }
     }
 
@@ -127,9 +126,8 @@ public class UserCodeServiceImpl implements UserCodeService {
      * @param mobilePhone
      * @param code
      */
-    private void sendSms(String mobilePhone, String code) {
-        // TODO
-        System.out.println("Sms context, userName:" + mobilePhone + ", code:" + code);
+    private boolean sendSms(String mobilePhone, String code) {
+        return SmsSendUtils.sendAuthCode(mobilePhone, code);
     }
 
 }

@@ -41,9 +41,9 @@ public class AuthCodeController {
         try {
             validateSmsArgs(req);
 
-            userCodeService.sendAndSaveSmsCode(req.getUserPhone(), Integer.valueOf(req.getAuthType()));
+            boolean result = userCodeService.sendAndSaveSmsCode(req.getUserPhone(), Integer.valueOf(req.getAuthType()));
 
-            return ResponseUtils.getNormalResp("短信已成功发送");
+            return ResponseUtils.getNormalResp(result ? "短信已成功发送" : "短信发送失败");
         } catch (IllegalRepParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {

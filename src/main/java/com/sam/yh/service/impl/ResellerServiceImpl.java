@@ -97,6 +97,7 @@ public class ResellerServiceImpl implements ResellerService {
         Date now = new Date();
         Battery battery = new Battery();
         battery.setSn(btySn);
+        battery.setPubSn(RandomCodeUtils.genBtyPubSn());
         battery.setImei(imei);
         battery.setSimNo(simNo);
         battery.setBtyType(isCloudBty);

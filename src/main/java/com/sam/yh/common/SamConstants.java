@@ -15,4 +15,9 @@ public class SamConstants {
      * 验证码的有效时间（分钟）
      */
     public static final int EXPIRY_TIME = 30;
+
+    /**
+     * 用户关注好友电池的最大数量
+     */
+    public static final int MAX_FOLLOW_COUNT = 10;
 }

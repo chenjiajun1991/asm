@@ -17,6 +17,10 @@ public class RandomCodeUtils {
         return getRandStr(KEY1 + KEY2 + KEY3, 10);
     }
 
+    public static String genBtyPubSn() {
+        return getRandStr(KEY1 + KEY2 + KEY3, 8);
+    }
+
     private static String getRandStr(String key, int length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

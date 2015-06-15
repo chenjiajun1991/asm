@@ -3,7 +3,7 @@ package com.sam.yh.model;
 public class UserFollowKey {
     private Integer userId;
 
-    private Integer followBatteryId;
+    private Integer batteryId;
 
     public Integer getUserId() {
         return userId;
@@ -13,11 +13,12 @@ public class UserFollowKey {
         this.userId = userId;
     }
 
-    public Integer getFollowBatteryId() {
-        return followBatteryId;
+    public Integer getBatteryId() {
+        return batteryId;
     }
 
-    public void setFollowBatteryId(Integer followBatteryId) {
-        this.followBatteryId = followBatteryId;
+    public void setBatteryId(Integer batteryId) {
+        this.batteryId = batteryId;
     }
+
 }

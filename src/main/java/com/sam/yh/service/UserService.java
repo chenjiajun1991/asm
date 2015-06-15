@@ -27,4 +27,10 @@ public interface UserService {
 
     @Transactional
     public User fetchUserByPhone(String mobilePhone);
+
+    @Transactional
+    public void followBty(String mobilePhone, String btyPubSn) throws CrudException;
+
+    @Transactional
+    public void unfollowBty(String mobilePhone, String btyPubSn) throws CrudException;
 }

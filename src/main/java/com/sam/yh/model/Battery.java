@@ -11,6 +11,8 @@ public class Battery {
 
     private Boolean btyType;
 
+    private String pubSn;
+
     private String imei;
 
     private String simNo;
@@ -59,6 +61,14 @@ public class Battery {
 
     public void setBtyType(Boolean btyType) {
         this.btyType = btyType;
+    }
+
+    public String getPubSn() {
+        return pubSn;
+    }
+
+    public void setPubSn(String pubSn) {
+        this.pubSn = pubSn == null ? null : pubSn.trim();
     }
 
     public String getImei() {

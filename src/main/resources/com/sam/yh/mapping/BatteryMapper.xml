@@ -6,6 +6,7 @@
     <result column="sn" property="sn" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="CHAR" />
     <result column="bty_type" property="btyType" jdbcType="BIT" />
+    <result column="pub_sn" property="pubSn" jdbcType="VARCHAR" />
     <result column="imei" property="imei" jdbcType="VARCHAR" />
     <result column="sim_no" property="simNo" jdbcType="VARCHAR" />
     <result column="reseller_id" property="resellerId" jdbcType="INTEGER" />
@@ -17,7 +18,7 @@
     <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, sn, status, bty_type, imei, sim_no, reseller_id, sale_status, country_id, 
+    id, sn, status, bty_type, pub_sn, imei, sim_no, reseller_id, sale_status, country_id, 
     create_date, sale_date, warning_date, expiry_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -32,18 +33,24 @@
     from battery
     where imei = #{imei,jdbcType=VARCHAR}
   </select>
+  <select id="selectByPubSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where pub_sn = #{pubSn,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from battery
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
     insert into battery (sn, status, 
-      bty_type, imei, sim_no, 
+      bty_type, pub_sn, imei, sim_no, 
       reseller_id, sale_status, country_id, 
       create_date, sale_date, warning_date, 
       expiry_date)
     values (#{sn,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
-      #{btyType,jdbcType=BIT}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, 
+      #{btyType,jdbcType=BIT}, #{pubSn,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, 
       #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{countryId,jdbcType=INTEGER}, 
       #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{warningDate,jdbcType=TIMESTAMP}, 
       #{expiryDate,jdbcType=TIMESTAMP})
@@ -59,6 +66,9 @@
       </if>
       <if test="btyType != null" >
         bty_type,
+      </if>
+      <if test="pubSn != null" >
+        pub_sn,
       </if>
       <if test="imei != null" >
         imei,
@@ -97,6 +107,9 @@
       </if>
       <if test="btyType != null" >
         #{btyType,jdbcType=BIT},
+      </if>
+      <if test="pubSn != null" >
+        #{pubSn,jdbcType=VARCHAR},
       </if>
       <if test="imei != null" >
         #{imei,jdbcType=VARCHAR},
@@ -139,6 +152,9 @@
       <if test="btyType != null" >
         bty_type = #{btyType,jdbcType=BIT},
       </if>
+      <if test="pubSn != null" >
+        pub_sn = #{pubSn,jdbcType=VARCHAR},
+      </if>
       <if test="imei != null" >
         imei = #{imei,jdbcType=VARCHAR},
       </if>
@@ -174,6 +190,7 @@
     set sn = #{sn,jdbcType=VARCHAR},
       status = #{status,jdbcType=CHAR},
       bty_type = #{btyType,jdbcType=BIT},
+      pub_sn = #{pubSn,jdbcType=VARCHAR},
       imei = #{imei,jdbcType=VARCHAR},
       sim_no = #{simNo,jdbcType=VARCHAR},
       reseller_id = #{resellerId,jdbcType=INTEGER},

@@ -61,4 +61,9 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryMapper.selectByIMEI(imei);
     }
 
+    @Override
+    public Battery fetchBtyByPubSn(String pubSn) {
+        return batteryMapper.selectByPubSn(pubSn);
+    }
+
 }

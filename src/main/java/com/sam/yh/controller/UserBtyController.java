@@ -2,6 +2,7 @@ package com.sam.yh.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,47 +13,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.MobilePhoneUtils;
-import com.sam.yh.common.PwdUtils;
+import com.sam.yh.crud.exception.BtyFollowException;
 import com.sam.yh.crud.exception.CrudException;
-import com.sam.yh.crud.exception.UserSignupException;
-import com.sam.yh.model.User;
+import com.sam.yh.req.bean.BtyFollowReq;
 import com.sam.yh.req.bean.IllegalRepParamsException;
-import com.sam.yh.req.bean.UserSigninReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
-import com.sam.yh.resp.bean.UserInfoResp;
 import com.sam.yh.service.UserService;
 
 @RestController
 @RequestMapping("/user")
-public class UserSigninController {
+public class UserBtyController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserBtyController.class);
 
     @Autowired
     UserService userService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserSigninController.class);
-
-    @RequestMapping(value = "/signin", method = RequestMethod.POST)
-    public SamResponse signin(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-
+    @RequestMapping(value = "/bty/follow", method = RequestMethod.POST)
+    public SamResponse followBty(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
         logger.debug("Request json String:" + jsonReq);
 
-        UserSigninReq req = JSON.parseObject(jsonReq, UserSigninReq.class);
+        BtyFollowReq req = JSON.parseObject(jsonReq, BtyFollowReq.class);
 
         try {
-            validateSigninArgs(req);
+            validateBtyFollowArgs(req);
 
-            User user = userService.signin(req.getUserPhone(), req.getPassword(), req.getDeviceInfo());
+            // TODO
+            userService.followBty(req.getUserPhone(), req.getBtyPubSn());
 
-            UserInfoResp respData = new UserInfoResp();
-            respData.setUserId(user.getUserId());
-
-            return ResponseUtils.getNormalResp(respData);
+            return ResponseUtils.getNormalResp(StringUtils.EMPTY);
         } catch (IllegalRepParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
-            logger.error("signin exception, " + req.getUserPhone(), e);
-            if (e instanceof UserSignupException) {
+            logger.error("follow bty exception, " + req.getUserPhone(), e);
+            if (e instanceof BtyFollowException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else {
                 return ResponseUtils.getSysErrorResp();
@@ -63,15 +58,13 @@ public class UserSigninController {
         }
     }
 
-    private void validateSigninArgs(UserSigninReq userSigninReq) throws IllegalRepParamsException {
-        if (!MobilePhoneUtils.isValidPhone(userSigninReq.getUserPhone())) {
+    private void validateBtyFollowArgs(BtyFollowReq btyFollowReq) throws IllegalRepParamsException {
+        if (!MobilePhoneUtils.isValidPhone(btyFollowReq.getUserPhone())) {
             throw new IllegalRepParamsException("请输入正确的手机号码");
         }
-
-        if (!PwdUtils.isValidPwd(userSigninReq.getPassword())) {
-            throw new IllegalRepParamsException("密码长度为8-20位字符");
+        if (StringUtils.isBlank(btyFollowReq.getBtyPubSn())) {
+            throw new IllegalRepParamsException("不存在的电池");
         }
-
     }
 
 }

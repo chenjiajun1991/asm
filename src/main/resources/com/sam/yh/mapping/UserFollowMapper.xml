@@ -3,29 +3,48 @@
 <mapper namespace="com.sam.yh.dao.UserFollowMapper" >
   <resultMap id="BaseResultMap" type="com.sam.yh.model.UserFollow" >
     <id column="user_id" property="userId" jdbcType="INTEGER" />
-    <id column="follow_battery_id" property="followBatteryId" jdbcType="INTEGER" />
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
     <result column="follow_status" property="followStatus" jdbcType="BIT" />
     <result column="follow_date" property="followDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    user_id, follow_battery_id, follow_status, follow_date
+    user_id, battery_id, follow_status, follow_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.sam.yh.model.UserFollowKey" >
     select 
-    <include refid="Base_Column_List" />
-    from user_follow
-    where user_id = #{userId,jdbcType=INTEGER}
-      and follow_battery_id = #{followBatteryId,jdbcType=INTEGER}
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    u.follow_status as follow_status,
+    u.follow_date as follow_date
+    from user_follow u
+    inner join battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId,jdbcType=INTEGER}
+      and u.battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    u.follow_status as follow_status,
+    u.follow_date as follow_date
+    from user_follow u
+    inner join battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserFollowKey" >
     delete from user_follow
     where user_id = #{userId,jdbcType=INTEGER}
-      and follow_battery_id = #{followBatteryId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.UserFollow" >
-    insert into user_follow (user_id, follow_battery_id, follow_status, 
+    insert into user_follow (user_id, battery_id, follow_status, 
       follow_date)
-    values (#{userId,jdbcType=INTEGER}, #{followBatteryId,jdbcType=INTEGER}, #{followStatus,jdbcType=BIT}, 
+    values (#{userId,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{followStatus,jdbcType=BIT}, 
       #{followDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.sam.yh.model.UserFollow" >
@@ -34,8 +53,8 @@
       <if test="userId != null" >
         user_id,
       </if>
-      <if test="followBatteryId != null" >
-        follow_battery_id,
+      <if test="batteryId != null" >
+        battery_id,
       </if>
       <if test="followStatus != null" >
         follow_status,
@@ -48,8 +67,8 @@
       <if test="userId != null" >
         #{userId,jdbcType=INTEGER},
       </if>
-      <if test="followBatteryId != null" >
-        #{followBatteryId,jdbcType=INTEGER},
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
       </if>
       <if test="followStatus != null" >
         #{followStatus,jdbcType=BIT},
@@ -70,13 +89,13 @@
       </if>
     </set>
     where user_id = #{userId,jdbcType=INTEGER}
-      and follow_battery_id = #{followBatteryId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.UserFollow" >
     update user_follow
     set follow_status = #{followStatus,jdbcType=BIT},
       follow_date = #{followDate,jdbcType=TIMESTAMP}
     where user_id = #{userId,jdbcType=INTEGER}
-      and follow_battery_id = #{followBatteryId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
   </update>
 </mapper>

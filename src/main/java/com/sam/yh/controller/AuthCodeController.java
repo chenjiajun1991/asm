@@ -23,7 +23,7 @@ import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.service.UserCodeService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/open")
 public class AuthCodeController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthCodeController.class);
@@ -31,7 +31,7 @@ public class AuthCodeController {
     @Autowired
     UserCodeService userCodeService;
 
-    @RequestMapping(value = "/sendmsg", method = RequestMethod.POST)
+    @RequestMapping(value = "/sms", method = RequestMethod.POST)
     public SamResponse sendSmsCode(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.debug("Request json String:" + jsonReq);
@@ -40,10 +40,24 @@ public class AuthCodeController {
 
         try {
             validateSmsArgs(req);
+            int type = Integer.valueOf(req.getAuthType());
+            if (type == UserCodeType.SIGNUP_CODE.getType()) {
+                if (userCodeService.sendSignupAuthCode(req.getUserPhone())) {
+                    return ResponseUtils.getNormalResp("短信已成功发送");
+                } else {
+                    return ResponseUtils.getErrorResp("短信发送失败");
+                }
+            } else if (type == UserCodeType.TEST_CODE.getType()) {
+                if (userCodeService.sendTestAuthCode(req.getUserPhone())) {
+                    return ResponseUtils.getNormalResp("短信已成功发送");
+                } else {
+                    return ResponseUtils.getErrorResp("短信发送失败");
+                }
 
-            boolean result = userCodeService.sendAndSaveSmsCode(req.getUserPhone(), Integer.valueOf(req.getAuthType()));
+            } else {
+                return ResponseUtils.getErrorResp("不存在的验证码类型");
+            }
 
-            return ResponseUtils.getNormalResp(result ? "短信已成功发送" : "短信发送失败");
         } catch (IllegalRepParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {

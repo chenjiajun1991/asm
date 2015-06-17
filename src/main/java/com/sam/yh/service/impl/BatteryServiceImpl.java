@@ -26,7 +26,7 @@ public class BatteryServiceImpl implements BatteryService {
     public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) {
         Battery battery = fetchBtyByIMEI(batteryInfoReqVo.getImei());
         if (battery == null) {
-
+            return null;
         }
         BatteryInfo info = new BatteryInfo();
         info.setBatteryId(battery.getId());

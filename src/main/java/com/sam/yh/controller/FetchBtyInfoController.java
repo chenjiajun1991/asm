@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.req.bean.FetchBtyInfoReq;
+import com.sam.yh.req.bean.IllegalRepParamsException;
+import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.resp.bean.UserBtyInfo;
 import com.sam.yh.resp.bean.UserBtyInfoResp;
@@ -29,33 +32,54 @@ public class FetchBtyInfoController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/getbtyinfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/btyinfo", method = RequestMethod.POST)
     public SamResponse fetchBtyInfo(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.debug("Request json String:" + jsonReq);
 
         FetchBtyInfoReq req = JSON.parseObject(jsonReq, FetchBtyInfoReq.class);
 
-        SamResponse resp = new SamResponse();
+        try {
 
-        UserBtyInfoResp respData = new UserBtyInfoResp();
+            validateUserArgs(req);
 
-        List<BatteryInfo> btyInfo = userService.fetchBtyInfo(req.getUserName());
+            SamResponse resp = new SamResponse();
+            UserBtyInfoResp respData = new UserBtyInfoResp();
 
-        for (BatteryInfo batteryInfo : btyInfo) {
-            respData.getBtyInfo().add(convertToUserBtyInfo(batteryInfo));
+            List<PubBatteryInfo> selfBtys = userService.fetchSelfBtyInfo(req.getUserPhone());
+            for (PubBatteryInfo batteryInfo : selfBtys) {
+                respData.getSelfBtyInfo().add(convertToUserBtyInfo(batteryInfo));
+            }
+
+            List<PubBatteryInfo> friendBtys = userService.fetchFriendsBtyInfo(req.getUserPhone());
+            for (PubBatteryInfo batteryInfo : friendBtys) {
+                respData.getFriendsfBtyInfo().add(convertToUserBtyInfo(batteryInfo));
+            }
+
+            resp.setData(respData);
+            return resp;
+        } catch (IllegalRepParamsException e) {
+            return ResponseUtils.getParamsErrorResp(e.getMessage());
+        } catch (Exception e) {
+            logger.error("fetch bty info exception, " + req.getUserPhone(), e);
+            return ResponseUtils.getSysErrorResp();
         }
-
-        resp.setData(respData);
-        return resp;
 
     }
 
-    private UserBtyInfo convertToUserBtyInfo(BatteryInfo batteryInfo) {
+    private void validateUserArgs(FetchBtyInfoReq fetchBtyInfoReq) throws IllegalRepParamsException {
+        if (!MobilePhoneUtils.isValidPhone(fetchBtyInfoReq.getUserPhone())) {
+            throw new IllegalRepParamsException("请输入正确的手机号码");
+        }
+
+    }
+
+    private UserBtyInfo convertToUserBtyInfo(PubBatteryInfo pubBatteryInfo) {
         UserBtyInfo userBtyInfo = new UserBtyInfo();
-        userBtyInfo.setBtyId(String.valueOf(batteryInfo.getBatteryId()));
-        userBtyInfo.setLongitude(batteryInfo.getLongitude());
-        userBtyInfo.setLatitude(batteryInfo.getLatitude());
+        userBtyInfo.setOwnerPhone(pubBatteryInfo.getOwnerPhone());
+        userBtyInfo.setBtyPubSn(pubBatteryInfo.getBtyPubSn());
+        userBtyInfo.setLongitude(pubBatteryInfo.getLongitude());
+        userBtyInfo.setLatitude(pubBatteryInfo.getLatitude());
         return userBtyInfo;
     }
 

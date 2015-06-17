@@ -15,7 +15,6 @@ import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserFollowMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
-import com.sam.yh.enums.UserCodeType;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
@@ -53,13 +52,16 @@ public class ResellerServiceImpl implements ResellerService {
         User user = userService.fetchUserByPhone(submitBtySpecReq.getUserPhone());
         if (user == null) {
             user = addLockedUserBySys(submitBtySpecReq.getUserName(), submitBtySpecReq.getUserPhone());
-            userCodeService.sendAndSaveSmsCode(submitBtySpecReq.getUserPhone(), UserCodeType.SIGNUP_CODE.getType());
+            userCodeService.sendSignupAuthCode(submitBtySpecReq.getUserPhone());
         }
 
         //
         User resellerUser = userService.fetchUserByPhone(submitBtySpecReq.getResellerPhone());
+        if (resellerUser == null) {
+            throw new SubmitBtySpecException("经销商不存在，请联系客服。");
+        }
         Reseller reseller = resellerMapper.selectByPrimaryKey(resellerUser.getUserId());
-        if (resellerUser == null || reseller == null) {
+        if (reseller == null) {
             throw new SubmitBtySpecException("经销商不存在，请联系客服。");
         }
 

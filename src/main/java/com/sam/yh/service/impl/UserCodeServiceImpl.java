@@ -14,8 +14,11 @@ import com.sam.yh.common.msg.SmsSendUtils;
 import com.sam.yh.crud.exception.AuthCodeSendException;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.UserCodeMapper;
+import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.UserCodeType;
+import com.sam.yh.model.User;
 import com.sam.yh.model.UserCode;
 import com.sam.yh.service.UserCodeService;
 
@@ -23,7 +26,23 @@ import com.sam.yh.service.UserCodeService;
 public class UserCodeServiceImpl implements UserCodeService {
 
     @Resource
+    private UserMapper userMapper;
+    @Resource
     private UserCodeMapper userCodeMapper;
+
+    @Override
+    public boolean sendSignupAuthCode(String mobilePhone) throws CrudException {
+        User user = userMapper.selectByPhone(mobilePhone);
+        if (user != null && !user.getLockStatus()) {
+            throw new UserSignupException("手机号码已经注册");
+        }
+        return sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
+    }
+
+    @Override
+    public boolean sendTestAuthCode(String mobilePhone) throws CrudException {
+        return sendAndSaveSmsCode(mobilePhone, UserCodeType.TEST_CODE.getType());
+    }
 
     @Override
     public String genAndSaveUserSalt(String mobilePhone, int type) {
@@ -56,8 +75,7 @@ public class UserCodeServiceImpl implements UserCodeService {
     /**
      * 短信验证码发送
      */
-    @Override
-    public boolean sendAndSaveSmsCode(String mobilePhone, int type) throws AuthCodeSendException {
+    private boolean sendAndSaveSmsCode(String mobilePhone, int type) throws AuthCodeSendException {
         UserCode userCode = fetchByUserName(mobilePhone, type);
 
         String smsCode = RandomCodeUtils.genSmsCode();

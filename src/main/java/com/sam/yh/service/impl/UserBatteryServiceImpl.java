@@ -31,4 +31,9 @@ public class UserBatteryServiceImpl implements UserBatteryService {
         return userFollowMapper.selectByUserId(userId);
     }
 
+    @Override
+    public UserBattery fetchUserByBtyId(int batteryId) {
+        return UserBatteryMapper.selectByBtyId(batteryId);
+    }
+
 }

@@ -45,7 +45,7 @@ public class UserSigninController {
             User user = userService.signin(req.getUserPhone(), req.getPassword(), req.getDeviceInfo());
 
             UserInfoResp respData = new UserInfoResp();
-            respData.setUserId(user.getUserId());
+            respData.setUserUid(user.getUuid());
 
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalRepParamsException e) {

@@ -2,18 +2,9 @@ package com.sam.yh.resp.bean;
 
 public class SamResponse {
 
-    private String status;
     private String result;
     private String resCode;
     private Object data;
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public String getResult() {
         return result;

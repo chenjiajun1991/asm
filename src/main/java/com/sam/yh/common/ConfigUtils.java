@@ -15,6 +15,7 @@ public class ConfigUtils {
     public static final String DAHANT_ACCOUNT = "dahant.account";
     public static final String DAHANT_PASSWORD = "dahant.password";
     public static final String DAHANT_SIGN = "dahant.sign";
+    public static final String SMS_ENABLE = "sms.enable";
 
     public static PropertiesConfiguration getConfig() {
         if (config == null) {

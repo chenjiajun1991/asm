@@ -5,9 +5,10 @@ import java.util.List;
 
 public enum UserCodeType {
 
-    BTY_SALT(1, "电池盐"),
+    TEST_CODE(0, "测试短信"), 
+    SIGNUP_CODE(1, "注册短信验证码"),
     USER_SALT(2, "注册盐"), 
-    SIGNUP_CODE(3, "注册短信验证码");
+    BTY_SALT(3, "电池盐");
     private static List<Integer> types = new ArrayList<Integer>();
 
     static {

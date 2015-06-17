@@ -17,16 +17,12 @@ import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
-import com.sam.yh.enums.UserCodeType;
 import com.sam.yh.model.User;
 import com.sam.yh.req.bean.IllegalRepParamsException;
-import com.sam.yh.req.bean.SysSaltReq;
 import com.sam.yh.req.bean.UserSignupReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
-import com.sam.yh.resp.bean.SysSaltResp;
 import com.sam.yh.resp.bean.UserInfoResp;
-import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
 
 @RestController
@@ -38,25 +34,24 @@ public class UserSignupController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    UserCodeService userCodeService;
-
-    @RequestMapping(value = "/getsalt", method = RequestMethod.POST)
-    public SamResponse getSalt(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-
-        logger.debug("Request json String:" + jsonReq);
-
-        SysSaltReq req = JSON.parseObject(jsonReq, SysSaltReq.class);
-
-        SamResponse resp = new SamResponse();
-
-        String salt = userCodeService.genAndSaveUserSalt(req.getUserName(), UserCodeType.USER_SALT.getType());
-        SysSaltResp respObj = new SysSaltResp();
-        respObj.setSalt(salt);
-        resp.setData(respObj);
-
-        return resp;
-    }
+    /*
+     * @RequestMapping(value = "/getsalt", method = RequestMethod.POST) public
+     * SamResponse getSalt(HttpServletRequest httpServletRequest,
+     * 
+     * @RequestParam("jsonReq") String jsonReq) {
+     * 
+     * logger.debug("Request json String:" + jsonReq);
+     * 
+     * SysSaltReq req = JSON.parseObject(jsonReq, SysSaltReq.class);
+     * 
+     * SamResponse resp = new SamResponse();
+     * 
+     * String salt = userCodeService.genAndSaveUserSalt(req.getUserName(),
+     * UserCodeType.USER_SALT.getType()); SysSaltResp respObj = new
+     * SysSaltResp(); respObj.setSalt(salt); resp.setData(respObj);
+     * 
+     * return resp; }
+     */
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public SamResponse signup(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
@@ -71,7 +66,7 @@ public class UserSignupController {
             User user = userService.signup(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
 
             UserInfoResp respData = new UserInfoResp();
-            respData.setUserId(user.getUserId());
+            respData.setUserUid(user.getUuid());
 
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalRepParamsException e) {

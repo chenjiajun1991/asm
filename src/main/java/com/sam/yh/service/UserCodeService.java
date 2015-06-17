@@ -11,7 +11,10 @@ public interface UserCodeService {
     public String genAndSaveUserSalt(String mobilePhone, int type);
 
     @Transactional
-    public boolean sendAndSaveSmsCode(String mobilePhone, int type) throws CrudException;
+    public boolean sendSignupAuthCode(String mobilePhone) throws CrudException;
+    
+    @Transactional
+    public boolean sendTestAuthCode(String mobilePhone) throws CrudException;
 
     @Transactional
     public UserCode fetchByUserName(String mobilePhone, int type);

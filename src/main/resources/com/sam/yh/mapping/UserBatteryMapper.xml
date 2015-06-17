@@ -4,23 +4,42 @@
   <resultMap id="BaseResultMap" type="com.sam.yh.model.UserBattery" >
     <id column="user_id" property="userId" jdbcType="INTEGER" />
     <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
     <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     user_id, battery_id, buy_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.sam.yh.model.UserBatteryKey" >
-    select 
-    <include refid="Base_Column_List" />
-    from user_battery
-    where user_id = #{userId,jdbcType=INTEGER}
-      and battery_id = #{batteryId,jdbcType=INTEGER}
+    select
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    u.buy_date as buy_date
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId,jdbcType=INTEGER}
+      and u.battery_id = #{batteryId,jdbcType=INTEGER}
   </select>
   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    u.buy_date as buy_date
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId}
+  </select>
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
     <include refid="Base_Column_List" />
     from user_battery
-    where user_id = #{userId}
+    where battery_id = #{batteryId}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserBatteryKey" >
     delete from user_battery

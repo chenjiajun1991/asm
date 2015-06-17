@@ -19,4 +19,6 @@ public interface UserBatteryMapper {
     int updateByPrimaryKey(UserBattery record);
 
     List<UserBattery> selectByUserId(Integer userId);
+
+    UserBattery selectByBtyId(Integer batteryId);
 }

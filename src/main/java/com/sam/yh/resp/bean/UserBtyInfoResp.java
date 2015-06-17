@@ -5,14 +5,23 @@ import java.util.List;
 
 public class UserBtyInfoResp {
 
-    private List<UserBtyInfo> btyInfo = new ArrayList<UserBtyInfo>();
+    private List<UserBtyInfo> selfBtyInfo = new ArrayList<UserBtyInfo>();
+    private List<UserBtyInfo> friendsfBtyInfo = new ArrayList<UserBtyInfo>();
 
-    public List<UserBtyInfo> getBtyInfo() {
-        return btyInfo;
+    public List<UserBtyInfo> getSelfBtyInfo() {
+        return selfBtyInfo;
     }
 
-    public void setBtyInfo(List<UserBtyInfo> btyInfo) {
-        this.btyInfo = btyInfo;
+    public void setSelfBtyInfo(List<UserBtyInfo> selfBtyInfo) {
+        this.selfBtyInfo = selfBtyInfo;
+    }
+
+    public List<UserBtyInfo> getFriendsfBtyInfo() {
+        return friendsfBtyInfo;
+    }
+
+    public void setFriendsfBtyInfo(List<UserBtyInfo> friendsfBtyInfo) {
+        this.friendsfBtyInfo = friendsfBtyInfo;
     }
 
 }

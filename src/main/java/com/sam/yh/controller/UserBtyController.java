@@ -39,8 +39,7 @@ public class UserBtyController {
         try {
             validateBtyFollowArgs(req);
 
-            // TODO
-            userService.followBty(req.getUserPhone(), req.getBtyPubSn());
+            userService.followBty(req.getUserPhone(), req.getBtyPubSn(), req.getBtyOwnerPhone());
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
         } catch (IllegalRepParamsException e) {
@@ -64,6 +63,12 @@ public class UserBtyController {
         }
         if (StringUtils.isBlank(btyFollowReq.getBtyPubSn())) {
             throw new IllegalRepParamsException("不存在的电池");
+        }
+        if (!MobilePhoneUtils.isValidPhone(btyFollowReq.getBtyOwnerPhone())) {
+            throw new IllegalRepParamsException("请输入好友正确的手机号码");
+        }
+        if (StringUtils.equals(btyFollowReq.getUserPhone(), btyFollowReq.getBtyOwnerPhone())) {
+            throw new IllegalRepParamsException("不能关注自己");
         }
     }
 

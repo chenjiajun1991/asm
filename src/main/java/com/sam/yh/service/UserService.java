@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sam.yh.crud.exception.CrudException;
-import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.model.User;
 
 public interface UserService {
@@ -23,13 +23,16 @@ public interface UserService {
     public int updatePwd(String mobilePhone, String authCode, String oldHassPwd, String newHashPwd, String deviceInfo) throws CrudException;
 
     @Transactional
-    public List<BatteryInfo> fetchBtyInfo(String mobilePhone);
+    public List<PubBatteryInfo> fetchSelfBtyInfo(String mobilePhone);
+
+    @Transactional
+    public List<PubBatteryInfo> fetchFriendsBtyInfo(String mobilePhone);
 
     @Transactional
     public User fetchUserByPhone(String mobilePhone);
 
     @Transactional
-    public void followBty(String mobilePhone, String btyPubSn) throws CrudException;
+    public void followBty(String mobilePhone, String btyPubSn, String btyOwnPhone) throws CrudException;
 
     @Transactional
     public void unfollowBty(String mobilePhone, String btyPubSn) throws CrudException;

@@ -30,7 +30,7 @@ public class SubmitBtySpecController {
     @Autowired
     ResellerService resellerService;
 
-    @RequestMapping(value = "/submitspec", method = RequestMethod.POST)
+    @RequestMapping(value = "/btyspec", method = RequestMethod.POST)
     public SamResponse getSalt(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.debug("Request json String:" + jsonReq);
@@ -64,13 +64,13 @@ public class SubmitBtySpecController {
         if (!MobilePhoneUtils.isValidPhone(submitBtySpecReq.getResellerPhone())) {
             throw new IllegalRepParamsException("请输入经销商正确的手机号码");
         }
-        if(StringUtils.isBlank(submitBtySpecReq.getBtySN())) {
+        if (StringUtils.isBlank(submitBtySpecReq.getBtySN())) {
             throw new IllegalRepParamsException("请输入序列号");
         }
-        if(StringUtils.isBlank(submitBtySpecReq.getBtyImei())) {
+        if (StringUtils.isBlank(submitBtySpecReq.getBtyImei())) {
             throw new IllegalRepParamsException("请输入IMEI");
         }
-        if(StringUtils.isBlank(submitBtySpecReq.getBtySimNo())) {
+        if (StringUtils.isBlank(submitBtySpecReq.getBtySimNo())) {
             throw new IllegalRepParamsException("请输入sim卡号");
         }
     }

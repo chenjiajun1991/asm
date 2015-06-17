@@ -7,7 +7,6 @@ public class BatteryInfoReq {
     private String latitude;
     private String temperature;
     private String voltage;
-    private String sampleDate;
 
     public String getImei() {
         return imei;
@@ -49,18 +48,10 @@ public class BatteryInfoReq {
         this.voltage = voltage;
     }
 
-    public String getSampleDate() {
-        return sampleDate;
-    }
-
-    public void setSampleDate(String sampleDate) {
-        this.sampleDate = sampleDate;
-    }
-
     @Override
     public String toString() {
-        return "BatteryInfoReqVo [imei=" + imei + ", longitude=" + longitude + ", latitude=" + latitude + ", temperature=" + temperature + ", voltage="
-                + voltage + ", sampleDate=" + sampleDate + "]";
+        return "BatteryInfoReq [imei=" + imei + ", longitude=" + longitude + ", latitude=" + latitude + ", temperature=" + temperature + ", voltage=" + voltage
+                + "]";
     }
 
 }

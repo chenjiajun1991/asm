@@ -15,4 +15,6 @@ public interface UserBatteryService {
     @Transactional
     public List<UserFollow> fetchUserFollowBty(int userId);
 
+    @Transactional
+    public UserBattery fetchUserByBtyId(int batteryId);
 }

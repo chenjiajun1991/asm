@@ -1,7 +1,6 @@
 package com.sam.yh.controller;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,17 +23,18 @@ public class UploadBtyInfoController {
     @Autowired
     BatteryService batteryService;
 
-    @RequestMapping(value = "/upload/batteryinfo", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json")
+    @RequestMapping(value = "/upload/btyinfo", method = { RequestMethod.POST, RequestMethod.GET }, produces = "application/json")
     public @ResponseBody
     String uploadBatteryInfo(HttpServletRequest httpServletRequest, BatteryInfoReq batteryInfoReqVo) throws IOException {
 
         logger.info("Upload battery info request url:" + httpServletRequest.getRequestURI());
-        Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+        
+        /*Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String key = headerNames.nextElement();
             String value = httpServletRequest.getHeader(key);
             logger.info("Header key:" + key + ", header value" + value);
-        }
+        }*/
 
         logger.info("Upload battery info request:" + batteryInfoReqVo);
         // TODO

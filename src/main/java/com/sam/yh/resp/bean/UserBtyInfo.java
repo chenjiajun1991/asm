@@ -2,16 +2,25 @@ package com.sam.yh.resp.bean;
 
 public class UserBtyInfo {
 
-    private String btyId;
+    private String btyPubSn;
+    private String ownerPhone;
     private String longitude;
     private String latitude;
 
-    public String getBtyId() {
-        return btyId;
+    public String getBtyPubSn() {
+        return btyPubSn;
     }
 
-    public void setBtyId(String btyId) {
-        this.btyId = btyId;
+    public void setBtyPubSn(String btyPubSn) {
+        this.btyPubSn = btyPubSn;
+    }
+
+    public String getOwnerPhone() {
+        return ownerPhone;
+    }
+
+    public void setOwnerPhone(String ownerPhone) {
+        this.ownerPhone = ownerPhone;
     }
 
     public String getLongitude() {

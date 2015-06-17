@@ -1,6 +1,7 @@
 package com.sam.yh.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -16,13 +17,16 @@ import com.sam.yh.crud.exception.BtyFollowException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserFollowMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.UserCodeType;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
+import com.sam.yh.model.UserBatteryKey;
 import com.sam.yh.model.UserFollow;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.UserBatteryService;
@@ -49,6 +53,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserFollowMapper userFollowMapper;
+
+    @Resource
+    private UserBatteryMapper userBatteryMapper;
 
     @Override
     public User signup(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
@@ -125,13 +132,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BatteryInfo> fetchBtyInfo(String mobilePhone) {
+    public List<PubBatteryInfo> fetchSelfBtyInfo(String mobilePhone) {
         User user = fetchUserByPhone(mobilePhone);
-        List<UserBattery> btys = userBatteryService.fetchUserBattery(user.getUserId());
-        List<BatteryInfo> btyInfo = new ArrayList<BatteryInfo>();
-        for (UserBattery userBattery : btys) {
-            btyInfo.add(batteryInfoMapper.selectByBtyId(userBattery.getBatteryId()));
+        if (user == null) {
+            return Collections.emptyList();
         }
+        List<UserBattery> btys = userBatteryService.fetchUserBattery(user.getUserId());
+        List<PubBatteryInfo> btyInfo = new ArrayList<PubBatteryInfo>();
+        for (UserBattery userBattery : btys) {
+            BatteryInfo info = batteryInfoMapper.selectByBtyId(userBattery.getBatteryId());
+            if (info != null) {
+                PubBatteryInfo pubInfo = new PubBatteryInfo(info);
+                pubInfo.setBtyPubSn(userBattery.getBtyPubSn());
+                pubInfo.setOwnerPhone(user.getMobilePhone());
+                btyInfo.add(pubInfo);
+            }
+        }
+
+        return btyInfo;
+    }
+
+    @Override
+    public List<PubBatteryInfo> fetchFriendsBtyInfo(String mobilePhone) {
+        User user = fetchUserByPhone(mobilePhone);
+        if (user == null) {
+            return Collections.emptyList();
+        }
+        List<UserFollow> btys = userBatteryService.fetchUserFollowBty(user.getUserId());
+        List<PubBatteryInfo> btyInfo = new ArrayList<PubBatteryInfo>();
+        for (UserFollow userFollow : btys) {
+            BatteryInfo info = batteryInfoMapper.selectByBtyId(userFollow.getBatteryId());
+            if (info != null) {
+                UserBattery userBattery = userBatteryService.fetchUserByBtyId(info.getBatteryId());
+                User owner = userMapper.selectByPrimaryKey(userBattery.getUserId());
+                PubBatteryInfo pubInfo = new PubBatteryInfo(info);
+                pubInfo.setBtyPubSn(userFollow.getBtyPubSn());
+                pubInfo.setOwnerPhone(owner.getMobilePhone());
+                btyInfo.add(pubInfo);
+            }
+        }
+
         return btyInfo;
     }
 
@@ -141,15 +181,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void followBty(String mobilePhone, String btyPubSn) throws CrudException {
+    public void followBty(String mobilePhone, String btyPubSn, String btyOwnPhone) throws CrudException {
         User user = fetchUserByPhone(mobilePhone);
         if (user == null) {
+            throw new BtyFollowException("用户不存在");
+        }
+
+        User btyOwner = fetchUserByPhone(btyOwnPhone);
+        if (btyOwner == null) {
             throw new BtyFollowException("用户不存在");
         }
 
         Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
         if (battery == null) {
             throw new BtyFollowException("电池不存在");
+        }
+        UserBatteryKey key = new UserBatteryKey();
+        key.setUserId(btyOwner.getUserId());
+        key.setBatteryId(battery.getId());
+        UserBattery userBattery = userBatteryMapper.selectByPrimaryKey(key);
+        if (userBattery == null) {
+            throw new BtyFollowException("好友手机号码与电池序列号不匹配");
         }
 
         Date now = new Date();

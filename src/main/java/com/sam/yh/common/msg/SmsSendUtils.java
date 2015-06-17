@@ -22,10 +22,11 @@ public class SmsSendUtils {
     private static final String ACCOUNT = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_ACCOUNT);
     private static final String PASSWORD = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_PASSWORD);
     private static final String SIGN = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_SIGN);
+    private static final boolean SMS_ENABLE = ConfigUtils.getConfig().getBoolean(ConfigUtils.SMS_ENABLE);
 
     public static boolean sendAuthCode(String mobilePhone, String authCode) {
         // TODO
-        String content = "您的注册验证码为" + authCode;
+        String content = "[测试短信]您的注册验证码为" + authCode;
         return sendSms(mobilePhone, content);
     }
 
@@ -37,8 +38,12 @@ public class SmsSendUtils {
     }
 
     private static boolean sendSms(final String mobilePhone, String content) {
-        WebServiceXmlClientUtil.setServerUrl(SERVERURL);
         logger.info("send sms to " + mobilePhone + ", content:" + content);
+        if (!SMS_ENABLE) {
+            return true;
+        }
+
+        WebServiceXmlClientUtil.setServerUrl(SERVERURL);
         String respInfo = WebServiceXmlClientUtil.sendSms(ACCOUNT, PASSWORD, StringUtils.EMPTY, mobilePhone, content, StringUtils.EMPTY, StringUtils.EMPTY,
                 StringUtils.EMPTY);
 

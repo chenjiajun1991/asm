@@ -1,14 +1,14 @@
 package com.sam.yh.resp.bean;
 
 public class UserInfoResp {
-    private int userId;
+    private String userUid;
 
-    public int getUserId() {
-        return userId;
+    public String getUserUid() {
+        return userUid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 
 }

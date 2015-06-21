@@ -12,7 +12,7 @@ import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
 import com.sam.yh.dao.ResellerMapper;
-import com.sam.yh.dao.UserFollowMapper;
+import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.model.Battery;
@@ -41,7 +41,7 @@ public class ResellerServiceImpl implements ResellerService {
     UserMapper userMapper;
 
     @Resource
-    UserFollowMapper userFollowMapper;
+    UserBatteryMapper userBatteryMapper;
 
     @Resource
     ResellerMapper resellerMapper;
@@ -75,6 +75,8 @@ public class ResellerServiceImpl implements ResellerService {
         userBattery.setBatteryId(battery.getId());
         userBattery.setUserId(user.getUserId());
         userBattery.setBuyDate(new Date());
+
+        userBatteryMapper.insert(userBattery);
 
     }
 

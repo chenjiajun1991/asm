@@ -26,7 +26,7 @@ public class SmsSendUtils {
 
     public static boolean sendAuthCode(String mobilePhone, String authCode) {
         // TODO
-        String content = "[测试短信]您的注册验证码为" + authCode;
+        String content = "您的注册验证码为" + authCode;
         return sendSms(mobilePhone, content);
     }
 

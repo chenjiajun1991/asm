@@ -2,6 +2,7 @@ package com.sam.yh.dao;
 
 import java.util.List;
 
+import com.sam.yh.model.PubBattery;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.UserBatteryKey;
 
@@ -21,4 +22,6 @@ public interface UserBatteryMapper {
     List<UserBattery> selectByUserId(Integer userId);
 
     UserBattery selectByBtyId(Integer batteryId);
+    
+    List<PubBattery> selectBtysByUserId(Integer userId);
 }

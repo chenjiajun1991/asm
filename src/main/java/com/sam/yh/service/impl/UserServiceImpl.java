@@ -242,7 +242,7 @@ public class UserServiceImpl implements UserService {
         if (shareUser == null) {
             throw new BtyFollowException("好友不存在");
         }
-        
+
         Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
         if (battery == null) {
             throw new BtyFollowException("电池不存在");

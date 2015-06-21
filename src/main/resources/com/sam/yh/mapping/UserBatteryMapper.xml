@@ -7,6 +7,10 @@
     <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
     <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="PubBtyResultMap" type="com.sam.yh.model.PubBattery" >
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     user_id, battery_id, buy_date
   </sql>
@@ -29,6 +33,16 @@
     u.battery_id as battery_id,
     b.pub_sn as pub_sn,
     u.buy_date as buy_date
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId}
+  </select>
+  <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
+    select 
+    b.pub_sn as pub_sn,
+    b.sim_no as sim_no
     from user_battery u
     inner join
     battery b

@@ -8,6 +8,10 @@
     <result column="follow_status" property="followStatus" jdbcType="BIT" />
     <result column="follow_date" property="followDate" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="PubBtyResultMap" type="com.sam.yh.model.PubBattery" >
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     user_id, battery_id, follow_status, follow_date
   </sql>
@@ -35,6 +39,16 @@
     inner join battery b
     on u.battery_id = b.id
     where u.user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
+    select 
+    b.pub_sn as pub_sn,
+    b.sim_no as sim_no
+    from user_follow u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserFollowKey" >
     delete from user_follow

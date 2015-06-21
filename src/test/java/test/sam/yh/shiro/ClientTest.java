@@ -1,6 +1,6 @@
 package test.sam.yh.shiro;
 
-import junit.framework.Assert;
+import static org.junit.Assert.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -71,7 +71,7 @@ public class ClientTest {
 
         logger.info("ResponseBody:" + responseEntity.getBody());
 
-        Assert.assertEquals("hello" + param11 + param12 + param2, responseEntity.getBody());
+        assertEquals("hello" + param11 + param12 + param2, responseEntity.getBody());
     }
 
     /*

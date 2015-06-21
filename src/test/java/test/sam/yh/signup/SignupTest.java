@@ -1,6 +1,6 @@
 package test.sam.yh.signup;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -10,14 +10,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.codec.HmacSHA256Utils;
-import com.sam.yh.common.SamConstants;
 import com.sam.yh.req.bean.SmsAuthCodeReq;
 import com.sam.yh.req.bean.SysSaltReq;
 import com.sam.yh.req.bean.UserSignupReq;
@@ -73,7 +69,7 @@ public class SignupTest {
 
         logger.info("ResponseBody:" + responseEntity.getBody());
 
-        Assert.assertEquals("hello", responseEntity.getBody());
+        assertEquals("hello", responseEntity.getBody());
     }
 
     @Test
@@ -98,7 +94,7 @@ public class SignupTest {
 
         logger.info("ResponseBody:" + responseEntity.getBody());
 
-        Assert.assertEquals("hello", responseEntity.getBody());
+        assertEquals("hello", responseEntity.getBody());
     }
 
     @Test
@@ -126,7 +122,7 @@ public class SignupTest {
 
         logger.info("ResponseBody:" + responseEntity.getBody());
 
-        Assert.assertEquals("hello", responseEntity.getBody());
+        assertEquals("hello", responseEntity.getBody());
     }
 
     @AfterClass

@@ -59,7 +59,7 @@
 		</property>
 	</bean>
 
-	<bean id="handlerMapping"
+	<!-- <bean id="handlerMapping"
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
 		<property name="interceptors">
 			<list>
@@ -69,5 +69,5 @@
 	</bean>
 
 	<bean id="appVersionCheckInterceptor" class="com.sam.yh.interceptor.AppVersionCheckInterceptor">
-	</bean>
+	</bean> -->
 </beans> 

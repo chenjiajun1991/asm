@@ -181,13 +181,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void followBty(String mobilePhone, String btyPubSn, String btyOwnPhone) throws CrudException {
+    public void followBty(String mobilePhone, String btyPubSn, String btyOwnerPhone) throws CrudException {
         User user = fetchUserByPhone(mobilePhone);
         if (user == null) {
             throw new BtyFollowException("用户不存在");
         }
 
-        User btyOwner = fetchUserByPhone(btyOwnPhone);
+        User btyOwner = fetchUserByPhone(btyOwnerPhone);
         if (btyOwner == null) {
             throw new BtyFollowException("用户不存在");
         }
@@ -223,6 +223,57 @@ public class UserServiceImpl implements UserService {
 
         UserFollow userFollow = new UserFollow();
         userFollow.setUserId(user.getUserId());
+        userFollow.setBatteryId(battery.getId());
+        userFollow.setFollowStatus(true);
+        userFollow.setFollowDate(now);
+
+        userFollowMapper.insert(userFollow);
+
+    }
+
+    @Override
+    public void shareBty(String mobilePhone, String btyPubSn, String friendPhone) throws CrudException {
+        User owner = fetchUserByPhone(mobilePhone);
+        if (owner == null) {
+            throw new BtyFollowException("用户不存在");
+        }
+
+        User shareUser = fetchUserByPhone(friendPhone);
+        if (shareUser == null) {
+            throw new BtyFollowException("好友不存在");
+        }
+        
+        Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
+        if (battery == null) {
+            throw new BtyFollowException("电池不存在");
+        }
+        UserBatteryKey key = new UserBatteryKey();
+        key.setUserId(owner.getUserId());
+        key.setBatteryId(battery.getId());
+        UserBattery userBattery = userBatteryMapper.selectByPrimaryKey(key);
+        if (userBattery == null) {
+            throw new BtyFollowException("只能共享自己购买的电池");
+        }
+
+        Date now = new Date();
+
+        List<UserFollow> userFollowBtyList = userBatteryService.fetchUserFollowBty(shareUser.getUserId());
+        if (userFollowBtyList != null && userFollowBtyList.size() >= SamConstants.MAX_FOLLOW_COUNT) {
+            throw new BtyFollowException("您好友已达到了最大关注数量");
+        }
+        for (UserFollow userFollow : userFollowBtyList) {
+            if (StringUtils.equals(userFollow.getBtyPubSn(), btyPubSn) && userFollow.getFollowStatus()) {
+                throw new BtyFollowException("您已关注了该电池");
+            } else if (StringUtils.equals(userFollow.getBtyPubSn(), btyPubSn) && !userFollow.getFollowStatus()) {
+                userFollow.setFollowStatus(true);
+                userFollow.setFollowDate(now);
+                userFollowMapper.updateByPrimaryKeySelective(userFollow);
+                return;
+            }
+        }
+
+        UserFollow userFollow = new UserFollow();
+        userFollow.setUserId(shareUser.getUserId());
         userFollow.setBatteryId(battery.getId());
         userFollow.setFollowStatus(true);
         userFollow.setFollowDate(now);

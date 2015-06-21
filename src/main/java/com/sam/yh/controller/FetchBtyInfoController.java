@@ -61,7 +61,7 @@ public class FetchBtyInfoController {
 
             List<PubBatteryInfo> friendBtys = userService.fetchFriendsBtyInfo(req.getUserPhone());
             for (PubBatteryInfo batteryInfo : friendBtys) {
-                respData.getFriendsfBtyInfo().add(convertToUserBtyInfo(batteryInfo));
+                respData.getFriendsBtyInfo().add(convertToUserBtyInfo(batteryInfo));
             }
 
             resp.setData(respData);

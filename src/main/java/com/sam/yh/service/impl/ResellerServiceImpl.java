@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.crud.exception.LoggingResellerException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
+import com.sam.yh.enums.EmailVerifiedStatus;
+import com.sam.yh.enums.ResellerStatus;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
@@ -88,6 +91,7 @@ public class ResellerServiceImpl implements ResellerService {
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(userName);
         user.setSalt(RandomCodeUtils.genSalt());
+        // TODO
         user.setPassword(RandomCodeUtils.genSalt());
         user.setMobilePhone(mobilePhone);
         user.setLockStatus(true);
@@ -115,14 +119,30 @@ public class ResellerServiceImpl implements ResellerService {
         return batteryService.addBattery(battery);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.sam.yh.service.ResellerService#logReseller(com.sam.yh.req.bean.LogResellerReq)
-     */
     @Override
     public void logReseller(LogResellerReq logResellerReq) throws CrudException {
-        // TODO Auto-generated method stub
+        if (resellerMapper.selectByEmail(logResellerReq.getResellerEmail()) != null) {
+            throw new LoggingResellerException("经销商电子邮件已存在");
+        }
+        Reseller reseller = new Reseller();
+        Date now = new Date();
+        String uuid = UUID.randomUUID().toString();
+
+        reseller.setStatus(ResellerStatus.INIT.getStatus());
+        reseller.setUuid(StringUtils.replace(uuid, "-", ""));
+        reseller.setSalt(RandomCodeUtils.genSalt());
+        reseller.setPassword(RandomCodeUtils.genSalt());
+
+        reseller.setResellerName(logResellerReq.getResellerName());
+        reseller.setEmailAddress(logResellerReq.getResellerEmail());
+        reseller.setEmailAddressVerified(EmailVerifiedStatus.NOT_VERIFIED.getVerifyStatus());
+
+        reseller.setOfficeAddress(logResellerReq.getResellerAddress());
+        reseller.setServicePhone(logResellerReq.getResellerPhone());
+
+        reseller.setLoggingDate(now);
+
+        resellerMapper.insert(reseller);
 
     }
 }

@@ -14,4 +14,6 @@ public interface ResellerMapper {
     int updateByPrimaryKeySelective(Reseller record);
 
     int updateByPrimaryKey(Reseller record);
+
+    Reseller selectByEmail(String emailAddress);
 }

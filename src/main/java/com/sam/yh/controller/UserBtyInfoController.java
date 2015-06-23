@@ -30,9 +30,9 @@ import com.sam.yh.service.UserService;
 
 @RestController
 @RequestMapping("/user")
-public class FetchBtyInfoController {
+public class UserBtyInfoController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FetchBtyInfoController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserBtyInfoController.class);
 
     @Autowired
     private UserService userService;

@@ -120,9 +120,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int resetPwd(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
-        // TODO Auto-generated method stub
-        return 0;
+    public User resetPwd(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
+        User user = fetchUserByPhone(mobilePhone);
+        if (user == null) {
+            throw new UserSignupException("未注册的手机号码");
+        }
+        boolean auth = userCodeService.verifyAuthCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType(), authCode);
+        if (!auth) {
+            throw new UserSignupException("短信验证码错误");
+        }
+        Date now = new Date();
+        String salt = user.getSalt();
+        user.setPassword(getHashPwd(mobilePhone, salt, hassPwd));
+        user.setLockStatus(false);
+        user.setLoginDate(now);
+        user.setDeviceInfo(deviceInfo);
+
+        userMapper.updateByPrimaryKeySelective(user);
+
+        return user;
     }
 
     @Override

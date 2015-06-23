@@ -17,7 +17,7 @@ public interface UserService {
     public User signin(String mobilePhone, String hassPwd, String deviceInfo) throws CrudException;
 
     @Transactional
-    public int resetPwd(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException;
+    public User resetPwd(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException;
 
     @Transactional
     public int updatePwd(String mobilePhone, String authCode, String oldHassPwd, String newHashPwd, String deviceInfo) throws CrudException;

@@ -47,6 +47,13 @@ public class AuthCodeController {
                 } else {
                     return ResponseUtils.getErrorResp("短信发送失败");
                 }
+            } else if (type == UserCodeType.RESETPWD_CODE.getType()) {
+                if (userCodeService.sendResetPwdAuthCode(req.getUserPhone())) {
+                    return ResponseUtils.getNormalResp("短信已成功发送");
+                } else {
+                    return ResponseUtils.getErrorResp("短信发送失败");
+                }
+
             } else if (type == UserCodeType.TEST_CODE.getType()) {
                 if (userCodeService.sendTestAuthCode(req.getUserPhone())) {
                     return ResponseUtils.getNormalResp("短信已成功发送");

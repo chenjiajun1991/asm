@@ -35,8 +35,7 @@ public class UserSignupController {
     UserService userService;
 
     /*
-     * @RequestMapping(value = "/getsalt", method = RequestMethod.POST) public
-     * SamResponse getSalt(HttpServletRequest httpServletRequest,
+     * @RequestMapping(value = "/getsalt", method = RequestMethod.POST) public SamResponse getSalt(HttpServletRequest httpServletRequest,
      * 
      * @RequestParam("jsonReq") String jsonReq) {
      * 
@@ -46,9 +45,7 @@ public class UserSignupController {
      * 
      * SamResponse resp = new SamResponse();
      * 
-     * String salt = userCodeService.genAndSaveUserSalt(req.getUserName(),
-     * UserCodeType.USER_SALT.getType()); SysSaltResp respObj = new
-     * SysSaltResp(); respObj.setSalt(salt); resp.setData(respObj);
+     * String salt = userCodeService.genAndSaveUserSalt(req.getUserName(), UserCodeType.USER_SALT.getType()); SysSaltResp respObj = new SysSaltResp(); respObj.setSalt(salt); resp.setData(respObj);
      * 
      * return resp; }
      */
@@ -64,6 +61,40 @@ public class UserSignupController {
             validateSignupArgs(req);
 
             User user = userService.signup(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
+
+            UserInfoResp respData = new UserInfoResp();
+            respData.setUserUid(user.getUuid());
+
+            return ResponseUtils.getNormalResp(respData);
+        } catch (IllegalReqParamsException e) {
+            return ResponseUtils.getParamsErrorResp(e.getMessage());
+        } catch (CrudException e) {
+            logger.error("signup exception, " + req.getUserPhone(), e);
+            if (e instanceof UserSignupException) {
+                return ResponseUtils.getServiceErrorResp(e.getMessage());
+            } else if (e instanceof AuthCodeVerifyException) {
+                return ResponseUtils.getServiceErrorResp(e.getMessage());
+            } else {
+                return ResponseUtils.getSysErrorResp();
+            }
+        } catch (Exception e) {
+            logger.error("signup exception, " + req.getUserPhone(), e);
+            return ResponseUtils.getSysErrorResp();
+        }
+
+    }
+
+    @RequestMapping(value = "/forgot", method = RequestMethod.POST)
+    public SamResponse resetPwd(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+
+        logger.debug("Request json String:" + jsonReq);
+
+        UserSignupReq req = JSON.parseObject(jsonReq, UserSignupReq.class);
+
+        try {
+            validateSignupArgs(req);
+
+            User user = userService.resetPwd(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
 
             UserInfoResp respData = new UserInfoResp();
             respData.setUserUid(user.getUuid());

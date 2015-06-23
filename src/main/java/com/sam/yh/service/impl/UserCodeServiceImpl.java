@@ -40,6 +40,15 @@ public class UserCodeServiceImpl implements UserCodeService {
     }
 
     @Override
+    public boolean sendResetPwdAuthCode(String mobilePhone) throws CrudException {
+        User user = userMapper.selectByPhone(mobilePhone);
+        if (user == null) {
+            throw new UserSignupException("未注册的手机号码");
+        }
+        return sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
+    }
+
+    @Override
     public boolean sendTestAuthCode(String mobilePhone) throws CrudException {
         return sendAndSaveSmsCode(mobilePhone, UserCodeType.TEST_CODE.getType());
     }
@@ -129,7 +138,8 @@ public class UserCodeServiceImpl implements UserCodeService {
         UserCode userCode = fetchByUserName(mobilePhone, type);
         Date now = new Date();
 
-        if (userCode != null && userCode.getStatus() && now.before(userCode.getExpiryDate()) && StringUtils.equals(userCode.getDynamicCode(), authCode)) {
+        if (userCode != null && userCode.getStatus() && now.before(userCode.getExpiryDate())
+                && StringUtils.equals(userCode.getDynamicCode(), authCode)) {
             userCode.setStatus(false);
             userCodeMapper.updateByPrimaryKey(userCode);
             return true;

@@ -12,7 +12,10 @@ public interface UserCodeService {
 
     @Transactional
     public boolean sendSignupAuthCode(String mobilePhone) throws CrudException;
-    
+
+    @Transactional
+    public boolean sendResetPwdAuthCode(String mobilePhone) throws CrudException;
+
     @Transactional
     public boolean sendTestAuthCode(String mobilePhone) throws CrudException;
 

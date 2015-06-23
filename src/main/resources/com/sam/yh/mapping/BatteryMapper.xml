@@ -39,6 +39,12 @@
     from battery
     where pub_sn = #{pubSn,jdbcType=VARCHAR}
   </select>
+  <select id="countByReseller" resultType="int" parameterType="java.lang.Integer" >
+    select 
+    count(1)
+    from battery
+    where reseller_id = #{resellerId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from battery
     where id = #{id,jdbcType=INTEGER}

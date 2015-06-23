@@ -18,4 +18,6 @@ public interface BatteryMapper {
     Battery selectByIMEI(String imei);
 
     Battery selectByPubSn(String pubSn);
+
+    int countByReseller(Integer resellerId);
 }

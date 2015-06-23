@@ -35,7 +35,7 @@
     delete from reseller
     where reseller_id = #{resellerId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.sam.yh.model.Reseller" >
+  <insert id="insert" parameterType="com.sam.yh.model.Reseller" useGeneratedKeys="true" keyProperty="resellerId">
     insert into reseller (reseller_id, uuid, reseller_name, 
       service_phone, office_address, email_address, 
       email_address_verified, salt, password, 
@@ -47,7 +47,7 @@
       #{status,jdbcType=INTEGER}, #{loggingDate,jdbcType=TIMESTAMP}, #{loginDate,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.sam.yh.model.Reseller" >
+  <insert id="insertSelective" parameterType="com.sam.yh.model.Reseller" useGeneratedKeys="true" keyProperty="resellerId">
     insert into reseller
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="resellerId != null" >

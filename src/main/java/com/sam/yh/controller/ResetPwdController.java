@@ -19,48 +19,31 @@ import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.model.User;
 import com.sam.yh.req.bean.IllegalReqParamsException;
-import com.sam.yh.req.bean.UserSignupReq;
+import com.sam.yh.req.bean.UserPwdResetReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.resp.bean.UserInfoResp;
 import com.sam.yh.service.UserService;
 
 @RestController
-@RequestMapping("/user")
-public class UserSignupController {
+public class ResetPwdController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserSignupController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResetPwdController.class);
 
     @Autowired
     UserService userService;
 
-    /*
-     * @RequestMapping(value = "/getsalt", method = RequestMethod.POST) public SamResponse getSalt(HttpServletRequest httpServletRequest,
-     * 
-     * @RequestParam("jsonReq") String jsonReq) {
-     * 
-     * logger.debug("Request json String:" + jsonReq);
-     * 
-     * SysSaltReq req = JSON.parseObject(jsonReq, SysSaltReq.class);
-     * 
-     * SamResponse resp = new SamResponse();
-     * 
-     * String salt = userCodeService.genAndSaveUserSalt(req.getUserName(), UserCodeType.USER_SALT.getType()); SysSaltResp respObj = new SysSaltResp(); respObj.setSalt(salt); resp.setData(respObj);
-     * 
-     * return resp; }
-     */
-
-    @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public SamResponse signup(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+    @RequestMapping(value = "user/forgot", method = RequestMethod.POST)
+    public SamResponse resetUserPwd(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.debug("Request json String:" + jsonReq);
 
-        UserSignupReq req = JSON.parseObject(jsonReq, UserSignupReq.class);
+        UserPwdResetReq req = JSON.parseObject(jsonReq, UserPwdResetReq.class);
 
         try {
-            validateSignupArgs(req);
+            validatePwdResetArgs(req);
 
-            User user = userService.signup(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
+            User user = userService.resetPwd(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
 
             UserInfoResp respData = new UserInfoResp();
             respData.setUserUid(user.getUuid());
@@ -69,7 +52,7 @@ public class UserSignupController {
         } catch (IllegalReqParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
-            logger.error("signup exception, " + req.getUserPhone(), e);
+            logger.error("reset user password exception, " + req.getUserPhone(), e);
             if (e instanceof UserSignupException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else if (e instanceof AuthCodeVerifyException) {
@@ -78,28 +61,29 @@ public class UserSignupController {
                 return ResponseUtils.getSysErrorResp();
             }
         } catch (Exception e) {
-            logger.error("signup exception, " + req.getUserPhone(), e);
+            logger.error("reset user password exception, " + req.getUserPhone(), e);
             return ResponseUtils.getSysErrorResp();
         }
 
     }
 
-    private void validateSignupArgs(UserSignupReq userSignupReq) throws IllegalReqParamsException {
-        if (!MobilePhoneUtils.isValidPhone(userSignupReq.getUserPhone())) {
+    private void validatePwdResetArgs(UserPwdResetReq userPwdResetReq) throws IllegalReqParamsException {
+        if (!MobilePhoneUtils.isValidPhone(userPwdResetReq.getUserPhone())) {
             throw new IllegalReqParamsException("请输入正确的手机号码");
         }
 
-        if (StringUtils.isBlank(userSignupReq.getPassword1()) || StringUtils.isBlank(userSignupReq.getPassword2())) {
+        if (StringUtils.isBlank(userPwdResetReq.getPassword1()) || StringUtils.isBlank(userPwdResetReq.getPassword2())) {
             throw new IllegalReqParamsException("密码不能为空");
         }
 
-        if (!PwdUtils.isValidPwd(userSignupReq.getPassword1())) {
+        if (!PwdUtils.isValidPwd(userPwdResetReq.getPassword1())) {
             throw new IllegalReqParamsException("密码长度为8-20位字符");
         }
 
-        if (!StringUtils.equals(userSignupReq.getPassword1(), userSignupReq.getPassword2())) {
+        if (!StringUtils.equals(userPwdResetReq.getPassword1(), userPwdResetReq.getPassword2())) {
             throw new IllegalReqParamsException("密码输入不一致");
         }
 
     }
+
 }

@@ -15,6 +15,7 @@ import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
 import com.sam.yh.crud.exception.BtyFollowException;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.crud.exception.PwdResetException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.UserBatteryMapper;
@@ -123,11 +124,11 @@ public class UserServiceImpl implements UserService {
     public User resetPwd(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
         User user = fetchUserByPhone(mobilePhone);
         if (user == null) {
-            throw new UserSignupException("未注册的手机号码");
+            throw new PwdResetException("未注册的手机号码");
         }
         boolean auth = userCodeService.verifyAuthCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType(), authCode);
         if (!auth) {
-            throw new UserSignupException("短信验证码错误");
+            throw new PwdResetException("短信验证码错误");
         }
         Date now = new Date();
         String salt = user.getSalt();

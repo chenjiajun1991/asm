@@ -19,6 +19,7 @@ import com.sam.yh.model.Battery;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
+import com.sam.yh.req.bean.LogResellerReq;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
@@ -112,5 +113,16 @@ public class ResellerServiceImpl implements ResellerService {
         battery.setSaleDate(now);
 
         return batteryService.addBattery(battery);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.sam.yh.service.ResellerService#logReseller(com.sam.yh.req.bean.LogResellerReq)
+     */
+    @Override
+    public void logReseller(LogResellerReq logResellerReq) throws CrudException {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -19,7 +19,7 @@ import com.sam.yh.crud.exception.FetchBtysException;
 import com.sam.yh.model.PubBattery;
 import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.req.bean.FetchBtyInfoReq;
-import com.sam.yh.req.bean.IllegalRepParamsException;
+import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.resp.bean.UserBtyInfo;
@@ -66,7 +66,7 @@ public class FetchBtyInfoController {
 
             resp.setData(respData);
             return resp;
-        } catch (IllegalRepParamsException e) {
+        } catch (IllegalReqParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (Exception e) {
             logger.error("fetch bty info exception, " + req.getUserPhone(), e);
@@ -93,7 +93,7 @@ public class FetchBtyInfoController {
             respData.setFriendBtys(friendBtys);
 
             return ResponseUtils.getNormalResp(respData);
-        } catch (IllegalRepParamsException e) {
+        } catch (IllegalReqParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("fetch my btys exception, " + req.getUserPhone(), e);
@@ -108,9 +108,9 @@ public class FetchBtyInfoController {
         }
     }
 
-    private void validateUserArgs(String userPhone) throws IllegalRepParamsException {
+    private void validateUserArgs(String userPhone) throws IllegalReqParamsException {
         if (!MobilePhoneUtils.isValidPhone(userPhone)) {
-            throw new IllegalRepParamsException("请输入正确的手机号码");
+            throw new IllegalReqParamsException("请输入正确的手机号码");
         }
 
     }

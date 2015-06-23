@@ -16,7 +16,7 @@ import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.model.User;
-import com.sam.yh.req.bean.IllegalRepParamsException;
+import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.req.bean.UserSigninReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -48,7 +48,7 @@ public class UserSigninController {
             respData.setUserUid(user.getUuid());
 
             return ResponseUtils.getNormalResp(respData);
-        } catch (IllegalRepParamsException e) {
+        } catch (IllegalReqParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("signin exception, " + req.getUserPhone(), e);
@@ -63,13 +63,13 @@ public class UserSigninController {
         }
     }
 
-    private void validateSigninArgs(UserSigninReq userSigninReq) throws IllegalRepParamsException {
+    private void validateSigninArgs(UserSigninReq userSigninReq) throws IllegalReqParamsException {
         if (!MobilePhoneUtils.isValidPhone(userSigninReq.getUserPhone())) {
-            throw new IllegalRepParamsException("请输入正确的手机号码");
+            throw new IllegalReqParamsException("请输入正确的手机号码");
         }
 
         if (!PwdUtils.isValidPwd(userSigninReq.getPassword())) {
-            throw new IllegalRepParamsException("密码长度为8-20位字符");
+            throw new IllegalReqParamsException("密码长度为8-20位字符");
         }
 
     }

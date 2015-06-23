@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
-import com.sam.yh.req.bean.IllegalRepParamsException;
+import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -42,7 +42,7 @@ public class SubmitBtySpecController {
             resellerService.submitBtySpec(req);
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
-        } catch (IllegalRepParamsException e) {
+        } catch (IllegalReqParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("signin exception, " + req.getUserPhone(), e);
@@ -57,21 +57,21 @@ public class SubmitBtySpecController {
         }
     }
 
-    private void validateBtySpecArgs(SubmitBtySpecReq submitBtySpecReq) throws IllegalRepParamsException {
+    private void validateBtySpecArgs(SubmitBtySpecReq submitBtySpecReq) throws IllegalReqParamsException {
         if (!MobilePhoneUtils.isValidPhone(submitBtySpecReq.getUserPhone())) {
-            throw new IllegalRepParamsException("请输入购买人正确的手机号码");
+            throw new IllegalReqParamsException("请输入购买人正确的手机号码");
         }
         if (!MobilePhoneUtils.isValidPhone(submitBtySpecReq.getResellerPhone())) {
-            throw new IllegalRepParamsException("请输入经销商正确的手机号码");
+            throw new IllegalReqParamsException("请输入经销商正确的手机号码");
         }
         if (StringUtils.isBlank(submitBtySpecReq.getBtySN())) {
-            throw new IllegalRepParamsException("请输入序列号");
+            throw new IllegalReqParamsException("请输入序列号");
         }
         if (StringUtils.isBlank(submitBtySpecReq.getBtyImei())) {
-            throw new IllegalRepParamsException("请输入IMEI");
+            throw new IllegalReqParamsException("请输入IMEI");
         }
         if (StringUtils.isBlank(submitBtySpecReq.getBtySimNo())) {
-            throw new IllegalRepParamsException("请输入sim卡号");
+            throw new IllegalReqParamsException("请输入sim卡号");
         }
     }
 

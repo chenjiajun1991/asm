@@ -1,7 +1,3 @@
-/** 
- * Creation Date:Jun 19, 201510:00:54 AM 
- * Copyright (c) 2015, 上海佐昊网络科技有限公司 All Rights Reserved. 
- */
 package com.sam.yh.interceptor;
 
 import javax.servlet.http.HttpServletRequest;

@@ -17,7 +17,7 @@ import com.sam.yh.crud.exception.BtyFollowException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.req.bean.BtyFollowReq;
 import com.sam.yh.req.bean.BtyShareReq;
-import com.sam.yh.req.bean.IllegalRepParamsException;
+import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.service.UserService;
@@ -43,7 +43,7 @@ public class UserBtyController {
             userService.followBty(req.getUserPhone(), req.getBtyPubSn(), req.getBtyOwnerPhone());
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
-        } catch (IllegalRepParamsException e) {
+        } catch (IllegalReqParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("follow bty exception, " + req.getUserPhone(), e);
@@ -70,7 +70,7 @@ public class UserBtyController {
             userService.shareBty(req.getUserPhone(), req.getBtyPubSn(), req.getFriendPhone());
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
-        } catch (IllegalRepParamsException e) {
+        } catch (IllegalReqParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("share bty exception, " + req.getUserPhone(), e);
@@ -85,33 +85,33 @@ public class UserBtyController {
         }
     }
 
-    private void validateBtyFollowArgs(BtyFollowReq btyFollowReq) throws IllegalRepParamsException {
+    private void validateBtyFollowArgs(BtyFollowReq btyFollowReq) throws IllegalReqParamsException {
         if (!MobilePhoneUtils.isValidPhone(btyFollowReq.getUserPhone())) {
-            throw new IllegalRepParamsException("请输入正确的手机号码");
+            throw new IllegalReqParamsException("请输入正确的手机号码");
         }
         if (StringUtils.isBlank(btyFollowReq.getBtyPubSn())) {
-            throw new IllegalRepParamsException("不存在的电池");
+            throw new IllegalReqParamsException("不存在的电池");
         }
         if (!MobilePhoneUtils.isValidPhone(btyFollowReq.getBtyOwnerPhone())) {
-            throw new IllegalRepParamsException("请输入好友正确的手机号码");
+            throw new IllegalReqParamsException("请输入好友正确的手机号码");
         }
         if (StringUtils.equals(btyFollowReq.getUserPhone(), btyFollowReq.getBtyOwnerPhone())) {
-            throw new IllegalRepParamsException("不能关注自己");
+            throw new IllegalReqParamsException("不能关注自己");
         }
     }
 
-    private void validateBtyShareArgs(BtyShareReq btyShareReq) throws IllegalRepParamsException {
+    private void validateBtyShareArgs(BtyShareReq btyShareReq) throws IllegalReqParamsException {
         if (!MobilePhoneUtils.isValidPhone(btyShareReq.getUserPhone())) {
-            throw new IllegalRepParamsException("请输入正确的手机号码");
+            throw new IllegalReqParamsException("请输入正确的手机号码");
         }
         if (StringUtils.isBlank(btyShareReq.getBtyPubSn())) {
-            throw new IllegalRepParamsException("不存在的电池");
+            throw new IllegalReqParamsException("不存在的电池");
         }
         if (!MobilePhoneUtils.isValidPhone(btyShareReq.getFriendPhone())) {
-            throw new IllegalRepParamsException("请输入好友正确的手机号码");
+            throw new IllegalReqParamsException("请输入好友正确的手机号码");
         }
         if (StringUtils.equals(btyShareReq.getUserPhone(), btyShareReq.getFriendPhone())) {
-            throw new IllegalRepParamsException("不能关注自己");
+            throw new IllegalReqParamsException("不能关注自己");
         }
     }
 

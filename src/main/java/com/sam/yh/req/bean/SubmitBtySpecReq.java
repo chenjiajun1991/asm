@@ -7,7 +7,7 @@ public class SubmitBtySpecReq extends BaseReq {
     private String btySN;
     private String btyImei;
     private String btySimNo;
-    private String resellerPhone;
+    private String resellerEmail;
 
     public String getUserName() {
         return userName;
@@ -49,12 +49,12 @@ public class SubmitBtySpecReq extends BaseReq {
         this.btySimNo = btySimNo;
     }
 
-    public String getResellerPhone() {
-        return resellerPhone;
+    public String getResellerEmail() {
+        return resellerEmail;
     }
 
-    public void setResellerPhone(String resellerPhone) {
-        this.resellerPhone = resellerPhone;
+    public void setResellerEmail(String resellerEmail) {
+        this.resellerEmail = resellerEmail;
     }
 
 }

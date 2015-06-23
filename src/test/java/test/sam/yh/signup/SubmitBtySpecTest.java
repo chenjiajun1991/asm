@@ -57,7 +57,8 @@ public class SubmitBtySpecTest {
         reqObj.setBtyImei("10005");
         reqObj.setBtySimNo("15200000005");
         reqObj.setBtySN("105");
-        reqObj.setResellerPhone("15618672987");
+        reqObj.setResellerEmail("boole.guo@gmail.com");
+        ;
         String jsonReq = JSON.toJSONString(reqObj);
         logger.info("Reuqest json String:" + jsonReq);
 

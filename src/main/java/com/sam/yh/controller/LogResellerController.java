@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.EmailAddressValidator;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
 import com.sam.yh.req.bean.IllegalReqParamsException;
@@ -58,6 +59,9 @@ public class LogResellerController {
     private void validateResellerArgs(LogResellerReq logResellerReq) throws IllegalReqParamsException {
         if (StringUtils.isBlank(logResellerReq.getResellerName())) {
             throw new IllegalReqParamsException("请输入经销商名称");
+        }
+        if (!EmailAddressValidator.isValidEmail(logResellerReq.getResellerEmail())) {
+            throw new IllegalReqParamsException("请输入经销商正确的电子邮箱");
         }
         // TODO
     }

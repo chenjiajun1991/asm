@@ -52,6 +52,9 @@ public class ResellerServiceImpl implements ResellerService {
 
     @Override
     public void submitBtySpec(SubmitBtySpecReq submitBtySpecReq) throws CrudException {
+        if (batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei()) != null) {
+            throw new SubmitBtySpecException("请检查电池IMEI号");
+        }
         //
         User user = userService.fetchUserByPhone(submitBtySpecReq.getUserPhone());
         if (user == null) {
@@ -60,11 +63,8 @@ public class ResellerServiceImpl implements ResellerService {
         }
 
         //
-        User resellerUser = userService.fetchUserByPhone(submitBtySpecReq.getResellerPhone());
-        if (resellerUser == null) {
-            throw new SubmitBtySpecException("经销商不存在，请联系客服。");
-        }
-        Reseller reseller = resellerMapper.selectByPrimaryKey(resellerUser.getUserId());
+
+        Reseller reseller = resellerMapper.selectByEmail(submitBtySpecReq.getResellerEmail().toLowerCase());
         if (reseller == null) {
             throw new SubmitBtySpecException("经销商不存在，请联系客服。");
         }
@@ -72,7 +72,7 @@ public class ResellerServiceImpl implements ResellerService {
         //
         boolean isCloudBty = true;
         Battery battery = addBattery(submitBtySpecReq.getBtySN(), submitBtySpecReq.getBtyImei(), submitBtySpecReq.getBtySimNo(), isCloudBty,
-                resellerUser.getUserId());
+                reseller.getResellerId());
 
         //
         UserBattery userBattery = new UserBattery();
@@ -134,7 +134,7 @@ public class ResellerServiceImpl implements ResellerService {
         reseller.setPassword(RandomCodeUtils.genSalt());
 
         reseller.setResellerName(logResellerReq.getResellerName());
-        reseller.setEmailAddress(logResellerReq.getResellerEmail());
+        reseller.setEmailAddress(logResellerReq.getResellerEmail().toLowerCase());
         reseller.setEmailAddressVerified(EmailVerifiedStatus.NOT_VERIFIED.getVerifyStatus());
 
         reseller.setOfficeAddress(logResellerReq.getResellerAddress());

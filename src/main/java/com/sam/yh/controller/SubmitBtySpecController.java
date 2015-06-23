@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.EmailAddressValidator;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
@@ -61,8 +62,8 @@ public class SubmitBtySpecController {
         if (!MobilePhoneUtils.isValidPhone(submitBtySpecReq.getUserPhone())) {
             throw new IllegalReqParamsException("请输入购买人正确的手机号码");
         }
-        if (!MobilePhoneUtils.isValidPhone(submitBtySpecReq.getResellerPhone())) {
-            throw new IllegalReqParamsException("请输入经销商正确的手机号码");
+        if (!EmailAddressValidator.isValidEmail(submitBtySpecReq.getResellerEmail())) {
+            throw new IllegalReqParamsException("请输入经销商正确的电子邮箱");
         }
         if (StringUtils.isBlank(submitBtySpecReq.getBtySN())) {
             throw new IllegalReqParamsException("请输入序列号");

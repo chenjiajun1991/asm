@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.common.EmailAddressValidator;
+import com.sam.yh.common.IllegalParamsException;
+import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
-import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.req.bean.LogResellerReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -41,29 +41,34 @@ public class LogResellerController {
             resellerService.logReseller(req);
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
-        } catch (IllegalReqParamsException e) {
+        } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
-            logger.error("logging reseller exception, " + req.getResellerEmail(), e);
+            logger.error("logging reseller exception, " + req.getResellerPhone(), e);
             if (e instanceof SubmitBtySpecException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else {
                 return ResponseUtils.getSysErrorResp();
             }
         } catch (Exception e) {
-            logger.error("logging reseller exception, " + req.getResellerEmail(), e);
+            logger.error("logging reseller exception, " + req.getResellerPhone(), e);
             return ResponseUtils.getSysErrorResp();
         }
     }
 
-    private void validateResellerArgs(LogResellerReq logResellerReq) throws IllegalReqParamsException {
+    private void validateResellerArgs(LogResellerReq logResellerReq) throws IllegalParamsException {
         if (StringUtils.isBlank(logResellerReq.getResellerName())) {
-            throw new IllegalReqParamsException("请输入经销商名称");
+            throw new IllegalParamsException("请输入经销商名称");
         }
-        if (!EmailAddressValidator.isValidEmail(logResellerReq.getResellerEmail())) {
-            throw new IllegalReqParamsException("请输入经销商正确的电子邮箱");
+        if (!MobilePhoneUtils.isValidPhone(logResellerReq.getResellerPhone())) {
+            throw new IllegalParamsException("请输入经销商正确的电子邮箱");
         }
-        // TODO
+        if (StringUtils.isBlank(logResellerReq.getCityName())) {
+            throw new IllegalParamsException("请输入经销商所在城市");
+        }
+        if (StringUtils.isBlank(logResellerReq.getResellerAddress())) {
+            throw new IllegalParamsException("请输入经销商地址");
+        }
     }
 
 }

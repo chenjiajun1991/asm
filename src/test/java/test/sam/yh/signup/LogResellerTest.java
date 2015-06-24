@@ -1,6 +1,6 @@
 package test.sam.yh.signup;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -9,12 +9,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.SubmitBtySpecReq;
+import com.sam.yh.req.bean.LogResellerReq;
 
 /**
  * <p>
@@ -24,8 +25,8 @@ import com.sam.yh.req.bean.SubmitBtySpecReq;
  * <p>
  * Version: 1.0
  */
-public class SubmitBtySpecTest {
-    private static final Logger logger = LoggerFactory.getLogger(SubmitBtySpecTest.class);
+public class LogResellerTest {
+    private static final Logger logger = LoggerFactory.getLogger(LogResellerTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -46,33 +47,33 @@ public class SubmitBtySpecTest {
     }
 
     @Test
-    public void testSubmitBtySpecService() {
+    public void testLogResellerService() {
 
-        SubmitBtySpecReq reqObj = new SubmitBtySpecReq();
+        LogResellerReq reqObj = new LogResellerReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserName("nate");
-        reqObj.setUserPhone("15618672989");
-        reqObj.setBtyImei("10005");
-        reqObj.setBtySimNo("15200000005");
-        reqObj.setBtySN("105");
-        reqObj.setResellerPhone("15618672987");
-        ;
+        reqObj.setAdminPhone("15618672987");
+        reqObj.setResellerName("毛总");
+        reqObj.setResellerPhone("13900000008");
+        reqObj.setCityName("上海");
+        reqObj.setResellerAddress("陆家嘴环路1000号恒生大厦");
+
         String jsonReq = JSON.toJSONString(reqObj);
+
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/submitspec.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/info.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, jsonReq, String.class);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("jsonReq", jsonReq);
+        String resp = restTemplate.postForObject(url, params, String.class);
 
-        logger.info("ResponseStatus:" + responseEntity.getStatusCode().value());
+        logger.info("ResponseBody:" + resp);
 
-        logger.info("ResponseBody:" + responseEntity.getBody());
-
-        assertEquals("hello", responseEntity.getBody());
+        assertEquals("hello", resp);
     }
 
     @AfterClass

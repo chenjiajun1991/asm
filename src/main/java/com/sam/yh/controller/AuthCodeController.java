@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.enums.UserCodeType;
-import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.req.bean.SmsAuthCodeReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -65,7 +65,7 @@ public class AuthCodeController {
                 return ResponseUtils.getErrorResp("不存在的验证码类型");
             }
 
-        } catch (IllegalReqParamsException e) {
+        } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("send sms exception, " + req.getUserPhone(), e);
@@ -80,13 +80,13 @@ public class AuthCodeController {
         }
     }
 
-    private void validateSmsArgs(SmsAuthCodeReq smsAuthCodeReq) throws IllegalReqParamsException {
+    private void validateSmsArgs(SmsAuthCodeReq smsAuthCodeReq) throws IllegalParamsException {
         if (!MobilePhoneUtils.isValidPhone(smsAuthCodeReq.getUserPhone())) {
-            throw new IllegalReqParamsException("请输入正确的手机号码");
+            throw new IllegalParamsException("请输入正确的手机号码");
         }
 
         if (!StringUtils.isNumeric(smsAuthCodeReq.getAuthType()) || !UserCodeType.isValidType(Integer.parseInt(smsAuthCodeReq.getAuthType()))) {
-            throw new IllegalReqParamsException("无法发送此类型的验证码");
+            throw new IllegalParamsException("无法发送此类型的验证码");
         }
 
     }

@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.common.EmailAddressValidator;
+import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
-import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -43,7 +42,7 @@ public class SubmitBtySpecController {
             resellerService.submitBtySpec(req);
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
-        } catch (IllegalReqParamsException e) {
+        } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("signin exception, " + req.getUserPhone(), e);
@@ -58,21 +57,21 @@ public class SubmitBtySpecController {
         }
     }
 
-    private void validateBtySpecArgs(SubmitBtySpecReq submitBtySpecReq) throws IllegalReqParamsException {
+    private void validateBtySpecArgs(SubmitBtySpecReq submitBtySpecReq) throws IllegalParamsException {
         if (!MobilePhoneUtils.isValidPhone(submitBtySpecReq.getUserPhone())) {
-            throw new IllegalReqParamsException("请输入购买人正确的手机号码");
+            throw new IllegalParamsException("请输入购买人正确的手机号码");
         }
-        if (!EmailAddressValidator.isValidEmail(submitBtySpecReq.getResellerEmail())) {
-            throw new IllegalReqParamsException("请输入经销商正确的电子邮箱");
+        if (!MobilePhoneUtils.isValidPhone(submitBtySpecReq.getResellerPhone())) {
+            throw new IllegalParamsException("请输入经销商正确的手机号码");
         }
         if (StringUtils.isBlank(submitBtySpecReq.getBtySN())) {
-            throw new IllegalReqParamsException("请输入序列号");
+            throw new IllegalParamsException("请输入序列号");
         }
         if (StringUtils.isBlank(submitBtySpecReq.getBtyImei())) {
-            throw new IllegalReqParamsException("请输入IMEI");
+            throw new IllegalParamsException("请输入IMEI");
         }
         if (StringUtils.isBlank(submitBtySpecReq.getBtySimNo())) {
-            throw new IllegalReqParamsException("请输入sim卡号");
+            throw new IllegalParamsException("请输入sim卡号");
         }
     }
 

@@ -2,65 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sam.yh.dao.ResellerMapper" >
   <resultMap id="BaseResultMap" type="com.sam.yh.model.Reseller" >
-    <id column="reseller_id" property="resellerId" jdbcType="INTEGER" />
-    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
-    <result column="reseller_name" property="resellerName" jdbcType="VARCHAR" />
-    <result column="service_phone" property="servicePhone" jdbcType="VARCHAR" />
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="office_address" property="officeAddress" jdbcType="VARCHAR" />
     <result column="email_address" property="emailAddress" jdbcType="VARCHAR" />
     <result column="email_address_verified" property="emailAddressVerified" jdbcType="TINYINT" />
-    <result column="salt" property="salt" jdbcType="VARCHAR" />
-    <result column="password" property="password" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="logging_date" property="loggingDate" jdbcType="TIMESTAMP" />
-    <result column="login_date" property="loginDate" jdbcType="TIMESTAMP" />
+    <result column="verify_status" property="verifyStatus" jdbcType="INTEGER" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="verify_date" property="verifyDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    reseller_id, uuid, reseller_name, service_phone, office_address, email_address, email_address_verified, 
-    salt, password, status, logging_date, login_date
+    user_id, office_address, email_address, email_address_verified, verify_status, city_name, 
+    city_id, verify_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from reseller
-    where reseller_id = #{resellerId,jdbcType=INTEGER}
-  </select>
-  <select id="selectByEmail" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from reseller
-    where email_address = #{emailAddress,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from reseller
-    where reseller_id = #{resellerId,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.sam.yh.model.Reseller" useGeneratedKeys="true" keyProperty="resellerId">
-    insert into reseller (reseller_id, uuid, reseller_name, 
-      service_phone, office_address, email_address, 
-      email_address_verified, salt, password, 
-      status, logging_date, login_date
-      )
-    values (#{resellerId,jdbcType=INTEGER}, #{uuid,jdbcType=VARCHAR}, #{resellerName,jdbcType=VARCHAR}, 
-      #{servicePhone,jdbcType=VARCHAR}, #{officeAddress,jdbcType=VARCHAR}, #{emailAddress,jdbcType=VARCHAR}, 
-      #{emailAddressVerified,jdbcType=TINYINT}, #{salt,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, #{loggingDate,jdbcType=TIMESTAMP}, #{loginDate,jdbcType=TIMESTAMP}
-      )
+  <insert id="insert" parameterType="com.sam.yh.model.Reseller" >
+    insert into reseller (user_id, office_address, email_address, 
+      email_address_verified, verify_status, city_name, 
+      city_id, verify_date)
+    values (#{userId,jdbcType=INTEGER}, #{officeAddress,jdbcType=VARCHAR}, #{emailAddress,jdbcType=VARCHAR}, 
+      #{emailAddressVerified,jdbcType=TINYINT}, #{verifyStatus,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR}, 
+      #{cityId,jdbcType=INTEGER}, #{verifyDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.sam.yh.model.Reseller" useGeneratedKeys="true" keyProperty="resellerId">
+  <insert id="insertSelective" parameterType="com.sam.yh.model.Reseller" >
     insert into reseller
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="resellerId != null" >
-        reseller_id,
-      </if>
-      <if test="uuid != null" >
-        uuid,
-      </if>
-      <if test="resellerName != null" >
-        reseller_name,
-      </if>
-      <if test="servicePhone != null" >
-        service_phone,
+      <if test="userId != null" >
+        user_id,
       </if>
       <if test="officeAddress != null" >
         office_address,
@@ -71,34 +48,22 @@
       <if test="emailAddressVerified != null" >
         email_address_verified,
       </if>
-      <if test="salt != null" >
-        salt,
+      <if test="verifyStatus != null" >
+        verify_status,
       </if>
-      <if test="password != null" >
-        password,
+      <if test="cityName != null" >
+        city_name,
       </if>
-      <if test="status != null" >
-        status,
+      <if test="cityId != null" >
+        city_id,
       </if>
-      <if test="loggingDate != null" >
-        logging_date,
-      </if>
-      <if test="loginDate != null" >
-        login_date,
+      <if test="verifyDate != null" >
+        verify_date,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="resellerId != null" >
-        #{resellerId,jdbcType=INTEGER},
-      </if>
-      <if test="uuid != null" >
-        #{uuid,jdbcType=VARCHAR},
-      </if>
-      <if test="resellerName != null" >
-        #{resellerName,jdbcType=VARCHAR},
-      </if>
-      <if test="servicePhone != null" >
-        #{servicePhone,jdbcType=VARCHAR},
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="officeAddress != null" >
         #{officeAddress,jdbcType=VARCHAR},
@@ -109,35 +74,23 @@
       <if test="emailAddressVerified != null" >
         #{emailAddressVerified,jdbcType=TINYINT},
       </if>
-      <if test="salt != null" >
-        #{salt,jdbcType=VARCHAR},
+      <if test="verifyStatus != null" >
+        #{verifyStatus,jdbcType=INTEGER},
       </if>
-      <if test="password != null" >
-        #{password,jdbcType=VARCHAR},
+      <if test="cityName != null" >
+        #{cityName,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
-        #{status,jdbcType=INTEGER},
+      <if test="cityId != null" >
+        #{cityId,jdbcType=INTEGER},
       </if>
-      <if test="loggingDate != null" >
-        #{loggingDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="loginDate != null" >
-        #{loginDate,jdbcType=TIMESTAMP},
+      <if test="verifyDate != null" >
+        #{verifyDate,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.Reseller" >
     update reseller
     <set >
-      <if test="uuid != null" >
-        uuid = #{uuid,jdbcType=VARCHAR},
-      </if>
-      <if test="resellerName != null" >
-        reseller_name = #{resellerName,jdbcType=VARCHAR},
-      </if>
-      <if test="servicePhone != null" >
-        service_phone = #{servicePhone,jdbcType=VARCHAR},
-      </if>
       <if test="officeAddress != null" >
         office_address = #{officeAddress,jdbcType=VARCHAR},
       </if>
@@ -147,37 +100,30 @@
       <if test="emailAddressVerified != null" >
         email_address_verified = #{emailAddressVerified,jdbcType=TINYINT},
       </if>
-      <if test="salt != null" >
-        salt = #{salt,jdbcType=VARCHAR},
+      <if test="verifyStatus != null" >
+        verify_status = #{verifyStatus,jdbcType=INTEGER},
       </if>
-      <if test="password != null" >
-        password = #{password,jdbcType=VARCHAR},
+      <if test="cityName != null" >
+        city_name = #{cityName,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=INTEGER},
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
       </if>
-      <if test="loggingDate != null" >
-        logging_date = #{loggingDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="loginDate != null" >
-        login_date = #{loginDate,jdbcType=TIMESTAMP},
+      <if test="verifyDate != null" >
+        verify_date = #{verifyDate,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where reseller_id = #{resellerId,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.Reseller" >
     update reseller
-    set uuid = #{uuid,jdbcType=VARCHAR},
-      reseller_name = #{resellerName,jdbcType=VARCHAR},
-      service_phone = #{servicePhone,jdbcType=VARCHAR},
-      office_address = #{officeAddress,jdbcType=VARCHAR},
+    set office_address = #{officeAddress,jdbcType=VARCHAR},
       email_address = #{emailAddress,jdbcType=VARCHAR},
       email_address_verified = #{emailAddressVerified,jdbcType=TINYINT},
-      salt = #{salt,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      logging_date = #{loggingDate,jdbcType=TIMESTAMP},
-      login_date = #{loginDate,jdbcType=TIMESTAMP}
-    where reseller_id = #{resellerId,jdbcType=INTEGER}
+      verify_status = #{verifyStatus,jdbcType=INTEGER},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      city_id = #{cityId,jdbcType=INTEGER},
+      verify_date = #{verifyDate,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
   </update>
 </mapper>

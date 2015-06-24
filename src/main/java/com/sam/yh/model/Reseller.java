@@ -3,13 +3,7 @@ package com.sam.yh.model;
 import java.util.Date;
 
 public class Reseller {
-    private Integer resellerId;
-
-    private String uuid;
-
-    private String resellerName;
-
-    private String servicePhone;
+    private Integer userId;
 
     private String officeAddress;
 
@@ -17,46 +11,20 @@ public class Reseller {
 
     private Byte emailAddressVerified;
 
-    private String salt;
+    private Integer verifyStatus;
 
-    private String password;
+    private String cityName;
 
-    private Integer status;
+    private Integer cityId;
 
-    private Date loggingDate;
+    private Date verifyDate;
 
-    private Date loginDate;
-
-    public Integer getResellerId() {
-        return resellerId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setResellerId(Integer resellerId) {
-        this.resellerId = resellerId;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid == null ? null : uuid.trim();
-    }
-
-    public String getResellerName() {
-        return resellerName;
-    }
-
-    public void setResellerName(String resellerName) {
-        this.resellerName = resellerName == null ? null : resellerName.trim();
-    }
-
-    public String getServicePhone() {
-        return servicePhone;
-    }
-
-    public void setServicePhone(String servicePhone) {
-        this.servicePhone = servicePhone == null ? null : servicePhone.trim();
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getOfficeAddress() {
@@ -83,43 +51,35 @@ public class Reseller {
         this.emailAddressVerified = emailAddressVerified;
     }
 
-    public String getSalt() {
-        return salt;
+    public Integer getVerifyStatus() {
+        return verifyStatus;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt == null ? null : salt.trim();
+    public void setVerifyStatus(Integer verifyStatus) {
+        this.verifyStatus = verifyStatus;
     }
 
-    public String getPassword() {
-        return password;
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setCityName(String cityName) {
+        this.cityName = cityName == null ? null : cityName.trim();
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getCityId() {
+        return cityId;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
     }
 
-    public Date getLoggingDate() {
-        return loggingDate;
+    public Date getVerifyDate() {
+        return verifyDate;
     }
 
-    public void setLoggingDate(Date loggingDate) {
-        this.loggingDate = loggingDate;
-    }
-
-    public Date getLoginDate() {
-        return loginDate;
-    }
-
-    public void setLoginDate(Date loginDate) {
-        this.loginDate = loginDate;
+    public void setVerifyDate(Date verifyDate) {
+        this.verifyDate = verifyDate;
     }
 }

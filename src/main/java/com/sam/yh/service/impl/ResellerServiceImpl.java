@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.LoggingResellerException;
@@ -16,7 +17,6 @@ import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
-import com.sam.yh.enums.EmailVerifiedStatus;
 import com.sam.yh.enums.ResellerStatus;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.Reseller;
@@ -64,7 +64,11 @@ public class ResellerServiceImpl implements ResellerService {
 
         //
 
-        Reseller reseller = resellerMapper.selectByEmail(submitBtySpecReq.getResellerEmail().toLowerCase());
+        User resellerUser = userService.fetchUserByPhone(submitBtySpecReq.getResellerPhone());
+        if (resellerUser == null) {
+            throw new SubmitBtySpecException("经销商不存在，请联系客服。");
+        }
+        Reseller reseller = resellerMapper.selectByPrimaryKey(resellerUser.getUserId());
         if (reseller == null) {
             throw new SubmitBtySpecException("经销商不存在，请联系客服。");
         }
@@ -72,7 +76,7 @@ public class ResellerServiceImpl implements ResellerService {
         //
         boolean isCloudBty = true;
         Battery battery = addBattery(submitBtySpecReq.getBtySN(), submitBtySpecReq.getBtyImei(), submitBtySpecReq.getBtySimNo(), isCloudBty,
-                reseller.getResellerId());
+                reseller.getUserId());
 
         //
         UserBattery userBattery = new UserBattery();
@@ -87,12 +91,13 @@ public class ResellerServiceImpl implements ResellerService {
     private User addLockedUserBySys(String userName, String mobilePhone) {
         Date now = new Date();
         String uuid = UUID.randomUUID().toString();
+        String salt = RandomCodeUtils.genSalt();
         User user = new User();
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(userName);
-        user.setSalt(RandomCodeUtils.genSalt());
-        // TODO
-        user.setPassword(RandomCodeUtils.genSalt());
+        user.setSalt(salt);
+
+        user.setPassword(PwdUtils.genInitMd5Pwd(mobilePhone, salt));
         user.setMobilePhone(mobilePhone);
         user.setLockStatus(true);
         user.setCreateDate(now);
@@ -121,28 +126,36 @@ public class ResellerServiceImpl implements ResellerService {
 
     @Override
     public void logReseller(LogResellerReq logResellerReq) throws CrudException {
-        if (resellerMapper.selectByEmail(logResellerReq.getResellerEmail()) != null) {
-            throw new LoggingResellerException("经销商电子邮件已存在");
+        if (userService.fetchUserByPhone(logResellerReq.getResellerPhone()) != null) {
+            throw new LoggingResellerException("经销商手机号码已存在");
         }
-        Reseller reseller = new Reseller();
         Date now = new Date();
         String uuid = UUID.randomUUID().toString();
+        String salt = RandomCodeUtils.genSalt();
 
-        reseller.setStatus(ResellerStatus.INIT.getStatus());
-        reseller.setUuid(StringUtils.replace(uuid, "-", ""));
-        reseller.setSalt(RandomCodeUtils.genSalt());
-        reseller.setPassword(RandomCodeUtils.genSalt());
+        User user = new User();
+        user.setUuid(StringUtils.replace(uuid, "-", ""));
+        user.setUserName(logResellerReq.getResellerName());
+        user.setSalt(RandomCodeUtils.genSalt());
 
-        reseller.setResellerName(logResellerReq.getResellerName());
-        reseller.setEmailAddress(logResellerReq.getResellerEmail().toLowerCase());
-        reseller.setEmailAddressVerified(EmailVerifiedStatus.NOT_VERIFIED.getVerifyStatus());
+        user.setPassword(PwdUtils.genInitMd5Pwd(logResellerReq.getResellerPhone(), salt));
+        user.setMobilePhone(logResellerReq.getResellerPhone());
+        user.setLockStatus(false);
+        user.setCreateDate(now);
 
+        userMapper.insertSelective(user);
+
+        Reseller reseller = new Reseller();
+        reseller.setUserId(user.getUserId());
         reseller.setOfficeAddress(logResellerReq.getResellerAddress());
-        reseller.setServicePhone(logResellerReq.getResellerPhone());
+        reseller.setCityName(logResellerReq.getCityName());
+        reseller.setVerifyStatus(ResellerStatus.VERIFIED.getStatus());
+        reseller.setVerifyDate(now);
 
-        reseller.setLoggingDate(now);
+        // TODO
+        // reseller.setCityId(cityId);
 
-        resellerMapper.insert(reseller);
+        resellerMapper.insertSelective(reseller);
 
     }
 }

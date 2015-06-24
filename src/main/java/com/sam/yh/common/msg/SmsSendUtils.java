@@ -21,7 +21,6 @@ public class SmsSendUtils {
     private static final String SERVERURL = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_SERVERURL);
     private static final String ACCOUNT = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_ACCOUNT);
     private static final String PASSWORD = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_PASSWORD);
-    private static final String SIGN = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_SIGN);
     private static final boolean SMS_ENABLE = ConfigUtils.getConfig().getBoolean(ConfigUtils.SMS_ENABLE);
 
     public static boolean sendAuthCode(String mobilePhone, String authCode) {

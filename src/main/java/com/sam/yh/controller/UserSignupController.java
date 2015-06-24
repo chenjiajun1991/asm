@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.model.User;
-import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.req.bean.UserSignupReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -66,7 +66,7 @@ public class UserSignupController {
             respData.setUserUid(user.getUuid());
 
             return ResponseUtils.getNormalResp(respData);
-        } catch (IllegalReqParamsException e) {
+        } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("signup exception, " + req.getUserPhone(), e);
@@ -84,21 +84,21 @@ public class UserSignupController {
 
     }
 
-    private void validateSignupArgs(UserSignupReq userSignupReq) throws IllegalReqParamsException {
+    private void validateSignupArgs(UserSignupReq userSignupReq) throws IllegalParamsException {
         if (!MobilePhoneUtils.isValidPhone(userSignupReq.getUserPhone())) {
-            throw new IllegalReqParamsException("请输入正确的手机号码");
+            throw new IllegalParamsException("请输入正确的手机号码");
         }
 
         if (StringUtils.isBlank(userSignupReq.getPassword1()) || StringUtils.isBlank(userSignupReq.getPassword2())) {
-            throw new IllegalReqParamsException("密码不能为空");
+            throw new IllegalParamsException("密码不能为空");
         }
 
         if (!PwdUtils.isValidPwd(userSignupReq.getPassword1())) {
-            throw new IllegalReqParamsException("密码长度为8-20位字符");
+            throw new IllegalParamsException("密码长度为8-20位字符");
         }
 
         if (!StringUtils.equals(userSignupReq.getPassword1(), userSignupReq.getPassword2())) {
-            throw new IllegalReqParamsException("密码输入不一致");
+            throw new IllegalParamsException("密码输入不一致");
         }
 
     }

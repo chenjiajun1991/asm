@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.model.User;
-import com.sam.yh.req.bean.IllegalReqParamsException;
 import com.sam.yh.req.bean.UserPwdResetReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -49,7 +49,7 @@ public class ResetPwdController {
             respData.setUserUid(user.getUuid());
 
             return ResponseUtils.getNormalResp(respData);
-        } catch (IllegalReqParamsException e) {
+        } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("reset user password exception, " + req.getUserPhone(), e);
@@ -67,21 +67,21 @@ public class ResetPwdController {
 
     }
 
-    private void validatePwdResetArgs(UserPwdResetReq userPwdResetReq) throws IllegalReqParamsException {
+    private void validatePwdResetArgs(UserPwdResetReq userPwdResetReq) throws IllegalParamsException {
         if (!MobilePhoneUtils.isValidPhone(userPwdResetReq.getUserPhone())) {
-            throw new IllegalReqParamsException("请输入正确的手机号码");
+            throw new IllegalParamsException("请输入正确的手机号码");
         }
 
         if (StringUtils.isBlank(userPwdResetReq.getPassword1()) || StringUtils.isBlank(userPwdResetReq.getPassword2())) {
-            throw new IllegalReqParamsException("密码不能为空");
+            throw new IllegalParamsException("密码不能为空");
         }
 
         if (!PwdUtils.isValidPwd(userPwdResetReq.getPassword1())) {
-            throw new IllegalReqParamsException("密码长度为8-20位字符");
+            throw new IllegalParamsException("密码长度为8-20位字符");
         }
 
         if (!StringUtils.equals(userPwdResetReq.getPassword1(), userPwdResetReq.getPassword2())) {
-            throw new IllegalReqParamsException("密码输入不一致");
+            throw new IllegalParamsException("密码输入不一致");
         }
 
     }

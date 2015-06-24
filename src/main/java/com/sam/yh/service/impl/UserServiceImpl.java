@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
 import com.sam.yh.crud.exception.BtyFollowException;
@@ -79,7 +80,7 @@ public class UserServiceImpl implements UserService {
             user.setUserName(mobilePhone);
             user.setSalt(salt);
 
-            user.setPassword(getHashPwd(mobilePhone, salt, hassPwd));
+            user.setPassword(PwdUtils.genMd5Pwd(mobilePhone, salt, hassPwd));
             user.setMobilePhone(mobilePhone);
             user.setLockStatus(false);
             user.setDeviceInfo(deviceInfo);
@@ -90,7 +91,7 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setSalt(salt);
 
-            user.setPassword(getHashPwd(mobilePhone, salt, hassPwd));
+            user.setPassword(PwdUtils.genMd5Pwd(mobilePhone, salt, hassPwd));
             user.setLockStatus(false);
             user.setDeviceInfo(deviceInfo);
             user.setLoginDate(now);
@@ -109,7 +110,7 @@ public class UserServiceImpl implements UserService {
             throw new UserSignupException("用户不存在");
         }
 
-        if (!StringUtils.equals(user.getPassword(), getHashPwd(mobilePhone, user.getSalt(), hassPwd))) {
+        if (!StringUtils.equals(user.getPassword(), PwdUtils.genMd5Pwd(mobilePhone, user.getSalt(), hassPwd))) {
             throw new UserSignupException("用户名或密码错误");
         }
 
@@ -132,7 +133,7 @@ public class UserServiceImpl implements UserService {
         }
         Date now = new Date();
         String salt = user.getSalt();
-        user.setPassword(getHashPwd(mobilePhone, salt, hassPwd));
+        user.setPassword(PwdUtils.genMd5Pwd(mobilePhone, salt, hassPwd));
         user.setLockStatus(false);
         user.setLoginDate(now);
         user.setDeviceInfo(deviceInfo);
@@ -303,11 +304,6 @@ public class UserServiceImpl implements UserService {
     public void unfollowBty(String mobilePhone, String btyPubSn) throws CrudException {
         // TODO Auto-generated method stub
 
-    }
-
-    private String getHashPwd(String mobilePhone, String salt, String password) {
-        // TODO
-        return password;
     }
 
 }

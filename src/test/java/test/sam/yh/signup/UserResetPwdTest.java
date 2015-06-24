@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.UserSigninReq;
+import com.sam.yh.req.bean.UserPwdResetReq;
 
 /**
  * <p>
@@ -25,8 +25,8 @@ import com.sam.yh.req.bean.UserSigninReq;
  * <p>
  * Version: 1.0
  */
-public class UserSigninTest {
-    private static final Logger logger = LoggerFactory.getLogger(UserSigninTest.class);
+public class UserResetPwdTest {
+    private static final Logger logger = LoggerFactory.getLogger(UserResetPwdTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -47,21 +47,23 @@ public class UserSigninTest {
     }
 
     @Test
-    public void testSigninService() {
+    public void testResetPwdService() {
 
-        UserSigninReq reqObj = new UserSigninReq();
+        UserPwdResetReq reqObj = new UserPwdResetReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("13900000008");
-        reqObj.setPassword("123456789");
+        reqObj.setPassword1("123456789");
+        reqObj.setPassword2("123456789");
+        reqObj.setAuthCode("695653");
         reqObj.setDeviceInfo("XXXXXXXXXXX");
 
         String jsonReq = JSON.toJSONString(reqObj);
 
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/signin.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/forgot.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

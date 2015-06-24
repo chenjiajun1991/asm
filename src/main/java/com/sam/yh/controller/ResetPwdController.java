@@ -26,6 +26,7 @@ import com.sam.yh.resp.bean.UserInfoResp;
 import com.sam.yh.service.UserService;
 
 @RestController
+@RequestMapping("/user")
 public class ResetPwdController {
 
     private static final Logger logger = LoggerFactory.getLogger(ResetPwdController.class);
@@ -33,7 +34,7 @@ public class ResetPwdController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "user/forgot", method = RequestMethod.POST)
+    @RequestMapping(value = "/forgot", method = RequestMethod.POST)
     public SamResponse resetUserPwd(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.debug("Request json String:" + jsonReq);

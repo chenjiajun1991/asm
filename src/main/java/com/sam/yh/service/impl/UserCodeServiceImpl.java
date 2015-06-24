@@ -45,7 +45,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         if (user == null) {
             throw new UserSignupException("未注册的手机号码");
         }
-        return sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
+        return sendAndSaveSmsCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType());
     }
 
     @Override
@@ -138,8 +138,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         UserCode userCode = fetchByUserName(mobilePhone, type);
         Date now = new Date();
 
-        if (userCode != null && userCode.getStatus() && now.before(userCode.getExpiryDate())
-                && StringUtils.equals(userCode.getDynamicCode(), authCode)) {
+        if (userCode != null && userCode.getStatus() && now.before(userCode.getExpiryDate()) && StringUtils.equals(userCode.getDynamicCode(), authCode)) {
             userCode.setStatus(false);
             userCodeMapper.updateByPrimaryKey(userCode);
             return true;

@@ -13,6 +13,10 @@ public class RandomCodeUtils {
         return getRandStr(KEY1, 6);
     }
 
+    public static String genInitPwd() {
+        return getRandStr(KEY1, 8);
+    }
+
     public static String genSalt() {
         return getRandStr(KEY1 + KEY2 + KEY3, 10);
     }

@@ -36,7 +36,8 @@ public class UserCodeServiceImpl implements UserCodeService {
         if (user != null && !user.getLockStatus()) {
             throw new UserSignupException("手机号码已经注册");
         }
-        return sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
+        String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
+        return SmsSendUtils.sendSignupAuthCode(mobilePhone, authCode);
     }
 
     @Override
@@ -45,12 +46,13 @@ public class UserCodeServiceImpl implements UserCodeService {
         if (user == null) {
             throw new UserSignupException("未注册的手机号码");
         }
-        return sendAndSaveSmsCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType());
+        String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType());
+        return SmsSendUtils.sendResetPwdAuthCode(mobilePhone, authCode);
     }
 
     @Override
     public boolean sendTestAuthCode(String mobilePhone) throws CrudException {
-        return sendAndSaveSmsCode(mobilePhone, UserCodeType.TEST_CODE.getType());
+        return SmsSendUtils.sendTestSms(mobilePhone, "123456");
     }
 
     @Override
@@ -84,7 +86,7 @@ public class UserCodeServiceImpl implements UserCodeService {
     /**
      * 短信验证码发送
      */
-    private boolean sendAndSaveSmsCode(String mobilePhone, int type) throws AuthCodeSendException {
+    private String sendAndSaveSmsCode(String mobilePhone, int type) throws AuthCodeSendException {
         UserCode userCode = fetchByUserName(mobilePhone, type);
 
         String smsCode = RandomCodeUtils.genSmsCode();
@@ -100,7 +102,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
 
             userCodeMapper.insert(userCode);
-            return sendSms(mobilePhone, smsCode);
+            return smsCode;
         }
 
         if (userCode.getSendTimes() >= SamConstants.MXA_SMS_SEND_TIME && DateUtils.isSameDay(now, userCode.getSendDate())) {
@@ -117,13 +119,13 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
 
             userCodeMapper.updateByPrimaryKey(userCode);
-            return sendSms(mobilePhone, userCode.getDynamicCode());
+            return smsCode;
         } else {
             // 验证码有效，重新发送相同的验证码
             userCode.setSendTimes(sendTimes);
 
             userCodeMapper.updateByPrimaryKey(userCode);
-            return sendSms(mobilePhone, userCode.getDynamicCode());
+            return smsCode;
         }
 
     }
@@ -147,14 +149,5 @@ public class UserCodeServiceImpl implements UserCodeService {
         }
     }
 
-    /**
-     * 发送短信
-     * 
-     * @param mobilePhone
-     * @param code
-     */
-    private boolean sendSms(String mobilePhone, String code) {
-        return SmsSendUtils.sendAuthCode(mobilePhone, code);
-    }
 
 }

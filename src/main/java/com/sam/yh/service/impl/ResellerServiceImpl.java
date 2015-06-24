@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
+import com.sam.yh.common.msg.SmsSendUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.LoggingResellerException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
@@ -86,18 +87,21 @@ public class ResellerServiceImpl implements ResellerService {
 
         userBatteryMapper.insert(userBattery);
 
+        SmsSendUtils.sendBuyInfo(submitBtySpecReq.getUserPhone());
+
     }
 
     private User addLockedUserBySys(String userName, String mobilePhone) {
         Date now = new Date();
         String uuid = UUID.randomUUID().toString();
         String salt = RandomCodeUtils.genSalt();
+        String initPwd = RandomCodeUtils.genInitPwd();
         User user = new User();
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(userName);
         user.setSalt(salt);
 
-        user.setPassword(PwdUtils.genInitMd5Pwd(mobilePhone, salt));
+        user.setPassword(PwdUtils.genMd5Pwd(mobilePhone, salt, initPwd));
         user.setMobilePhone(mobilePhone);
         user.setLockStatus(true);
         user.setCreateDate(now);
@@ -132,13 +136,14 @@ public class ResellerServiceImpl implements ResellerService {
         Date now = new Date();
         String uuid = UUID.randomUUID().toString();
         String salt = RandomCodeUtils.genSalt();
+        String initPwd = RandomCodeUtils.genInitPwd();
 
         User user = new User();
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(logResellerReq.getResellerName());
         user.setSalt(RandomCodeUtils.genSalt());
 
-        user.setPassword(PwdUtils.genInitMd5Pwd(logResellerReq.getResellerPhone(), salt));
+        user.setPassword(PwdUtils.genMd5Pwd(logResellerReq.getResellerPhone(), salt, initPwd));
         user.setMobilePhone(logResellerReq.getResellerPhone());
         user.setLockStatus(false);
         user.setCreateDate(now);
@@ -156,6 +161,8 @@ public class ResellerServiceImpl implements ResellerService {
         // reseller.setCityId(cityId);
 
         resellerMapper.insertSelective(reseller);
+
+        SmsSendUtils.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
 
     }
 }

@@ -23,16 +23,33 @@ public class SmsSendUtils {
     private static final String PASSWORD = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_PASSWORD);
     private static final boolean SMS_ENABLE = ConfigUtils.getConfig().getBoolean(ConfigUtils.SMS_ENABLE);
 
-    public static boolean sendAuthCode(String mobilePhone, String authCode) {
+    public static boolean sendSignupAuthCode(String mobilePhone, String authCode) {
         // TODO
-        String content = "您的注册验证码为" + authCode;
+        String content = "您正在注册为亚亨蓄电池会员，注册验证码为" + authCode;
+        return sendSms(mobilePhone, content);
+    }
+
+    public static boolean sendResetPwdAuthCode(String mobilePhone, String authCode) {
+        // TODO
+        String content = "您正在重置亚亨蓄电池会员密码，验证码为" + authCode;
+        return sendSms(mobilePhone, content);
+    }
+
+    public static boolean sendTestSms(String mobilePhone, String authCode) {
+        // TODO
+        String content = "您正在测试亚亨蓄电池短信验证码，验证码为" + authCode;
+        return sendSms(mobilePhone, content);
+    }
+
+    public static boolean sendLogResellerSuccess(String mobilePhone, String initPwd) {
+        // TODO
+        String content = "您已经成为亚亨蓄电池经销商，初始密码为" + initPwd;
         return sendSms(mobilePhone, content);
     }
 
     public static boolean sendBuyInfo(String mobilePhone) {
-
         // TODO
-        String content = "您的注册验证码为123456.";
+        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪。";
         return sendSms(mobilePhone, content);
     }
 

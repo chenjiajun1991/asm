@@ -29,6 +29,7 @@ import com.sam.yh.model.UserBattery;
 import com.sam.yh.req.bean.LogResellerReq;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
 import com.sam.yh.resp.bean.ResellerBtyInfo;
+import com.sam.yh.resp.bean.ResellerInfo;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
 import com.sam.yh.service.UserCodeService;
@@ -185,5 +186,11 @@ public class ResellerServiceImpl implements ResellerService {
         }
         PageHelper.startPage(1, 2);
         return batteryInfoMapper.selectByReseller(reseller.getUserId());
+    }
+
+    @Override
+    public List<ResellerInfo> fetchResellers(String adminPhone, int start, int size) throws CrudException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

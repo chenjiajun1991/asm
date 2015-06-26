@@ -1,6 +1,7 @@
 package com.sam.yh.service.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -8,12 +9,14 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.PageHelper;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.msg.SmsSendUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.LoggingResellerException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
+import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserMapper;
@@ -25,6 +28,7 @@ import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.req.bean.LogResellerReq;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
+import com.sam.yh.resp.bean.ResellerBtyInfo;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
 import com.sam.yh.service.UserCodeService;
@@ -50,6 +54,9 @@ public class ResellerServiceImpl implements ResellerService {
 
     @Resource
     ResellerMapper resellerMapper;
+
+    @Resource
+    BatteryInfoMapper batteryInfoMapper;
 
     @Override
     public void submitBtySpec(SubmitBtySpecReq submitBtySpecReq) throws CrudException {
@@ -164,5 +171,19 @@ public class ResellerServiceImpl implements ResellerService {
 
         SmsSendUtils.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
 
+    }
+
+    @Override
+    public List<ResellerBtyInfo> fetchResellerBtyInfo(String resellerPhone, int start, int size) throws CrudException {
+        // TODO Auto-generated method stub
+        User reseller = userService.fetchUserByPhone(resellerPhone);
+        if (reseller == null) {
+            throw new CrudException("经销商不存在");
+        }
+        if (resellerMapper.selectByPrimaryKey(reseller.getUserId()) == null) {
+            throw new CrudException("经销商不存在");
+        }
+        PageHelper.startPage(1, 2);
+        return batteryInfoMapper.selectByReseller(reseller.getUserId());
     }
 }

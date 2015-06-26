@@ -267,7 +267,7 @@
 			<version>0.0.1</version>
 			<scope>system</scope>
 			<!--本地jar的路径,相对或者绝对都可以 -->
-			<systemPath>F:/github/asm/WebContent/WEB-INF/lib/ctc-smscloud-xmlwebservice.jar</systemPath>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/ctc-smscloud-xmlwebservice.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -280,6 +280,11 @@
 			<artifactId>jetty-webapp</artifactId>
 			<version>8.1.8.v20121106</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>3.7.5</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -2,33 +2,33 @@ package com.sam.yh.req.bean;
 
 public class ResellerBtyInfoReq extends BaseReq {
 
-    private String resellerEmail;
+    private String resellerPhone;
 
-    private int offset;
-    private int limit;
+    private int pageNo;
+    private int size;
 
-    public String getResellerEmail() {
-        return resellerEmail;
+    public String getResellerPhone() {
+        return resellerPhone;
     }
 
-    public void setResellerEmail(String resellerEmail) {
-        this.resellerEmail = resellerEmail;
+    public void setResellerPhone(String resellerPhone) {
+        this.resellerPhone = resellerPhone;
     }
 
-    public int getOffset() {
-        return offset;
+    public int getPageNo() {
+        return pageNo;
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
     }
 
-    public int getLimit() {
-        return limit;
+    public int getSize() {
+        return size;
     }
 
-    public void setLimit(int limit) {
-        this.limit = limit;
+    public void setSize(int size) {
+        this.size = size;
     }
 
 }

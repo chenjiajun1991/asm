@@ -1,10 +1,13 @@
 package com.sam.yh.service;
 
+import java.util.List;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.req.bean.LogResellerReq;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
+import com.sam.yh.resp.bean.ResellerBtyInfo;
 
 public interface ResellerService {
 
@@ -13,5 +16,8 @@ public interface ResellerService {
 
     @Transactional
     public void logReseller(LogResellerReq logResellerReq) throws CrudException;
+
+    @Transactional
+    public List<ResellerBtyInfo> fetchResellerBtyInfo(String resellerPhone, int start, int size) throws CrudException;
 
 }

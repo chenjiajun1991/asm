@@ -1,5 +1,7 @@
 package com.sam.yh.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.req.bean.FetchResellersReq;
+import com.sam.yh.resp.bean.ResellerInfo;
 import com.sam.yh.resp.bean.ResellersResp;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -36,7 +39,10 @@ public class FetchResellersController {
             validateAdminArgs(req);
 
             // TODO
+            List<ResellerInfo> result = resellerService.fetchResellers(req.getAdminPhone(), req.getPageNo(), req.getSize());
             ResellersResp respData = new ResellersResp();
+            respData.setTotal(100);
+            respData.setResellers(result);
 
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalParamsException e) {

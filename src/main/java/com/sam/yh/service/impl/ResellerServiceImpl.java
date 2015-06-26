@@ -191,6 +191,7 @@ public class ResellerServiceImpl implements ResellerService {
     @Override
     public List<ResellerInfo> fetchResellers(String adminPhone, int start, int size) throws CrudException {
         // TODO Auto-generated method stub
-        return null;
+        PageHelper.startPage(1, 2);
+        return resellerMapper.selectRellers();
     }
 }

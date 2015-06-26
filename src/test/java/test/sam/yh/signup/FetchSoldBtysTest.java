@@ -25,8 +25,8 @@ import com.sam.yh.req.bean.ResellerBtyInfoReq;
  * <p>
  * Version: 1.0
  */
-public class ResellerBtysTest {
-    private static final Logger logger = LoggerFactory.getLogger(ResellerBtysTest.class);
+public class FetchSoldBtysTest {
+    private static final Logger logger = LoggerFactory.getLogger(FetchSoldBtysTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -47,7 +47,7 @@ public class ResellerBtysTest {
     }
 
     @Test
-    public void testLogResellerService() {
+    public void testFetchSoldBtys() {
 
         ResellerBtyInfoReq reqObj = new ResellerBtyInfoReq();
         reqObj.setAppName("samyh");

@@ -21,6 +21,16 @@
     from reseller
     where user_id = #{userId,jdbcType=INTEGER}
   </select>
+  <select id="selectRellers" resultType="com.sam.yh.resp.bean.ResellerInfo" >
+    select 
+    u.user_name as resellerName,
+    u.mobile_phone as resellerPhone,
+    r.office_address as resellerAddress,
+    r.city_name as resellerCity
+    from reseller r
+    inner join user u
+    on r.user_id = u.user_id
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from reseller
     where user_id = #{userId,jdbcType=INTEGER}

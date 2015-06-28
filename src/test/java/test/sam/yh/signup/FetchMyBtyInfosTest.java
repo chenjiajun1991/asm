@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.BtyShareReq;
+import com.sam.yh.req.bean.FetchBtyInfoReq;
 
 /**
  * <p>
@@ -25,8 +25,8 @@ import com.sam.yh.req.bean.BtyShareReq;
  * <p>
  * Version: 1.0
  */
-public class BtyShareTest {
-    private static final Logger logger = LoggerFactory.getLogger(BtyShareTest.class);
+public class FetchMyBtyInfosTest {
+    private static final Logger logger = LoggerFactory.getLogger(FetchMyBtyInfosTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -47,19 +47,19 @@ public class BtyShareTest {
     }
 
     @Test
-    public void testShareBtyService() {
+    public void testFetchBtyInfos() {
 
-        BtyShareReq reqObj = new BtyShareReq();
+        FetchBtyInfoReq reqObj = new FetchBtyInfoReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("15618672987");
-        reqObj.setBtyPubSn("A10001");
-        reqObj.setFriendPhone("13900000001");
+        reqObj.setUserPhone("13900000001");
+
         String jsonReq = JSON.toJSONString(reqObj);
+
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/bty/share.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/btyinfo.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 
@@ -67,7 +67,7 @@ public class BtyShareTest {
         params.add("jsonReq", jsonReq);
         String resp = restTemplate.postForObject(url, params, String.class);
 
-        logger.info("Response:" + resp);
+        logger.info("ResponseBody:" + resp);
 
         assertEquals("hello", resp);
     }

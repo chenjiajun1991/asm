@@ -38,7 +38,7 @@
     from user_follow u
     inner join battery b
     on u.battery_id = b.id
-    where u.user_id = #{userId,jdbcType=INTEGER}
+    where u.follow_status = true and u.user_id = #{userId,jdbcType=INTEGER}
   </select>
   <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
     select 
@@ -48,7 +48,7 @@
     inner join
     battery b
     on u.battery_id = b.id
-    where u.user_id = #{userId}
+    where u.follow_status = true and u.user_id = #{userId}
   </select>
   <select id="selectBtyFollowers" resultType="com.sam.yh.resp.bean.BtyFollower" parameterType="java.lang.Integer" >
     select 

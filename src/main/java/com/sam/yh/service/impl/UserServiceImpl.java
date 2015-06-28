@@ -223,8 +223,6 @@ public class UserServiceImpl implements UserService {
             throw new BtyFollowException("好友手机号码与电池序列号不匹配");
         }
 
-        Date now = new Date();
-
         List<UserFollow> userFollowBtyList = userBatteryService.fetchUserFollowBty(user.getUserId());
         if (userFollowBtyList != null && userFollowBtyList.size() >= SamConstants.MAX_FOLLOW_COUNT) {
             throw new BtyFollowException("您已达到了最大关注数量");
@@ -232,21 +230,10 @@ public class UserServiceImpl implements UserService {
         for (UserFollow userFollow : userFollowBtyList) {
             if (StringUtils.equals(userFollow.getBtyPubSn(), btyPubSn) && userFollow.getFollowStatus()) {
                 throw new BtyFollowException("您已关注了该电池");
-            } else if (StringUtils.equals(userFollow.getBtyPubSn(), btyPubSn) && !userFollow.getFollowStatus()) {
-                userFollow.setFollowStatus(true);
-                userFollow.setFollowDate(now);
-                userFollowMapper.updateByPrimaryKeySelective(userFollow);
-                return;
             }
         }
 
-        UserFollow userFollow = new UserFollow();
-        userFollow.setUserId(user.getUserId());
-        userFollow.setBatteryId(battery.getId());
-        userFollow.setFollowStatus(true);
-        userFollow.setFollowDate(now);
-
-        userFollowMapper.insert(userFollow);
+        innerFollow(user, battery);
 
     }
 
@@ -274,8 +261,6 @@ public class UserServiceImpl implements UserService {
             throw new BtyFollowException("只能共享自己购买的电池");
         }
 
-        Date now = new Date();
-
         List<UserFollow> userFollowBtyList = userBatteryService.fetchUserFollowBty(shareUser.getUserId());
         if (userFollowBtyList != null && userFollowBtyList.size() >= SamConstants.MAX_FOLLOW_COUNT) {
             throw new BtyFollowException("您好友已达到了最大关注数量");
@@ -283,22 +268,35 @@ public class UserServiceImpl implements UserService {
         for (UserFollow userFollow : userFollowBtyList) {
             if (StringUtils.equals(userFollow.getBtyPubSn(), btyPubSn) && userFollow.getFollowStatus()) {
                 throw new BtyFollowException("您已关注了该电池");
-            } else if (StringUtils.equals(userFollow.getBtyPubSn(), btyPubSn) && !userFollow.getFollowStatus()) {
-                userFollow.setFollowStatus(true);
-                userFollow.setFollowDate(now);
-                userFollowMapper.updateByPrimaryKeySelective(userFollow);
-                return;
             }
         }
 
-        UserFollow userFollow = new UserFollow();
-        userFollow.setUserId(shareUser.getUserId());
-        userFollow.setBatteryId(battery.getId());
-        userFollow.setFollowStatus(true);
-        userFollow.setFollowDate(now);
+        innerFollow(shareUser, battery);
 
-        userFollowMapper.insert(userFollow);
+    }
 
+    private void innerFollow(User follower, Battery battery) {
+        Date now = new Date();
+
+        UserFollowKey followKey = new UserFollowKey();
+        followKey.setBatteryId(battery.getId());
+        followKey.setUserId(follower.getUserId());
+
+        UserFollow userFollowExist = userFollowMapper.selectByPrimaryKey(followKey);
+        if (userFollowExist != null) {
+            userFollowExist.setFollowStatus(true);
+            userFollowExist.setFollowDate(now);
+
+            userFollowMapper.updateByPrimaryKeySelective(userFollowExist);
+        } else {
+            UserFollow userFollow = new UserFollow();
+            userFollow.setUserId(follower.getUserId());
+            userFollow.setBatteryId(battery.getId());
+            userFollow.setFollowStatus(true);
+            userFollow.setFollowDate(now);
+
+            userFollowMapper.insert(userFollow);
+        }
     }
 
     @Override

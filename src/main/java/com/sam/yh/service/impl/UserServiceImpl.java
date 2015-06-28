@@ -30,6 +30,7 @@ import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.UserBatteryKey;
 import com.sam.yh.model.UserFollow;
+import com.sam.yh.model.UserFollowKey;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.UserBatteryService;
 import com.sam.yh.service.UserCodeService;
@@ -303,6 +304,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public void unfollowBty(String mobilePhone, String btyPubSn) throws CrudException {
         // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void unshareBty(String mobilePhone, String btyPubSn, String friendPhone) throws CrudException {
+        User owner = fetchUserByPhone(mobilePhone);
+        if (owner == null) {
+            throw new BtyFollowException("用户不存在");
+        }
+
+        User shareUser = fetchUserByPhone(friendPhone);
+        if (shareUser == null) {
+            throw new BtyFollowException("好友不存在");
+        }
+
+        Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
+        if (battery == null) {
+            throw new BtyFollowException("电池不存在");
+        }
+        UserBatteryKey key = new UserBatteryKey();
+        key.setUserId(owner.getUserId());
+        key.setBatteryId(battery.getId());
+        UserBattery userBattery = userBatteryMapper.selectByPrimaryKey(key);
+        if (userBattery == null) {
+            throw new BtyFollowException("只能删除自己购买的电池的关注者");
+        }
+
+        Date now = new Date();
+
+        UserFollowKey followKey = new UserFollowKey();
+        followKey.setBatteryId(battery.getId());
+        followKey.setUserId(shareUser.getUserId());
+
+        UserFollow userFollow = userFollowMapper.selectByPrimaryKey(followKey);
+        userFollow.setFollowStatus(false);
+        userFollow.setFollowDate(now);
+        userFollowMapper.updateByPrimaryKeySelective(userFollow);
 
     }
 

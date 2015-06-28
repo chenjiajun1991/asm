@@ -38,5 +38,8 @@ public interface UserService {
     public void shareBty(String mobilePhone, String btyPubSn, String friendPhone) throws CrudException;
 
     @Transactional
+    public void unshareBty(String mobilePhone, String btyPubSn, String friendPhone) throws CrudException;
+
+    @Transactional
     public void unfollowBty(String mobilePhone, String btyPubSn) throws CrudException;
 }

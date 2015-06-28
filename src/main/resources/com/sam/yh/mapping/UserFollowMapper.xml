@@ -58,7 +58,7 @@
     inner join
     user u
     on f.user_id = u.user_id
-    where f.battery_id = #{batteryId,jdbcType=INTEGER}
+    where f.follow_status = true and f.battery_id = #{batteryId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserFollowKey" >
     delete from user_follow

@@ -25,8 +25,8 @@ import com.sam.yh.req.bean.BtyShareReq;
  * <p>
  * Version: 1.0
  */
-public class BtyShareTest {
-    private static final Logger logger = LoggerFactory.getLogger(BtyShareTest.class);
+public class BtyUnShareTest {
+    private static final Logger logger = LoggerFactory.getLogger(BtyUnShareTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -47,7 +47,7 @@ public class BtyShareTest {
     }
 
     @Test
-    public void testShareBtyService() {
+    public void testUnshareBtyService() {
 
         BtyShareReq reqObj = new BtyShareReq();
         reqObj.setAppName("samyh");
@@ -55,11 +55,11 @@ public class BtyShareTest {
         reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("15618672987");
         reqObj.setBtyPubSn("A10001");
-        reqObj.setFriendPhone("13900000003");
+        reqObj.setFriendPhone("13900000001");
         String jsonReq = JSON.toJSONString(reqObj);
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/bty/share.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/bty/unshare.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

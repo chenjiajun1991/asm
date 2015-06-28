@@ -53,8 +53,8 @@ public class ListBtyFollowersTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000001");
-        reqObj.setBtyPubSn("A10004");
+        reqObj.setUserPhone("15618672987");
+        reqObj.setBtyPubSn("A10001");
 
         String jsonReq = JSON.toJSONString(reqObj);
 

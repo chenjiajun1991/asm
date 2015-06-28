@@ -2,10 +2,19 @@ package com.sam.yh.resp.bean;
 
 public class ResellerInfo {
 
+    private int resellerId;
     private String resellerName;
     private String resellerPhone;
     private String resellerCity;
     private String resellerAddress;
+
+    public int getResellerId() {
+        return resellerId;
+    }
+
+    public void setResellerId(int resellerId) {
+        this.resellerId = resellerId;
+    }
 
     public String getResellerName() {
         return resellerName;

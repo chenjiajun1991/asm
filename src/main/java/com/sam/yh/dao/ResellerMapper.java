@@ -19,4 +19,6 @@ public interface ResellerMapper {
     int updateByPrimaryKey(Reseller record);
 
     List<ResellerInfo> selectRellers();
+
+    int countRellers();
 }

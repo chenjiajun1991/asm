@@ -36,7 +36,7 @@ public class FetchResellersTest {
         // 创建一个server
         server = new Server(8080);
         WebAppContext context = new WebAppContext();
-        String webapp = "/home/nate/workspace/asm/WebContent";
+        String webapp = "F:/github/asm/WebContent";
         context.setDescriptor(webapp + "/WEB-INF/web.xml"); // 指定web.xml配置文件
         context.setResourceBase(webapp); // 指定webapp目录
         context.setContextPath("/");
@@ -54,14 +54,14 @@ public class FetchResellersTest {
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
         reqObj.setAdminPhone("15618672987");
-        reqObj.setPageNo(1);
-        reqObj.setSize(10);
+        reqObj.setPageNo(2);
+        reqObj.setSize(2);
 
         String jsonReq = JSON.toJSONString(reqObj);
 
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/resellers.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/infos.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

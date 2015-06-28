@@ -23,6 +23,7 @@ import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.service.ResellerService;
 
 @RestController
+@RequestMapping("/reseller")
 public class FetchResellersController {
 
     private static final Logger logger = LoggerFactory.getLogger(FetchResellersController.class);
@@ -30,8 +31,8 @@ public class FetchResellersController {
     @Autowired
     ResellerService resellerService;
 
-    @RequestMapping(value = "/resellers", method = RequestMethod.POST)
-    public SamResponse loggingReseller(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+    @RequestMapping(value = "/infos", method = RequestMethod.POST)
+    public SamResponse fetchResellers(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
         logger.debug("Request json String:" + jsonReq);
         FetchResellersReq req = JSON.parseObject(jsonReq, FetchResellersReq.class);
 
@@ -41,7 +42,7 @@ public class FetchResellersController {
             // TODO
             List<ResellerInfo> result = resellerService.fetchResellers(req.getAdminPhone(), req.getPageNo(), req.getSize());
             ResellersResp respData = new ResellersResp();
-            respData.setTotal(100);
+            respData.setTotal(resellerService.countResellers());
             respData.setResellers(result);
 
             return ResponseUtils.getNormalResp(respData);

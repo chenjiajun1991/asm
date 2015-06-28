@@ -24,4 +24,7 @@ public interface ResellerService {
     @Transactional
     public List<ResellerInfo> fetchResellers(String adminPhone, int start, int size) throws CrudException;
 
+    @Transactional
+    public int countResellers();
+
 }

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.crud.exception.NotAdminException;
 import com.sam.yh.req.bean.FetchResellersReq;
 import com.sam.yh.resp.bean.ResellerInfo;
 import com.sam.yh.resp.bean.ResellersResp;
@@ -48,6 +50,13 @@ public class FetchResellersController {
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
+        } catch (CrudException e) {
+            logger.error("fetch resellers exception, " + req.getAdminPhone(), e);
+            if (e instanceof NotAdminException) {
+                return ResponseUtils.getServiceErrorResp(e.getMessage());
+            } else {
+                return ResponseUtils.getSysErrorResp();
+            }
         } catch (Exception e) {
             logger.error("fetch resellers exception, " + req.getAdminPhone(), e);
             return ResponseUtils.getSysErrorResp();
@@ -56,7 +65,7 @@ public class FetchResellersController {
 
     private void validateAdminArgs(FetchResellersReq fetchResellersReq) throws IllegalParamsException {
         if (!MobilePhoneUtils.isValidPhone(fetchResellersReq.getAdminPhone())) {
-            throw new IllegalParamsException("请输入经销商正确的电子邮箱");
+            throw new IllegalParamsException("请输入正确的手机号码");
         }
     }
 }

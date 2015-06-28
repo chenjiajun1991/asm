@@ -1,7 +1,9 @@
 package com.sam.yh.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -10,11 +12,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
+import com.sam.yh.common.ConfigUtils;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.msg.SmsSendUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.LoggingResellerException;
+import com.sam.yh.crud.exception.NotAdminException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
 import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.ResellerMapper;
@@ -138,6 +142,9 @@ public class ResellerServiceImpl implements ResellerService {
 
     @Override
     public void logReseller(LogResellerReq logResellerReq) throws CrudException {
+        if (!isAdmin(logResellerReq.getAdminPhone())) {
+            throw new LoggingResellerException("不是管理员，无法录入经销商");
+        }
         if (userService.fetchUserByPhone(logResellerReq.getResellerPhone()) != null) {
             throw new LoggingResellerException("经销商手机号码已存在");
         }
@@ -191,6 +198,9 @@ public class ResellerServiceImpl implements ResellerService {
     @Override
     public List<ResellerInfo> fetchResellers(String adminPhone, int start, int size) throws CrudException {
         // TODO Auto-generated method stub
+        if (!isAdmin(adminPhone)) {
+            throw new NotAdminException("不是管理员，无法查看");
+        }
         PageHelper.startPage(start, size);
         return resellerMapper.selectRellers();
     }
@@ -198,5 +208,15 @@ public class ResellerServiceImpl implements ResellerService {
     @Override
     public int countResellers() {
         return resellerMapper.countRellers();
+    }
+
+    private boolean isAdmin(String userPhone) {
+        List<Object> adminPhones = ConfigUtils.getConfig().getList(ConfigUtils.ADMIN_PHONE);
+        Set<String> admins = new HashSet<String>();
+        for (Object adminPhone : adminPhones) {
+            admins.add((String) adminPhone);
+        }
+
+        return admins.contains(userPhone);
     }
 }

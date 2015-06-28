@@ -8,6 +8,7 @@ import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.PubBattery;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.UserFollow;
+import com.sam.yh.resp.bean.BtyFollower;
 
 public interface UserBatteryService {
 
@@ -25,4 +26,7 @@ public interface UserBatteryService {
 
     @Transactional
     public List<PubBattery> fetchfriendBtys(String mobilePhone) throws CrudException;
+
+    @Transactional
+    public List<BtyFollower> fetchBtyFollowers(String userName, String btyPubSn) throws CrudException;
 }

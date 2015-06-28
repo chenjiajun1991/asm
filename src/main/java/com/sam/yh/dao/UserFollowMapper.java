@@ -5,6 +5,7 @@ import java.util.List;
 import com.sam.yh.model.PubBattery;
 import com.sam.yh.model.UserFollow;
 import com.sam.yh.model.UserFollowKey;
+import com.sam.yh.resp.bean.BtyFollower;
 
 public interface UserFollowMapper {
     int deleteByPrimaryKey(UserFollowKey key);
@@ -22,4 +23,6 @@ public interface UserFollowMapper {
     List<UserFollow> selectByUserId(int userId);
 
     List<PubBattery> selectBtysByUserId(Integer userId);
+
+    List<BtyFollower> selectBtyFollowers(Integer batteryId);
 }

@@ -50,6 +50,16 @@
     on u.battery_id = b.id
     where u.user_id = #{userId}
   </select>
+  <select id="selectBtyFollowers" resultType="com.sam.yh.resp.bean.BtyFollower" parameterType="java.lang.Integer" >
+    select 
+    u.user_name as followerName,
+    u.mobile_phone as followerPhone
+    from user_follow f
+    inner join
+    user u
+    on f.user_id = u.user_id
+    where f.battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserFollowKey" >
     delete from user_follow
     where user_id = #{userId,jdbcType=INTEGER}

@@ -1,10 +1,9 @@
 package com.sam.yh.req.bean;
 
-public class BtyShareReq extends BaseReq {
+public class ListFollowersReq extends BaseReq {
 
     private String userPhone;
     private String btyPubSn;
-    private String friendPhone;
 
     public String getUserPhone() {
         return userPhone;
@@ -20,14 +19,6 @@ public class BtyShareReq extends BaseReq {
 
     public void setBtyPubSn(String btyPubSn) {
         this.btyPubSn = btyPubSn;
-    }
-
-    public String getFriendPhone() {
-        return friendPhone;
-    }
-
-    public void setFriendPhone(String friendPhone) {
-        this.friendPhone = friendPhone;
     }
 
 }

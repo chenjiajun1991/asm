@@ -8,13 +8,18 @@ import org.springframework.stereotype.Service;
 
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtysException;
+import com.sam.yh.crud.exception.FetchFollowerException;
+import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserFollowMapper;
 import com.sam.yh.dao.UserMapper;
+import com.sam.yh.model.Battery;
 import com.sam.yh.model.PubBattery;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
+import com.sam.yh.model.UserBatteryKey;
 import com.sam.yh.model.UserFollow;
+import com.sam.yh.resp.bean.BtyFollower;
 import com.sam.yh.service.UserBatteryService;
 
 @Service
@@ -28,6 +33,9 @@ public class UserBatteryServiceImpl implements UserBatteryService {
 
     @Resource
     UserMapper userMapper;
+
+    @Resource
+    BatteryMapper batteryMapper;
 
     @Override
     public List<UserBattery> fetchUserBattery(int userId) {
@@ -63,6 +71,28 @@ public class UserBatteryServiceImpl implements UserBatteryService {
         }
 
         return userFollowMapper.selectBtysByUserId(user.getUserId());
+    }
+
+    @Override
+    public List<BtyFollower> fetchBtyFollowers(String userName, String btyPubSn) throws CrudException {
+        User user = userMapper.selectByPhone(userName);
+        if (user == null) {
+            throw new FetchFollowerException("用户不存在");
+        }
+        Battery battery = batteryMapper.selectByPubSn(btyPubSn);
+        if (battery == null) {
+            throw new FetchFollowerException("电池不存在");
+        }
+
+        UserBatteryKey key = new UserBatteryKey();
+        key.setUserId(user.getUserId());
+        key.setBatteryId(battery.getId());
+        UserBattery userBattery = userBatteryMapper.selectByPrimaryKey(key);
+        if (userBattery == null) {
+            throw new FetchFollowerException("您未购买此电池");
+        }
+
+        return userFollowMapper.selectBtyFollowers(battery.getId());
     }
 
 }

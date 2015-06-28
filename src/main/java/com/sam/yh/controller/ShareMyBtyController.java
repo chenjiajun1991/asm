@@ -39,7 +39,7 @@ public class ShareMyBtyController {
         try {
             validateBtyShareArgs(req);
 
-            userService.shareBty(req.getUserPhone(), req.getBtyPubSn(), req.getFriendPhone());
+            userService.shareBty(req.getUserPhone().trim(), req.getBtyPubSn().trim(), req.getFriendPhone().trim());
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
         } catch (IllegalParamsException e) {

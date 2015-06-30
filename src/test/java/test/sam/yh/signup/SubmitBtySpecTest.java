@@ -53,11 +53,11 @@ public class SubmitBtySpecTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserName("nate2");
-        reqObj.setUserPhone("13900000010");
-        reqObj.setBtyImei("10006");
-        reqObj.setBtySimNo("15200000006");
-        reqObj.setBtySN("106");
+        reqObj.setUserName("nate3");
+        reqObj.setUserPhone("13900000014");
+        reqObj.setBtyImei("10007");
+        reqObj.setBtySimNo("15200000007");
+        reqObj.setBtySN("107");
         reqObj.setResellerPhone("15618672987");
         ;
         String jsonReq = JSON.toJSONString(reqObj);

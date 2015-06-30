@@ -53,10 +53,10 @@ public class UserResetPwdTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000008");
-        reqObj.setPassword1("123456789");
-        reqObj.setPassword2("123456789");
-        reqObj.setAuthCode("695653");
+        reqObj.setUserPhone("13900000013");
+        reqObj.setPassword1("123456789a");
+        reqObj.setPassword2("123456789a");
+        reqObj.setAuthCode("289123");
         reqObj.setDeviceInfo("XXXXXXXXXXX");
 
         String jsonReq = JSON.toJSONString(reqObj);

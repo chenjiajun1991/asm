@@ -21,8 +21,8 @@ public final class PwdUtils {
     }
 
     public static String genMd5Pwd(String userPhone, String salt, String password) {
-        // return DigestUtils.md5Hex(userPhone + salt + password);
-        return password;
+        return DigestUtils.md5Hex(userPhone + salt + password);
+        // return password;
     }
 
 }

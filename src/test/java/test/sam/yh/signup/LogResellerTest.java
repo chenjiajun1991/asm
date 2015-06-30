@@ -55,7 +55,7 @@ public class LogResellerTest {
         reqObj.setVersion("0.0.1");
         reqObj.setAdminPhone("15618672987");
         reqObj.setResellerName("三毛");
-        reqObj.setResellerPhone("13900000012");
+        reqObj.setResellerPhone("13900000015");
         reqObj.setCityName("上海");
         reqObj.setResellerAddress("陆家嘴环路1000号恒生大厦8041");
 

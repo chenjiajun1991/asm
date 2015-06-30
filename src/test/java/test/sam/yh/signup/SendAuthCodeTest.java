@@ -53,8 +53,8 @@ public class SendAuthCodeTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000010");
-        reqObj.setAuthType("1");
+        reqObj.setUserPhone("13900000013");
+        reqObj.setAuthType("2");
 
         String jsonReq = JSON.toJSONString(reqObj);
 

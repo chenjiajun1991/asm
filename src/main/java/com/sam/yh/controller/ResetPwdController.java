@@ -18,11 +18,9 @@ import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
-import com.sam.yh.model.User;
 import com.sam.yh.req.bean.UserPwdResetReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
-import com.sam.yh.resp.bean.UserInfoResp;
 import com.sam.yh.service.UserService;
 
 @RestController
@@ -44,13 +42,9 @@ public class ResetPwdController {
         try {
             validatePwdResetArgs(req);
 
-            User user = userService.resetPwd(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
+            userService.resetPwd(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());
 
-            UserInfoResp respData = new UserInfoResp();
-            respData.setUserUid(user.getUuid());
-            respData.setUserType(user.getUserType());
-
-            return ResponseUtils.getNormalResp(respData);
+            return ResponseUtils.getNormalResp(StringUtils.EMPTY);
         } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {

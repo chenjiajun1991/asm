@@ -5,6 +5,7 @@
     <id column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="uuid" property="uuid" jdbcType="VARCHAR" />
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_type" property="userType" jdbcType="CHAR" />
     <result column="salt" property="salt" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="mobile_phone" property="mobilePhone" jdbcType="VARCHAR" />
@@ -15,7 +16,7 @@
     <result column="login_date" property="loginDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    user_id, uuid, user_name, salt, password, mobile_phone, passport_no, lock_status, 
+    user_id, uuid, user_name, user_type, salt, password, mobile_phone, passport_no, lock_status, 
     device_info, create_date, login_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -35,11 +36,11 @@
     where user_id = #{userId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.User" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
-    insert into user (uuid, user_name, 
+    insert into user (uuid, user_name, user_type, 
       salt, password, mobile_phone, 
       passport_no, lock_status, device_info, 
       create_date, login_date)
-    values (#{uuid,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+    values (#{uuid,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{userType,jdbcType=CHAR},
       #{salt,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, 
       #{passportNo,jdbcType=VARCHAR}, #{lockStatus,jdbcType=BIT}, #{deviceInfo,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{loginDate,jdbcType=TIMESTAMP})
@@ -52,6 +53,9 @@
       </if>
       <if test="userName != null" >
         user_name,
+      </if>
+      <if test="userType != null" >
+        user_type,
       </if>
       <if test="salt != null" >
         salt,
@@ -84,6 +88,9 @@
       </if>
       <if test="userName != null" >
         #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userType != null" >
+        #{userType,jdbcType=CHAR},
       </if>
       <if test="salt != null" >
         #{salt,jdbcType=VARCHAR},
@@ -120,6 +127,9 @@
       <if test="userName != null" >
         user_name = #{userName,jdbcType=VARCHAR},
       </if>
+      <if test="userType != null" >
+       user_type = #{userType,jdbcType=CHAR},
+      </if>
       <if test="salt != null" >
         salt = #{salt,jdbcType=VARCHAR},
       </if>
@@ -151,6 +161,7 @@
     update user
     set uuid = #{uuid,jdbcType=VARCHAR},
       user_name = #{userName,jdbcType=VARCHAR},
+      user_type = #{userType,jdbcType=CHAR},
       salt = #{salt,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       mobile_phone = #{mobilePhone,jdbcType=VARCHAR},

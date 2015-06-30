@@ -1,9 +1,7 @@
 package com.sam.yh.service.impl;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -12,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
-import com.sam.yh.common.ConfigUtils;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.msg.SmsSendUtils;
@@ -26,6 +23,7 @@ import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.enums.ResellerStatus;
+import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
@@ -68,22 +66,19 @@ public class ResellerServiceImpl implements ResellerService {
         if (batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei()) != null) {
             throw new SubmitBtySpecException("请检查电池IMEI号");
         }
+
+        //
+        String resellerPhone = submitBtySpecReq.getResellerPhone();
+        User reseller = userService.fetchUserByPhone(resellerPhone);
+        if (reseller == null || StringUtils.equals(UserType.NORMAL_USER.getType(), reseller.getUserType())) {
+            throw new SubmitBtySpecException("经销商不存在，请联系客服。");
+        }
+
         //
         User user = userService.fetchUserByPhone(submitBtySpecReq.getUserPhone());
         if (user == null) {
             user = addLockedUserBySys(submitBtySpecReq.getUserName(), submitBtySpecReq.getUserPhone());
             userCodeService.sendSignupAuthCode(submitBtySpecReq.getUserPhone());
-        }
-
-        //
-
-        User resellerUser = userService.fetchUserByPhone(submitBtySpecReq.getResellerPhone());
-        if (resellerUser == null) {
-            throw new SubmitBtySpecException("经销商不存在，请联系客服。");
-        }
-        Reseller reseller = resellerMapper.selectByPrimaryKey(resellerUser.getUserId());
-        if (reseller == null) {
-            throw new SubmitBtySpecException("经销商不存在，请联系客服。");
         }
 
         //
@@ -111,6 +106,7 @@ public class ResellerServiceImpl implements ResellerService {
         User user = new User();
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(userName);
+        user.setUserType(UserType.NORMAL_USER.getType());
         user.setSalt(salt);
 
         user.setPassword(PwdUtils.genMd5Pwd(mobilePhone, salt, initPwd));
@@ -142,12 +138,35 @@ public class ResellerServiceImpl implements ResellerService {
 
     @Override
     public void logReseller(LogResellerReq logResellerReq) throws CrudException {
-        if (!isAdmin(logResellerReq.getAdminPhone())) {
+        if (!StringUtils.equals(UserType.ADMIN.getType(), userService.getUserType(logResellerReq.getAdminPhone()))) {
             throw new LoggingResellerException("不是管理员，无法录入经销商");
         }
-        if (userService.fetchUserByPhone(logResellerReq.getResellerPhone()) != null) {
-            throw new LoggingResellerException("经销商手机号码已存在");
+
+        String resellerPhone = logResellerReq.getResellerPhone();
+        User user = userService.fetchUserByPhone(resellerPhone);
+
+        if (user != null) {
+            String userType = userService.getUserType(resellerPhone);
+
+            if (StringUtils.equals(UserType.ADMIN.getType(), userType)) {
+                throw new LoggingResellerException("您无权添加管理员");
+            } else if (StringUtils.equals(UserType.RESELLER.getType(), userType)) {
+                throw new LoggingResellerException("经销商手机号码已存在");
+            } else if (StringUtils.equals(UserType.NORMAL_USER.getType(), userType)) {
+                user.setUserType(UserType.RESELLER.getType());
+
+                userMapper.updateByPrimaryKeySelective(user);
+
+                createReseller(user.getUserId(), logResellerReq);
+                SmsSendUtils.sendLogResellerSuccess(resellerPhone);
+            }
+        } else {
+            createUser(logResellerReq);
         }
+
+    }
+
+    private void createUser(LogResellerReq logResellerReq) {
         Date now = new Date();
         String uuid = UUID.randomUUID().toString();
         String salt = RandomCodeUtils.genSalt();
@@ -156,6 +175,7 @@ public class ResellerServiceImpl implements ResellerService {
         User user = new User();
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(logResellerReq.getResellerName());
+        user.setUserType(UserType.RESELLER.getType());
         user.setSalt(RandomCodeUtils.genSalt());
 
         user.setPassword(PwdUtils.genMd5Pwd(logResellerReq.getResellerPhone(), salt, initPwd));
@@ -165,8 +185,16 @@ public class ResellerServiceImpl implements ResellerService {
 
         userMapper.insertSelective(user);
 
+        createReseller(user.getUserId(), logResellerReq);
+
+        SmsSendUtils.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
+    }
+
+    private void createReseller(int userId, LogResellerReq logResellerReq) {
+        Date now = new Date();
+
         Reseller reseller = new Reseller();
-        reseller.setUserId(user.getUserId());
+        reseller.setUserId(userId);
         reseller.setOfficeAddress(logResellerReq.getResellerAddress());
         reseller.setCityName(logResellerReq.getCityName());
         reseller.setVerifyStatus(ResellerStatus.VERIFIED.getStatus());
@@ -176,9 +204,6 @@ public class ResellerServiceImpl implements ResellerService {
         // reseller.setCityId(cityId);
 
         resellerMapper.insertSelective(reseller);
-
-        SmsSendUtils.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
-
     }
 
     @Override
@@ -198,7 +223,7 @@ public class ResellerServiceImpl implements ResellerService {
     @Override
     public List<ResellerInfo> fetchResellers(String adminPhone, int start, int size) throws CrudException {
         // TODO Auto-generated method stub
-        if (!isAdmin(adminPhone)) {
+        if (StringUtils.equals(UserType.ADMIN.getType(), userService.getUserType(adminPhone))) {
             throw new NotAdminException("不是管理员，无法查看");
         }
         PageHelper.startPage(start, size);
@@ -210,13 +235,4 @@ public class ResellerServiceImpl implements ResellerService {
         return resellerMapper.countRellers();
     }
 
-    private boolean isAdmin(String userPhone) {
-        List<Object> adminPhones = ConfigUtils.getConfig().getList(ConfigUtils.ADMIN_PHONE);
-        Set<String> admins = new HashSet<String>();
-        for (Object adminPhone : adminPhones) {
-            admins.add((String) adminPhone);
-        }
-
-        return admins.contains(userPhone);
-    }
 }

@@ -20,9 +20,6 @@ public interface UserService {
     public User resetPwd(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException;
 
     @Transactional
-    public int updatePwd(String mobilePhone, String authCode, String oldHassPwd, String newHashPwd, String deviceInfo) throws CrudException;
-
-    @Transactional
     public List<PubBatteryInfo> fetchSelfBtyInfo(String mobilePhone);
 
     @Transactional
@@ -42,4 +39,6 @@ public interface UserService {
 
     @Transactional
     public void unfollowBty(String mobilePhone, String btyPubSn) throws CrudException;
+
+    public String getUserType(String mobilePhone) throws CrudException;
 }

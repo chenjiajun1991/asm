@@ -9,6 +9,8 @@ public class User {
 
     private String userName;
 
+    private String userType;
+
     private String salt;
 
     private String password;
@@ -47,6 +49,14 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName == null ? null : userName.trim();
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType == null ? null : userType.trim();
     }
 
     public String getSalt() {

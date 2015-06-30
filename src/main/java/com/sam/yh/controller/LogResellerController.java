@@ -31,7 +31,7 @@ public class LogResellerController {
     ResellerService resellerService;
 
     @RequestMapping(value = "/info", method = RequestMethod.POST)
-    public SamResponse loggingReseller(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+    public SamResponse logReseller(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
         logger.debug("Request json String:" + jsonReq);
         LogResellerReq req = JSON.parseObject(jsonReq, LogResellerReq.class);
 

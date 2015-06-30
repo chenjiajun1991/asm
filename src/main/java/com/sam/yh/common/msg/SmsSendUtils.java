@@ -43,7 +43,13 @@ public class SmsSendUtils {
 
     public static boolean sendLogResellerSuccess(String mobilePhone, String initPwd) {
         // TODO
-        String content = "您已经成为亚亨蓄电池经销商，初始密码为" + initPwd;
+        String content = "恭喜您已经成为亚亨蓄电池经销商，初始密码为" + initPwd;
+        return sendSms(mobilePhone, content);
+    }
+
+    public static boolean sendLogResellerSuccess(String mobilePhone) {
+        // TODO
+        String content = "恭喜您已经成为亚亨蓄电池经销商，请登录APP查看。";
         return sendSms(mobilePhone, content);
     }
 

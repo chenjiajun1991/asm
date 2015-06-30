@@ -31,7 +31,7 @@ public class SubmitBtySpecController {
     ResellerService resellerService;
 
     @RequestMapping(value = "/btyspec", method = RequestMethod.POST)
-    public SamResponse getSalt(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+    public SamResponse submitBtySpec(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.debug("Request json String:" + jsonReq);
         SubmitBtySpecReq req = JSON.parseObject(jsonReq, SubmitBtySpecReq.class);

@@ -53,7 +53,7 @@ public class UserSigninTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000008");
+        reqObj.setUserPhone("15618672987");
         reqObj.setPassword("123456789");
         reqObj.setDeviceInfo("XXXXXXXXXXX");
 

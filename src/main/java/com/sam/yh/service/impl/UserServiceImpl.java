@@ -3,7 +3,9 @@ package com.sam.yh.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -11,6 +13,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.ConfigUtils;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
@@ -19,13 +22,16 @@ import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.PwdResetException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserFollowMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.UserCodeType;
+import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.PubBatteryInfo;
+import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.UserBatteryKey;
@@ -60,6 +66,9 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserBatteryMapper userBatteryMapper;
 
+    @Resource
+    private ResellerMapper resellerMapper;
+
     @Override
     public User signup(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
 
@@ -79,6 +88,7 @@ public class UserServiceImpl implements UserService {
             user = new User();
             user.setUuid(StringUtils.replace(uuid, "-", ""));
             user.setUserName(mobilePhone);
+            user.setUserType(UserType.NORMAL_USER.getType());
             user.setSalt(salt);
 
             user.setPassword(PwdUtils.genMd5Pwd(mobilePhone, salt, hassPwd));
@@ -92,6 +102,7 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setSalt(salt);
 
+            user.setUserType(UserType.NORMAL_USER.getType());
             user.setPassword(PwdUtils.genMd5Pwd(mobilePhone, salt, hassPwd));
             user.setLockStatus(false);
             user.setDeviceInfo(deviceInfo);
@@ -115,6 +126,9 @@ public class UserServiceImpl implements UserService {
             throw new UserSignupException("用户名或密码错误");
         }
 
+        if (!user.getUserType().equals(getUserType(mobilePhone))) {
+            user.setUserType(getUserType(mobilePhone));
+        }
         user.setLoginDate(new Date());
         user.setDeviceInfo(deviceInfo);
         userMapper.updateByPrimaryKeySelective(user);
@@ -142,12 +156,6 @@ public class UserServiceImpl implements UserService {
         userMapper.updateByPrimaryKeySelective(user);
 
         return user;
-    }
-
-    @Override
-    public int updatePwd(String mobilePhone, String authCode, String oldHassPwd, String newHashPwd, String deviceInfo) throws CrudException {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     @Override
@@ -339,6 +347,32 @@ public class UserServiceImpl implements UserService {
         userFollow.setFollowStatus(false);
         userFollow.setFollowDate(now);
         userFollowMapper.updateByPrimaryKeySelective(userFollow);
+
+    }
+
+    @Override
+    public String getUserType(String mobilePhone) throws CrudException {
+        List<Object> adminPhones = ConfigUtils.getConfig().getList(ConfigUtils.ADMIN_PHONE);
+        Set<String> admins = new HashSet<String>();
+        for (Object adminPhone : adminPhones) {
+            admins.add((String) adminPhone);
+        }
+
+        if (admins.contains(mobilePhone)) {
+            return UserType.ADMIN.getType();
+        }
+
+        User user = userMapper.selectByPhone(mobilePhone);
+        if (user == null) {
+            return UserType.NORMAL_USER.getType();
+        }
+
+        Reseller reseller = resellerMapper.selectByPrimaryKey(user.getUserId());
+        if (reseller != null) {
+            return UserType.RESELLER.getType();
+        } else {
+            return UserType.NORMAL_USER.getType();
+        }
 
     }
 

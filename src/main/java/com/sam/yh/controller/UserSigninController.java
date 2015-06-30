@@ -46,6 +46,7 @@ public class UserSigninController {
 
             UserInfoResp respData = new UserInfoResp();
             respData.setUserUid(user.getUuid());
+            respData.setUserType(user.getUserType());
 
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalParamsException e) {

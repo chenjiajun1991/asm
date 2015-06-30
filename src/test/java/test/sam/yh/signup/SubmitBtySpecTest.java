@@ -1,6 +1,6 @@
 package test.sam.yh.signup;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -9,7 +9,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -52,27 +53,27 @@ public class SubmitBtySpecTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserName("nate");
-        reqObj.setUserPhone("15618672989");
-        reqObj.setBtyImei("10005");
-        reqObj.setBtySimNo("15200000005");
-        reqObj.setBtySN("105");
+        reqObj.setUserName("nate2");
+        reqObj.setUserPhone("13900000010");
+        reqObj.setBtyImei("10006");
+        reqObj.setBtySimNo("15200000006");
+        reqObj.setBtySN("106");
         reqObj.setResellerPhone("15618672987");
         ;
         String jsonReq = JSON.toJSONString(reqObj);
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/submitspec.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/btyspec.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, jsonReq, String.class);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("jsonReq", jsonReq);
+        String resp = restTemplate.postForObject(url, params, String.class);
 
-        logger.info("ResponseStatus:" + responseEntity.getStatusCode().value());
+        logger.info("ResponseBody:" + resp);
 
-        logger.info("ResponseBody:" + responseEntity.getBody());
-
-        assertEquals("hello", responseEntity.getBody());
+        assertEquals("hello", resp);
     }
 
     @AfterClass

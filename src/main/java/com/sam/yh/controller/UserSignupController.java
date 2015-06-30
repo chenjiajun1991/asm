@@ -35,7 +35,8 @@ public class UserSignupController {
     UserService userService;
 
     /*
-     * @RequestMapping(value = "/getsalt", method = RequestMethod.POST) public SamResponse getSalt(HttpServletRequest httpServletRequest,
+     * @RequestMapping(value = "/getsalt", method = RequestMethod.POST) public
+     * SamResponse getSalt(HttpServletRequest httpServletRequest,
      * 
      * @RequestParam("jsonReq") String jsonReq) {
      * 
@@ -45,7 +46,9 @@ public class UserSignupController {
      * 
      * SamResponse resp = new SamResponse();
      * 
-     * String salt = userCodeService.genAndSaveUserSalt(req.getUserName(), UserCodeType.USER_SALT.getType()); SysSaltResp respObj = new SysSaltResp(); respObj.setSalt(salt); resp.setData(respObj);
+     * String salt = userCodeService.genAndSaveUserSalt(req.getUserName(),
+     * UserCodeType.USER_SALT.getType()); SysSaltResp respObj = new
+     * SysSaltResp(); respObj.setSalt(salt); resp.setData(respObj);
      * 
      * return resp; }
      */
@@ -64,6 +67,7 @@ public class UserSignupController {
 
             UserInfoResp respData = new UserInfoResp();
             respData.setUserUid(user.getUuid());
+            respData.setUserType(user.getUserType());
 
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalParamsException e) {

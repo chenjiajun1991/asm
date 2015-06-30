@@ -36,7 +36,7 @@ public class LogResellerTest {
         // 创建一个server
         server = new Server(8080);
         WebAppContext context = new WebAppContext();
-        String webapp = "/home/nate/workspace/asm/WebContent";
+        String webapp = "F:/github/asm/WebContent";
         context.setDescriptor(webapp + "/WEB-INF/web.xml"); // 指定web.xml配置文件
         context.setResourceBase(webapp); // 指定webapp目录
         context.setContextPath("/");
@@ -54,8 +54,8 @@ public class LogResellerTest {
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
         reqObj.setAdminPhone("15618672987");
-        reqObj.setResellerName("毛总");
-        reqObj.setResellerPhone("13900000009");
+        reqObj.setResellerName("三毛");
+        reqObj.setResellerPhone("13900000012");
         reqObj.setCityName("上海");
         reqObj.setResellerAddress("陆家嘴环路1000号恒生大厦8041");
 

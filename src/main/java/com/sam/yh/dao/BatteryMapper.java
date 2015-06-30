@@ -19,5 +19,9 @@ public interface BatteryMapper {
 
     Battery selectByPubSn(String pubSn);
 
+    Battery selectBySimNo(String simNo);
+
+    Battery selectBySn(String btySn);
+
     int countByReseller(Integer resellerId);
 }

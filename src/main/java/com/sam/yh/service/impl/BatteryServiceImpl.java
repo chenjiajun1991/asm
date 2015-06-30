@@ -66,4 +66,14 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryMapper.selectByPubSn(pubSn);
     }
 
+    @Override
+    public Battery fetchBtyBySimNo(String simNo) {
+        return batteryMapper.selectBySimNo(simNo);
+    }
+
+    @Override
+    public Battery fetchBtyBySN(String btySn) {
+        return batteryMapper.selectBySn(btySn);
+    }
+
 }

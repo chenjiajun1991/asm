@@ -66,6 +66,12 @@ public class ResellerServiceImpl implements ResellerService {
         if (batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei()) != null) {
             throw new SubmitBtySpecException("请检查电池IMEI号");
         }
+        if (batteryService.fetchBtyBySimNo(submitBtySpecReq.getBtySimNo()) != null) {
+            throw new SubmitBtySpecException("请检查电池sim卡号");
+        }
+        if (batteryService.fetchBtyBySN(submitBtySpecReq.getBtySN()) != null) {
+            throw new SubmitBtySpecException("请检查电池序列号");
+        }
 
         //
         String resellerPhone = submitBtySpecReq.getResellerPhone();

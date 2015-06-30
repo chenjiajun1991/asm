@@ -33,6 +33,18 @@
     from battery
     where imei = #{imei,jdbcType=VARCHAR}
   </select>
+  <select id="selectBySimNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where sim_no = #{simNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySn" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where sn = #{btySn,jdbcType=VARCHAR}
+  </select>
   <select id="selectByPubSn" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

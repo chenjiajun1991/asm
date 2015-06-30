@@ -22,6 +22,7 @@ import com.sam.yh.resp.bean.ResellerInfo;
 import com.sam.yh.resp.bean.ResellersResp;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
+import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
 
 @RestController
@@ -33,6 +34,9 @@ public class FetchResellersController {
     @Autowired
     ResellerService resellerService;
 
+    @Autowired
+    BatteryService batteryService;
+
     @RequestMapping(value = "/infos", method = RequestMethod.POST)
     public SamResponse fetchResellers(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
         logger.debug("Request json String:" + jsonReq);
@@ -43,6 +47,9 @@ public class FetchResellersController {
 
             // TODO
             List<ResellerInfo> result = resellerService.fetchResellers(req.getAdminPhone(), req.getPageNo(), req.getSize());
+            for (ResellerInfo resellerInfo : result) {
+                resellerInfo.setSoldCount(batteryService.countSoldBtys(resellerInfo.getResellerId()));
+            }
             ResellersResp respData = new ResellersResp();
             respData.setTotal(resellerService.countResellers());
             respData.setResellers(result);

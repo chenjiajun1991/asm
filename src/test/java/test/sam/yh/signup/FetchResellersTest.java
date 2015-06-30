@@ -47,7 +47,7 @@ public class FetchResellersTest {
         reqObj.setVersion("0.0.1");
         reqObj.setAdminPhone("15618672987");
         reqObj.setPageNo(1);
-        reqObj.setSize(2);
+        reqObj.setSize(10);
 
         String jsonReq = JSON.toJSONString(reqObj);
 

@@ -12,6 +12,7 @@ public class ResellerInfo {
     private String resellerAddress;
     private String longitude;
     private String latitude;
+    private int soldCount;
 
     public int getResellerId() {
         return resellerId;
@@ -91,6 +92,14 @@ public class ResellerInfo {
 
     public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+
+    public int getSoldCount() {
+        return soldCount;
+    }
+
+    public void setSoldCount(int soldCount) {
+        this.soldCount = soldCount;
     }
 
 }

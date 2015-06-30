@@ -5,20 +5,18 @@
 		<id column="user_id" property="userId" jdbcType="INTEGER" />
 		<result column="office_address" property="officeAddress"
 			jdbcType="VARCHAR" />
-		<result column="email_address" property="emailAddress"
-			jdbcType="VARCHAR" />
-		<result column="email_address_verified" property="emailAddressVerified"
-			jdbcType="TINYINT" />
-		<result column="verify_status" property="verifyStatus"
-			jdbcType="INTEGER" />
+		<result column="longitude" property="longitude" jdbcType="VARCHAR" />
+		<result column="latitude" property="latitude" jdbcType="VARCHAR" />
+		<result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+		<result column="province_id" property="provinceId" jdbcType="INTEGER" />
 		<result column="city_name" property="cityName" jdbcType="VARCHAR" />
 		<result column="city_id" property="cityId" jdbcType="INTEGER" />
+		<result column="verify_status" property="verifyStatus" jdbcType="INTEGER" />
 		<result column="verify_date" property="verifyDate" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		user_id, office_address, email_address, email_address_verified, verify_status,
-		city_name,
-		city_id, verify_date
+		user_id, office_address, longitude, latitude, province_name, province_id, 
+		city_name, city_id, verify_status, verify_date
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -48,14 +46,13 @@
 		where user_id = #{userId,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.sam.yh.model.Reseller">
-		insert into reseller (user_id, office_address, email_address,
-		email_address_verified, verify_status, city_name,
-		city_id, verify_date)
+		insert into reseller (user_id, office_address, longitude, latitude, province_name, province_id, 
+		city_name, city_id, verify_status, verify_date)
 		values (#{userId,jdbcType=INTEGER}, #{officeAddress,jdbcType=VARCHAR},
-		#{emailAddress,jdbcType=VARCHAR},
-		#{emailAddressVerified,jdbcType=TINYINT},
-		#{verifyStatus,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR},
-		#{cityId,jdbcType=INTEGER}, #{verifyDate,jdbcType=TIMESTAMP})
+		#{longitude,jdbcType=VARCHAR}, #{latitude,jdbcType=VARCHAR},
+		#{provinceName,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER}, 
+		#{cityName,jdbcType=VARCHAR}, #{cityId,jdbcType=INTEGER}, 
+		#{verifyStatus,jdbcType=INTEGER}, #{verifyDate,jdbcType=TIMESTAMP})
 	</insert>
 	<insert id="insertSelective" parameterType="com.sam.yh.model.Reseller">
 		insert into reseller
@@ -66,20 +63,26 @@
 			<if test="officeAddress != null">
 				office_address,
 			</if>
-			<if test="emailAddress != null">
-				email_address,
+			<if test="longitude != null">
+				longitude,
 			</if>
-			<if test="emailAddressVerified != null">
-				email_address_verified,
+			<if test="latitude != null">
+				latitude,
 			</if>
-			<if test="verifyStatus != null">
-				verify_status,
+			<if test="provinceName != null">
+				province_name,
+			</if>
+			<if test="provinceId != null">
+				province_id,
 			</if>
 			<if test="cityName != null">
 				city_name,
 			</if>
 			<if test="cityId != null">
 				city_id,
+			</if>
+			<if test="verifyStatus != null">
+				verify_status,
 			</if>
 			<if test="verifyDate != null">
 				verify_date,
@@ -92,20 +95,26 @@
 			<if test="officeAddress != null">
 				#{officeAddress,jdbcType=VARCHAR},
 			</if>
-			<if test="emailAddress != null">
-				#{emailAddress,jdbcType=VARCHAR},
+			<if test="longitude != null">
+				#{longitude,jdbcType=VARCHAR},
 			</if>
-			<if test="emailAddressVerified != null">
-				#{emailAddressVerified,jdbcType=TINYINT},
+			<if test="latitude != null">
+				#{latitude,jdbcType=VARCHAR},
 			</if>
-			<if test="verifyStatus != null">
-				#{verifyStatus,jdbcType=INTEGER},
+			<if test="provinceName != null">
+				#{provinceName,jdbcType=VARCHAR},
+			</if>
+			<if test="provinceId != null">
+				#{provinceId,jdbcType=INTEGER},
 			</if>
 			<if test="cityName != null">
 				#{cityName,jdbcType=VARCHAR},
 			</if>
 			<if test="cityId != null">
 				#{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="verifyStatus != null">
+				#{verifyStatus,jdbcType=INTEGER},
 			</if>
 			<if test="verifyDate != null">
 				#{verifyDate,jdbcType=TIMESTAMP},
@@ -118,20 +127,26 @@
 			<if test="officeAddress != null">
 				office_address = #{officeAddress,jdbcType=VARCHAR},
 			</if>
-			<if test="emailAddress != null">
-				email_address = #{emailAddress,jdbcType=VARCHAR},
+			<if test="longitude != null">
+				longitude = #{longitude,jdbcType=VARCHAR},
 			</if>
-			<if test="emailAddressVerified != null">
-				email_address_verified = #{emailAddressVerified,jdbcType=TINYINT},
+			<if test="latitude != null">
+				latitude = #{latitude,jdbcType=VARCHAR},
 			</if>
-			<if test="verifyStatus != null">
-				verify_status = #{verifyStatus,jdbcType=INTEGER},
+			<if test="provinceName != null">
+				province_name = #{provinceName,jdbcType=VARCHAR},
+			</if>
+			<if test="provinceId != null">
+				province_id = #{provinceId,jdbcType=INTEGER},
 			</if>
 			<if test="cityName != null">
 				city_name = #{cityName,jdbcType=VARCHAR},
 			</if>
 			<if test="cityId != null">
 				city_id = #{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="verifyStatus != null">
+				verify_status = #{verifyStatus,jdbcType=INTEGER},
 			</if>
 			<if test="verifyDate != null">
 				verify_date = #{verifyDate,jdbcType=TIMESTAMP},
@@ -142,11 +157,13 @@
 	<update id="updateByPrimaryKey" parameterType="com.sam.yh.model.Reseller">
 		update reseller
 		set office_address = #{officeAddress,jdbcType=VARCHAR},
-		email_address = #{emailAddress,jdbcType=VARCHAR},
-		email_address_verified = #{emailAddressVerified,jdbcType=TINYINT},
-		verify_status = #{verifyStatus,jdbcType=INTEGER},
+		longitude = #{longitude,jdbcType=VARCHAR},
+		latitude = #{latitude,jdbcType=VARCHAR},
+		province_name = #{provinceName,jdbcType=VARCHAR},
+		province_id = #{provinceId,jdbcType=INTEGER},
 		city_name = #{cityName,jdbcType=VARCHAR},
 		city_id = #{cityId,jdbcType=INTEGER},
+		verify_status = #{verifyStatus,jdbcType=INTEGER},
 		verify_date = #{verifyDate,jdbcType=TIMESTAMP}
 		where user_id = #{userId,jdbcType=INTEGER}
 	</update>

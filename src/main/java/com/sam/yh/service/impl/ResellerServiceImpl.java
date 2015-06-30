@@ -202,14 +202,18 @@ public class ResellerServiceImpl implements ResellerService {
         Reseller reseller = new Reseller();
         reseller.setUserId(userId);
         reseller.setOfficeAddress(logResellerReq.getResellerAddress());
+        reseller.setLongitude(logResellerReq.getLongitude());
+        reseller.setLatitude(logResellerReq.getLatitude());
+        reseller.setProvinceName(logResellerReq.getProvinceName());
+        // TODO
+        reseller.setProvinceId(logResellerReq.getProvinceId());
         reseller.setCityName(logResellerReq.getCityName());
+        // TODO
+        reseller.setCityId(logResellerReq.getCityId());
         reseller.setVerifyStatus(ResellerStatus.VERIFIED.getStatus());
         reseller.setVerifyDate(now);
 
-        // TODO
-        // reseller.setCityId(cityId);
-
-        resellerMapper.insertSelective(reseller);
+        resellerMapper.insert(reseller);
     }
 
     @Override

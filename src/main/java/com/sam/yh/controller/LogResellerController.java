@@ -61,14 +61,21 @@ public class LogResellerController {
             throw new IllegalParamsException("请输入经销商名称");
         }
         if (!MobilePhoneUtils.isValidPhone(logResellerReq.getResellerPhone())) {
-            throw new IllegalParamsException("请输入经销商正确的电子邮箱");
-        }
-        if (StringUtils.isBlank(logResellerReq.getCityName())) {
-            throw new IllegalParamsException("请输入经销商所在城市");
+            throw new IllegalParamsException("请输入经销商正确的手机号码");
         }
         if (StringUtils.isBlank(logResellerReq.getResellerAddress())) {
             throw new IllegalParamsException("请输入经销商地址");
         }
+        if (StringUtils.isBlank(logResellerReq.getLongitude()) || StringUtils.isBlank(logResellerReq.getLatitude())) {
+            throw new IllegalParamsException("请输入经销商地址的经纬度信息");
+        }
+        if (StringUtils.isBlank(logResellerReq.getProvinceName()) || logResellerReq.getProvinceId() == 0) {
+            throw new IllegalParamsException("请输入经销商所在省份");
+        }
+        if (StringUtils.isBlank(logResellerReq.getCityName()) || logResellerReq.getCityId() == 0) {
+            throw new IllegalParamsException("请输入经销商所在城市");
+        }
+
     }
 
 }

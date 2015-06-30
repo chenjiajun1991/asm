@@ -7,15 +7,19 @@ public class Reseller {
 
     private String officeAddress;
 
-    private String emailAddress;
+    private String longitude;
 
-    private Byte emailAddressVerified;
+    private String latitude;
 
-    private Integer verifyStatus;
+    private String provinceName;
+
+    private Integer provinceId;
 
     private String cityName;
 
     private Integer cityId;
+
+    private Integer verifyStatus;
 
     private Date verifyDate;
 
@@ -35,28 +39,36 @@ public class Reseller {
         this.officeAddress = officeAddress == null ? null : officeAddress.trim();
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getLongitude() {
+        return longitude;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress == null ? null : emailAddress.trim();
+    public void setLongitude(String longitude) {
+        this.longitude = longitude == null ? null : longitude.trim();
     }
 
-    public Byte getEmailAddressVerified() {
-        return emailAddressVerified;
+    public String getLatitude() {
+        return latitude;
     }
 
-    public void setEmailAddressVerified(Byte emailAddressVerified) {
-        this.emailAddressVerified = emailAddressVerified;
+    public void setLatitude(String latitude) {
+        this.latitude = latitude == null ? null : latitude.trim();
     }
 
-    public Integer getVerifyStatus() {
-        return verifyStatus;
+    public String getProvinceName() {
+        return provinceName;
     }
 
-    public void setVerifyStatus(Integer verifyStatus) {
-        this.verifyStatus = verifyStatus;
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName == null ? null : provinceName.trim();
+    }
+
+    public Integer getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Integer provinceId) {
+        this.provinceId = provinceId;
     }
 
     public String getCityName() {
@@ -73,6 +85,14 @@ public class Reseller {
 
     public void setCityId(Integer cityId) {
         this.cityId = cityId;
+    }
+
+    public Integer getVerifyStatus() {
+        return verifyStatus;
+    }
+
+    public void setVerifyStatus(Integer verifyStatus) {
+        this.verifyStatus = verifyStatus;
     }
 
     public Date getVerifyDate() {

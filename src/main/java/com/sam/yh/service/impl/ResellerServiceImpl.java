@@ -232,8 +232,8 @@ public class ResellerServiceImpl implements ResellerService {
 
     @Override
     public List<ResellerInfo> fetchResellers(String adminPhone, int start, int size) throws CrudException {
-        // TODO Auto-generated method stub
-        if (StringUtils.equals(UserType.ADMIN.getType(), userService.getUserType(adminPhone))) {
+
+        if (!StringUtils.equals(UserType.ADMIN.getType(), userService.getUserType(adminPhone))) {
             throw new NotAdminException("不是管理员，无法查看");
         }
         PageHelper.startPage(start, size);

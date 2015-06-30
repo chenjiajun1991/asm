@@ -31,7 +31,12 @@
 		u.user_name as resellerName,
 		u.mobile_phone as resellerPhone,
 		r.office_address as resellerAddress,
-		r.city_name as resellerCity
+		r.longitude as longitude,
+		r.latitude as latitude,
+		r.province_name as resellerProvince,
+		r.province_id as provinceId,
+		r.city_name as resellerCity,
+		r.city_id as cityId
 		from reseller r
 		inner join user u
 		on r.user_id = u.user_id order by r.user_id desc

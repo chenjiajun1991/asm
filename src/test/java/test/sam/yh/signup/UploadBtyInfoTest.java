@@ -15,14 +15,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/**
- * <p>
- * User: Zhang Kaitao
- * <p>
- * Date: 14-2-26
- * <p>
- * Version: 1.0
- */
 public class UploadBtyInfoTest {
     private static final Logger logger = LoggerFactory.getLogger(UploadBtyInfoTest.class);
 
@@ -46,7 +38,7 @@ public class UploadBtyInfoTest {
 
     @Test
     public void testUploadBtyInfoService() {
-        
+
         String imei = "10013";
         String longitude = "121.401422";
         String latitude = "31.175332";

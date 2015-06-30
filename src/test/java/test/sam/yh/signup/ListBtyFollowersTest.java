@@ -17,14 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.req.bean.ListFollowersReq;
 
-/**
- * <p>
- * User: Zhang Kaitao
- * <p>
- * Date: 14-2-26
- * <p>
- * Version: 1.0
- */
 public class ListBtyFollowersTest {
     private static final Logger logger = LoggerFactory.getLogger(ListBtyFollowersTest.class);
 

@@ -27,4 +27,7 @@ public interface ResellerService {
     @Transactional
     public int countResellers();
 
+    @Transactional
+    public int countSoldBtys(String resellerPhone) throws CrudException;
+
 }

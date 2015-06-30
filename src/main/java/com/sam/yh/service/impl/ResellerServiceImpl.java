@@ -226,7 +226,7 @@ public class ResellerServiceImpl implements ResellerService {
         if (resellerMapper.selectByPrimaryKey(reseller.getUserId()) == null) {
             throw new CrudException("经销商不存在");
         }
-        PageHelper.startPage(1, 2);
+        PageHelper.startPage(start, size);
         return batteryInfoMapper.selectByReseller(reseller.getUserId());
     }
 
@@ -243,6 +243,19 @@ public class ResellerServiceImpl implements ResellerService {
     @Override
     public int countResellers() {
         return resellerMapper.countRellers();
+    }
+
+    @Override
+    public int countSoldBtys(String resellerPhone) throws CrudException {
+        User reseller = userService.fetchUserByPhone(resellerPhone);
+        if (reseller == null) {
+            throw new CrudException("经销商不存在");
+        }
+        if (resellerMapper.selectByPrimaryKey(reseller.getUserId()) == null) {
+            throw new CrudException("经销商不存在");
+        }
+
+        return batteryService.countSoldBtys(reseller.getUserId());
     }
 
 }

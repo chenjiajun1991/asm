@@ -9,13 +9,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.ResellerBtyInfoReq;
 
 /**
  * <p>
@@ -25,8 +23,8 @@ import com.sam.yh.req.bean.ResellerBtyInfoReq;
  * <p>
  * Version: 1.0
  */
-public class FetchSoldBtysTest {
-    private static final Logger logger = LoggerFactory.getLogger(FetchSoldBtysTest.class);
+public class UploadBtyInfoTest {
+    private static final Logger logger = LoggerFactory.getLogger(UploadBtyInfoTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -47,31 +45,29 @@ public class FetchSoldBtysTest {
     }
 
     @Test
-    public void testFetchSoldBtys() {
+    public void testUploadBtyInfoService() {
+        
+        String imei = "10013";
+        String longitude = "121.401422";
+        String latitude = "31.175332";
+        String temperature = "40";
+        String voltage = "220";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("imei", imei);
+        params.add("longitude", longitude);
+        params.add("latitude", latitude);
+        params.add("temperature", temperature);
+        params.add("voltage", voltage);
 
-        ResellerBtyInfoReq reqObj = new ResellerBtyInfoReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
-        reqObj.setResellerPhone("13900000016");
-        reqObj.setPageNo(1);
-        reqObj.setSize(10);
-
-        String jsonReq = JSON.toJSONString(reqObj);
-
-        logger.info("Reuqest json String:" + jsonReq);
-
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/btyinfo.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/upload/btyinfo.json").queryParams(params).build().toUriString();
 
         logger.info("Request URL:" + url);
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-        params.add("jsonReq", jsonReq);
-        String resp = restTemplate.postForObject(url, params, String.class);
+        ResponseEntity<String> resp = restTemplate.getForEntity(url, String.class);
 
-        logger.info("ResponseBody:" + resp);
+        logger.info("ResponseBody:" + resp.getBody());
 
-        assertEquals("hello", resp);
+        assertEquals("ok", resp.getBody());
     }
 
     @AfterClass

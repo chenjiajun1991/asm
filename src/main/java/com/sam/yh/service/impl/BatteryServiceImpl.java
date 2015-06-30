@@ -76,4 +76,9 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryMapper.selectBySn(btySn);
     }
 
+    @Override
+    public int countSoldBtys(int resellerId) {
+        return batteryMapper.countByReseller(resellerId);
+    }
+
 }

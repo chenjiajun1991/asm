@@ -21,7 +21,10 @@ public interface BatteryService {
 
     @Transactional
     public Battery fetchBtyBySimNo(String simNo);
-    
+
     @Transactional
     public Battery fetchBtyBySN(String btySn);
+
+    @Transactional
+    public int countSoldBtys(int resellerId);
 }

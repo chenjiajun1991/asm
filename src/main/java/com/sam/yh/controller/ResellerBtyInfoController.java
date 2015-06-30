@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.req.bean.ResellerBtyInfoReq;
 import com.sam.yh.resp.bean.ResellerBtyInfo;
 import com.sam.yh.resp.bean.ResellerBtyInfoResp;
@@ -47,10 +48,13 @@ public class ResellerBtyInfoController {
 
             ResellerBtyInfoResp respData = new ResellerBtyInfoResp();
             respData.setBtyInfo(reslut);
-            respData.setTotal(100);
+            respData.setTotal(resellerService.countSoldBtys(req.getResellerPhone()));
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
+        } catch (CrudException e) {
+            logger.error("fetch reseller bty info exception, " + req.getResellerPhone(), e);
+            return ResponseUtils.getServiceErrorResp(e.getMessage());
         } catch (Exception e) {
             logger.error("fetch reseller bty info exception, " + req.getResellerPhone(), e);
             return ResponseUtils.getSysErrorResp();

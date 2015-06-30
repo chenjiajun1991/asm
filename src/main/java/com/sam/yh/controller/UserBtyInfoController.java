@@ -43,7 +43,6 @@ public class UserBtyInfoController {
 
             validateUserArgs(req.getUserPhone());
 
-            SamResponse resp = new SamResponse();
             UserBtyInfoResp respData = new UserBtyInfoResp();
 
             List<PubBatteryInfo> selfBtys = userService.fetchSelfBtyInfo(req.getUserPhone());
@@ -56,8 +55,7 @@ public class UserBtyInfoController {
                 respData.getFriendsBtyInfo().add(convertToUserBtyInfo(batteryInfo));
             }
 
-            resp.setData(respData);
-            return resp;
+            return ResponseUtils.getNormalResp(respData);
         } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (Exception e) {
@@ -80,6 +78,8 @@ public class UserBtyInfoController {
         userBtyInfo.setBtyPubSn(pubBatteryInfo.getBtyPubSn());
         userBtyInfo.setLongitude(pubBatteryInfo.getLongitude());
         userBtyInfo.setLatitude(pubBatteryInfo.getLatitude());
+        userBtyInfo.setTemperature(pubBatteryInfo.getTemperature());
+        userBtyInfo.setVoltage(pubBatteryInfo.getVoltage());
         return userBtyInfo;
     }
 

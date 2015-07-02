@@ -69,10 +69,10 @@ public class LogResellerController {
         if (StringUtils.isBlank(logResellerReq.getLongitude()) || StringUtils.isBlank(logResellerReq.getLatitude())) {
             throw new IllegalParamsException("请输入经销商地址的经纬度信息");
         }
-        if (StringUtils.isBlank(logResellerReq.getProvinceName()) || logResellerReq.getProvinceId() == 0) {
+        if (StringUtils.isBlank(logResellerReq.getProvinceName())) {
             throw new IllegalParamsException("请输入经销商所在省份");
         }
-        if (StringUtils.isBlank(logResellerReq.getCityName()) || logResellerReq.getCityId() == 0) {
+        if (StringUtils.isBlank(logResellerReq.getCityName())) {
             throw new IllegalParamsException("请输入经销商所在城市");
         }
 

@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
-import com.sam.yh.crud.exception.SubmitBtySpecException;
+import com.sam.yh.crud.exception.LoggingResellerException;
 import com.sam.yh.req.bean.LogResellerReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -45,7 +45,7 @@ public class LogResellerController {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("logging reseller exception, " + req.getResellerPhone(), e);
-            if (e instanceof SubmitBtySpecException) {
+            if (e instanceof LoggingResellerException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else {
                 return ResponseUtils.getSysErrorResp();

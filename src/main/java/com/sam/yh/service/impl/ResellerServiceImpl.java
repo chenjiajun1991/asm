@@ -220,10 +220,8 @@ public class ResellerServiceImpl implements ResellerService {
     public List<ResellerBtyInfo> fetchResellerBtyInfo(String resellerPhone, int start, int size) throws CrudException {
         // TODO Auto-generated method stub
         User reseller = userService.fetchUserByPhone(resellerPhone);
-        if (reseller == null) {
-            throw new CrudException("经销商不存在");
-        }
-        if (resellerMapper.selectByPrimaryKey(reseller.getUserId()) == null) {
+
+        if (UserType.NORMAL_USER.getType().equals(reseller.getUserType())) {
             throw new CrudException("经销商不存在");
         }
         PageHelper.startPage(start, size);

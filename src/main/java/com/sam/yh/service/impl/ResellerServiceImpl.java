@@ -75,9 +75,14 @@ public class ResellerServiceImpl implements ResellerService {
 
         //
         String resellerPhone = submitBtySpecReq.getResellerPhone();
-        User reseller = userService.fetchUserByPhone(resellerPhone);
-        if (reseller == null || StringUtils.equals(UserType.NORMAL_USER.getType(), reseller.getUserType())) {
+        User resellerUser = userService.fetchUserByPhone(resellerPhone);
+        if (resellerUser == null || StringUtils.equals(UserType.NORMAL_USER.getType(), resellerUser.getUserType())) {
             throw new SubmitBtySpecException("经销商不存在，请联系客服。");
+        }
+
+        Reseller reseller = resellerMapper.selectByPrimaryKey(resellerUser.getUserId());
+        if (reseller == null) {
+            throw new SubmitBtySpecException("经销商信息未添加");
         }
 
         //
@@ -90,7 +95,7 @@ public class ResellerServiceImpl implements ResellerService {
         //
         boolean isCloudBty = true;
         Battery battery = addBattery(submitBtySpecReq.getBtySN(), submitBtySpecReq.getBtyImei(), submitBtySpecReq.getBtySimNo(), isCloudBty,
-                reseller.getUserId());
+                reseller.getUserId(), reseller.getCityId());
 
         //
         UserBattery userBattery = new UserBattery();
@@ -125,7 +130,7 @@ public class ResellerServiceImpl implements ResellerService {
         return user;
     }
 
-    private Battery addBattery(String btySn, String imei, String simNo, boolean isCloudBty, int resellerId) {
+    private Battery addBattery(String btySn, String imei, String simNo, boolean isCloudBty, int resellerId, int cityId) {
         Date now = new Date();
         Battery battery = new Battery();
         battery.setSn(btySn);
@@ -135,6 +140,7 @@ public class ResellerServiceImpl implements ResellerService {
         battery.setBtyType(isCloudBty);
         battery.setStatus(BatteryStatus.NORMAL.getStatus());
         battery.setResellerId(resellerId);
+        battery.setCityId(cityId);
         battery.setSaleStatus(true);
         battery.setCreateDate(now);
         battery.setSaleDate(now);

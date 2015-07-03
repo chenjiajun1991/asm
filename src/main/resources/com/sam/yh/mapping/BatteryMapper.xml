@@ -11,14 +11,14 @@
     <result column="sim_no" property="simNo" jdbcType="VARCHAR" />
     <result column="reseller_id" property="resellerId" jdbcType="INTEGER" />
     <result column="sale_status" property="saleStatus" jdbcType="BIT" />
-    <result column="country_id" property="countryId" jdbcType="INTEGER" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="sale_date" property="saleDate" jdbcType="TIMESTAMP" />
     <result column="warning_date" property="warningDate" jdbcType="TIMESTAMP" />
     <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, sn, status, bty_type, pub_sn, imei, sim_no, reseller_id, sale_status, country_id, 
+    id, sn, status, bty_type, pub_sn, imei, sim_no, reseller_id, sale_status, city_id, 
     create_date, sale_date, warning_date, expiry_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -57,6 +57,12 @@
     from battery
     where reseller_id = #{resellerId,jdbcType=INTEGER}
   </select>
+  <select id="countByCity" resultType="int" parameterType="java.lang.Integer" >
+    select 
+    count(1)
+    from battery
+    where city_id = #{cityId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from battery
     where id = #{id,jdbcType=INTEGER}
@@ -64,12 +70,12 @@
   <insert id="insert" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
     insert into battery (sn, status, 
       bty_type, pub_sn, imei, sim_no, 
-      reseller_id, sale_status, country_id, 
+      reseller_id, sale_status, city_id, 
       create_date, sale_date, warning_date, 
       expiry_date)
     values (#{sn,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
       #{btyType,jdbcType=BIT}, #{pubSn,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, 
-      #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{countryId,jdbcType=INTEGER}, 
+      #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{cityId,jdbcType=INTEGER}, 
       #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{warningDate,jdbcType=TIMESTAMP}, 
       #{expiryDate,jdbcType=TIMESTAMP})
   </insert>
@@ -100,8 +106,8 @@
       <if test="saleStatus != null" >
         sale_status,
       </if>
-      <if test="countryId != null" >
-        country_id,
+      <if test="cityId != null" >
+        city_id,
       </if>
       <if test="createDate != null" >
         create_date,
@@ -141,8 +147,8 @@
       <if test="saleStatus != null" >
         #{saleStatus,jdbcType=BIT},
       </if>
-      <if test="countryId != null" >
-        #{countryId,jdbcType=INTEGER},
+      <if test="cityId != null" >
+        #{cityId,jdbcType=INTEGER},
       </if>
       <if test="createDate != null" >
         #{createDate,jdbcType=TIMESTAMP},
@@ -185,8 +191,8 @@
       <if test="saleStatus != null" >
         sale_status = #{saleStatus,jdbcType=BIT},
       </if>
-      <if test="countryId != null" >
-        country_id = #{countryId,jdbcType=INTEGER},
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
       </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
@@ -213,7 +219,7 @@
       sim_no = #{simNo,jdbcType=VARCHAR},
       reseller_id = #{resellerId,jdbcType=INTEGER},
       sale_status = #{saleStatus,jdbcType=BIT},
-      country_id = #{countryId,jdbcType=INTEGER},
+      city_id = #{cityId,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       sale_date = #{saleDate,jdbcType=TIMESTAMP},
       warning_date = #{warningDate,jdbcType=TIMESTAMP},

@@ -24,4 +24,6 @@ public interface BatteryMapper {
     Battery selectBySn(String btySn);
 
     int countByReseller(Integer resellerId);
+
+    int countByCity(Integer cityId);
 }

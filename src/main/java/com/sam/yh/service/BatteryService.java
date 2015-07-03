@@ -27,4 +27,7 @@ public interface BatteryService {
 
     @Transactional
     public int countSoldBtys(int resellerId);
+
+    @Transactional
+    public int countCityBtys(int cityId);
 }

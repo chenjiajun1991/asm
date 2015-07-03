@@ -2,6 +2,9 @@ package test.sam.yh.signup;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.AfterClass;
@@ -15,10 +18,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.SubmitBtySpecReq;
+import com.sam.yh.req.bean.CitySalesReq;
 
-public class SubmitBtySpecTest {
-    private static final Logger logger = LoggerFactory.getLogger(SubmitBtySpecTest.class);
+public class ListCitySalesTest {
+    private static final Logger logger = LoggerFactory.getLogger(ListCitySalesTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -39,23 +42,19 @@ public class SubmitBtySpecTest {
     }
 
     @Test
-    public void testSubmitBtySpecService() {
+    public void testCitySales() {
 
-        SubmitBtySpecReq reqObj = new SubmitBtySpecReq();
+        CitySalesReq reqObj = new CitySalesReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserName("nate3");
-        reqObj.setUserPhone("13900000017");
-        reqObj.setBtyImei("10014");
-        reqObj.setBtySimNo("15200000014");
-        reqObj.setBtySN("114");
-        reqObj.setResellerPhone("13900000016");
-        ;
+        List<Integer> citys = Arrays.asList(1, 2, 3);
+        reqObj.setCitys(citys);
         String jsonReq = JSON.toJSONString(reqObj);
+
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/btyspec.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/sales.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

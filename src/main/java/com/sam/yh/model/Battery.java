@@ -21,7 +21,7 @@ public class Battery {
 
     private Boolean saleStatus;
 
-    private Integer countryId;
+    private Integer cityId;
 
     private Date createDate;
 
@@ -103,12 +103,12 @@ public class Battery {
         this.saleStatus = saleStatus;
     }
 
-    public Integer getCountryId() {
-        return countryId;
+    public Integer getCityId() {
+        return cityId;
     }
 
-    public void setCountryId(Integer countryId) {
-        this.countryId = countryId;
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
     }
 
     public Date getCreateDate() {

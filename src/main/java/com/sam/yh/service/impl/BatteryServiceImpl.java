@@ -81,4 +81,9 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryMapper.countByReseller(resellerId);
     }
 
+    @Override
+    public int countCityBtys(int cityId) {
+        return batteryMapper.countByCity(cityId);
+    }
+
 }

@@ -9,14 +9,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class UploadBtyInfoTest {
-    private static final Logger logger = LoggerFactory.getLogger(UploadBtyInfoTest.class);
+import com.alibaba.fastjson.JSON;
+import com.sam.yh.req.bean.BtyInfoReq;
+
+public class FetchBtyInfoTest {
+    private static final Logger logger = LoggerFactory.getLogger(FetchBtyInfoTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -37,29 +39,29 @@ public class UploadBtyInfoTest {
     }
 
     @Test
-    public void testUploadBtyInfoService() {
+    public void testFetchBtyInfo() {
 
-        String imei = "10005";
-        String longitude = "121.401422";
-        String latitude = "31.175332";
-        String temperature = "230";
-        String voltage = "220";
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-        params.add("imei", imei);
-        params.add("longitude", longitude);
-        params.add("latitude", latitude);
-        params.add("temperature", temperature);
-        params.add("voltage", voltage);
+        BtyInfoReq reqObj = new BtyInfoReq();
+        reqObj.setAppName("samyh");
+        reqObj.setDeviceType("android");
+        reqObj.setVersion("0.0.1");
+        reqObj.setBtySimNo("15200000005");
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/upload/btyinfo.json").queryParams(params).build().toUriString();
+        String jsonReq = JSON.toJSONString(reqObj);
+
+        logger.info("Reuqest json String:" + jsonReq);
+
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/bty/info.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 
-        ResponseEntity<String> resp = restTemplate.getForEntity(url, String.class);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("jsonReq", jsonReq);
+        String resp = restTemplate.postForObject(url, params, String.class);
 
-        logger.info("ResponseBody:" + resp.getBody());
+        logger.info("ResponseBody:" + resp);
 
-        assertEquals("ok", resp.getBody());
+        assertEquals("hello", resp);
     }
 
     @AfterClass

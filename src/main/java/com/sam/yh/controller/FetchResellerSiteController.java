@@ -60,8 +60,8 @@ public class FetchResellerSiteController {
         }
     }
 
-    private void validateResellerArgs(FetchResellerReq fetchResellersReq) throws IllegalParamsException {
-        if (!MobilePhoneUtils.isValidPhone(fetchResellersReq.getResellerPhone())) {
+    private void validateResellerArgs(FetchResellerReq fetchResellerReq) throws IllegalParamsException {
+        if (!MobilePhoneUtils.isValidPhone(fetchResellerReq.getResellerPhone())) {
             throw new IllegalParamsException("请输入正确的手机号码");
         }
     }

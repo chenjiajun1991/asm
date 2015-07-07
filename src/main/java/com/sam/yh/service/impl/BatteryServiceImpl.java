@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.model.Battery;
@@ -84,6 +86,22 @@ public class BatteryServiceImpl implements BatteryService {
     @Override
     public int countCityBtys(int cityId) {
         return batteryMapper.countByCity(cityId);
+    }
+
+    @Override
+    public BatteryInfo fetchBtyInfo(String btySimNo) throws CrudException {
+        Battery battery = batteryMapper.selectBySimNo(btySimNo);
+        if (battery == null) {
+            throw new FetchBtyInfoException("电池不存在");
+        }
+
+        BatteryInfo info = batteryInfoMapper.selectByBtyId(battery.getId());
+
+        if (info == null) {
+            throw new FetchBtyInfoException("未接收到此电池发送的信息");
+        }
+
+        return info;
     }
 
 }

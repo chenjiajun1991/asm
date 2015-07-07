@@ -1,4 +1,4 @@
-package test.sam.yh.signup;
+package test.sam.yh.original;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,10 +15,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.BtyShareReq;
+import com.sam.yh.req.bean.UserSigninReq;
 
-public class BtyUnShareTest {
-    private static final Logger logger = LoggerFactory.getLogger(BtyUnShareTest.class);
+public class UserSigninTest {
+    private static final Logger logger = LoggerFactory.getLogger(UserSigninTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -39,19 +39,21 @@ public class BtyUnShareTest {
     }
 
     @Test
-    public void testUnshareBtyService() {
+    public void testSigninService() {
 
-        BtyShareReq reqObj = new BtyShareReq();
+        UserSigninReq reqObj = new UserSigninReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("15618672987");
-        reqObj.setBtyPubSn("A10001");
-        reqObj.setFriendPhone("13900000001");
+        reqObj.setUserPhone("13900000014");
+        reqObj.setPassword("123456789");
+        reqObj.setDeviceInfo("XXXXXXXXXXX");
+
         String jsonReq = JSON.toJSONString(reqObj);
+
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/bty/unshare.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/signin.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 
@@ -59,7 +61,7 @@ public class BtyUnShareTest {
         params.add("jsonReq", jsonReq);
         String resp = restTemplate.postForObject(url, params, String.class);
 
-        logger.info("Response:" + resp);
+        logger.info("ResponseBody:" + resp);
 
         assertEquals("hello", resp);
     }

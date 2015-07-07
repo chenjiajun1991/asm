@@ -1,4 +1,4 @@
-package test.sam.yh.signup;
+package test.sam.yh.original;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,10 +15,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.ResellerBtyInfoReq;
+import com.sam.yh.req.bean.FetchBtyInfoReq;
 
-public class FetchSoldBtysTest {
-    private static final Logger logger = LoggerFactory.getLogger(FetchSoldBtysTest.class);
+public class FetchMyBtyInfosTest {
+    private static final Logger logger = LoggerFactory.getLogger(FetchMyBtyInfosTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -39,21 +39,19 @@ public class FetchSoldBtysTest {
     }
 
     @Test
-    public void testFetchSoldBtys() {
+    public void testFetchBtyInfos() {
 
-        ResellerBtyInfoReq reqObj = new ResellerBtyInfoReq();
+        FetchBtyInfoReq reqObj = new FetchBtyInfoReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setResellerPhone("13900000016");
-        reqObj.setPageNo(1);
-        reqObj.setSize(10);
+        reqObj.setUserPhone("13900000001");
 
         String jsonReq = JSON.toJSONString(reqObj);
 
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/btyinfo.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/btyinfo.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

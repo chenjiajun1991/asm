@@ -1,4 +1,4 @@
-package test.sam.yh.signup;
+package test.sam.yh.original;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,10 +15,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.ListFollowersReq;
+import com.sam.yh.req.bean.BtyShareReq;
 
-public class ListBtyFollowersTest {
-    private static final Logger logger = LoggerFactory.getLogger(ListBtyFollowersTest.class);
+public class BtyUnShareTest {
+    private static final Logger logger = LoggerFactory.getLogger(BtyUnShareTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -39,20 +39,19 @@ public class ListBtyFollowersTest {
     }
 
     @Test
-    public void testListFollowers() {
+    public void testUnshareBtyService() {
 
-        ListFollowersReq reqObj = new ListFollowersReq();
+        BtyShareReq reqObj = new BtyShareReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("15618672987");
         reqObj.setBtyPubSn("A10001");
-
+        reqObj.setFriendPhone("13900000001");
         String jsonReq = JSON.toJSONString(reqObj);
-
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/bty/followers.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/bty/unshare.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 
@@ -60,7 +59,7 @@ public class ListBtyFollowersTest {
         params.add("jsonReq", jsonReq);
         String resp = restTemplate.postForObject(url, params, String.class);
 
-        logger.info("ResponseBody:" + resp);
+        logger.info("Response:" + resp);
 
         assertEquals("hello", resp);
     }

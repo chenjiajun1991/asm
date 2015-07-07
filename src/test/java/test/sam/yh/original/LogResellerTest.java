@@ -1,4 +1,4 @@
-package test.sam.yh.signup;
+package test.sam.yh.original;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,10 +15,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.SubmitBtySpecReq;
+import com.sam.yh.req.bean.LogResellerReq;
 
-public class SubmitBtySpecTest {
-    private static final Logger logger = LoggerFactory.getLogger(SubmitBtySpecTest.class);
+public class LogResellerTest {
+    private static final Logger logger = LoggerFactory.getLogger(LogResellerTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -39,23 +39,28 @@ public class SubmitBtySpecTest {
     }
 
     @Test
-    public void testSubmitBtySpecService() {
+    public void testLogResellerService() {
 
-        SubmitBtySpecReq reqObj = new SubmitBtySpecReq();
+        LogResellerReq reqObj = new LogResellerReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserName("nate3");
-        reqObj.setUserPhone("13900000017");
-        reqObj.setBtyImei("10014");
-        reqObj.setBtySimNo("15200000014");
-        reqObj.setBtySN("114");
-        reqObj.setResellerPhone("13900000016");
-        ;
+        reqObj.setAdminPhone("15618672987");
+        reqObj.setResellerName("六毛");
+        reqObj.setResellerPhone("13900000022");
+        reqObj.setProvinceName("上海");
+        reqObj.setProvinceId(2);
+        reqObj.setCityName("上海");
+        reqObj.setCityId(2);
+        reqObj.setLongitude("101");
+        reqObj.setLatitude("101");
+        reqObj.setResellerAddress("陆家嘴环路1000号恒生大厦8041");
+
         String jsonReq = JSON.toJSONString(reqObj);
+
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/btyspec.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/info.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

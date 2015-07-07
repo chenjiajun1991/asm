@@ -1,4 +1,4 @@
-package test.sam.yh.signup;
+package test.sam.yh.original;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,10 +15,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.FetchBtyInfoReq;
+import com.sam.yh.req.bean.UserPwdResetReq;
 
-public class FetchMyBtyInfosTest {
-    private static final Logger logger = LoggerFactory.getLogger(FetchMyBtyInfosTest.class);
+public class UserResetPwdTest {
+    private static final Logger logger = LoggerFactory.getLogger(UserResetPwdTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -39,19 +39,23 @@ public class FetchMyBtyInfosTest {
     }
 
     @Test
-    public void testFetchBtyInfos() {
+    public void testResetPwdService() {
 
-        FetchBtyInfoReq reqObj = new FetchBtyInfoReq();
+        UserPwdResetReq reqObj = new UserPwdResetReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000001");
+        reqObj.setUserPhone("13900000013");
+        reqObj.setPassword1("123456789a");
+        reqObj.setPassword2("123456789a");
+        reqObj.setAuthCode("289123");
+        reqObj.setDeviceInfo("XXXXXXXXXXX");
 
         String jsonReq = JSON.toJSONString(reqObj);
 
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/btyinfo.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/forgot.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

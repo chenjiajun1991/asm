@@ -1,4 +1,4 @@
-package test.sam.yh.signup;
+package test.sam.yh.original;
 
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.req.bean.BaseReq;

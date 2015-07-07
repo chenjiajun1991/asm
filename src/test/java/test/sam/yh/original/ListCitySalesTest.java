@@ -1,6 +1,9 @@
-package test.sam.yh.signup;
+package test.sam.yh.original;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -15,10 +18,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.req.bean.UserSignupReq;
+import com.sam.yh.req.bean.CitySalesReq;
 
-public class SignupTest {
-    private static final Logger logger = LoggerFactory.getLogger(SignupTest.class);
+public class ListCitySalesTest {
+    private static final Logger logger = LoggerFactory.getLogger(ListCitySalesTest.class);
 
     private static Server server;
     private RestTemplate restTemplate = new RestTemplate();
@@ -39,21 +42,19 @@ public class SignupTest {
     }
 
     @Test
-    public void testSignupService() {
+    public void testCitySales() {
 
-        UserSignupReq reqObj = new UserSignupReq();
+        CitySalesReq reqObj = new CitySalesReq();
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000014");
-        reqObj.setAuthCode("364296");
-        reqObj.setDeviceInfo("AAAAAAAAAAAA");
-        reqObj.setPassword1("123456789");
-        reqObj.setPassword2("123456789");
+        List<Integer> citys = Arrays.asList(1, 2, 3);
+        reqObj.setCitys(citys);
         String jsonReq = JSON.toJSONString(reqObj);
+
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/signup.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/reseller/sales.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

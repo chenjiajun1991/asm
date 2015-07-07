@@ -14,6 +14,7 @@ import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.msg.SmsSendUtils;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.crud.exception.FetchResellerException;
 import com.sam.yh.crud.exception.LoggingResellerException;
 import com.sam.yh.crud.exception.NotAdminException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
@@ -260,6 +261,23 @@ public class ResellerServiceImpl implements ResellerService {
         }
 
         return batteryService.countSoldBtys(reseller.getUserId());
+    }
+
+    @Override
+    public Reseller fetchReseller(String resellerPhone) throws CrudException {
+        User reseller = userService.fetchUserByPhone(resellerPhone);
+
+        if (UserType.NORMAL_USER.getType().equals(reseller.getUserType())) {
+            throw new FetchResellerException("经销商不存在");
+        }
+
+        Reseller res = resellerMapper.selectByPrimaryKey(reseller.getUserId());
+
+        if (res == null) {
+            throw new FetchResellerException("经销商不存在");
+        }
+
+        return res;
     }
 
 }

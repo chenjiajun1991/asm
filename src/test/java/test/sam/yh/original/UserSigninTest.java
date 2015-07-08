@@ -45,8 +45,8 @@ public class UserSigninTest {
         reqObj.setAppName("samyh");
         reqObj.setDeviceType("android");
         reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000014");
-        reqObj.setPassword("123456789");
+        reqObj.setUserPhone("13900000025");
+        reqObj.setPassword("95021181");
         reqObj.setDeviceInfo("XXXXXXXXXXX");
 
         String jsonReq = JSON.toJSONString(reqObj);

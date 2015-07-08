@@ -189,7 +189,7 @@ public class ResellerServiceImpl implements ResellerService {
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(logResellerReq.getResellerName());
         user.setUserType(UserType.RESELLER.getType());
-        user.setSalt(RandomCodeUtils.genSalt());
+        user.setSalt(salt);
 
         user.setPassword(PwdUtils.genMd5Pwd(logResellerReq.getResellerPhone(), salt, initPwd));
         user.setMobilePhone(logResellerReq.getResellerPhone());

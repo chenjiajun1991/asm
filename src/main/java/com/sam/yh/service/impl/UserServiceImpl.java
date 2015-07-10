@@ -171,6 +171,7 @@ public class UserServiceImpl implements UserService {
             if (info != null) {
                 PubBatteryInfo pubInfo = new PubBatteryInfo(info);
                 pubInfo.setBtyPubSn(userBattery.getBtyPubSn());
+                pubInfo.setBytImei(userBattery.getBytImei());
                 pubInfo.setOwnerPhone(user.getMobilePhone());
                 btyInfo.add(pubInfo);
             }
@@ -194,6 +195,7 @@ public class UserServiceImpl implements UserService {
                 User owner = userMapper.selectByPrimaryKey(userBattery.getUserId());
                 PubBatteryInfo pubInfo = new PubBatteryInfo(info);
                 pubInfo.setBtyPubSn(userFollow.getBtyPubSn());
+                pubInfo.setBytImei(userFollow.getBytImei());
                 pubInfo.setOwnerPhone(owner.getMobilePhone());
                 btyInfo.add(pubInfo);
             }

@@ -6,6 +6,8 @@ public class UserFollow extends UserFollowKey {
 
     private String btyPubSn;
 
+    private String bytImei;
+
     private Boolean followStatus;
 
     private Date followDate;
@@ -16,6 +18,14 @@ public class UserFollow extends UserFollowKey {
 
     public void setBtyPubSn(String btyPubSn) {
         this.btyPubSn = btyPubSn == null ? null : btyPubSn;
+    }
+
+    public String getBytImei() {
+        return bytImei;
+    }
+
+    public void setBytImei(String bytImei) {
+        this.bytImei = bytImei;
     }
 
     public Boolean getFollowStatus() {

@@ -5,10 +5,12 @@
     <id column="user_id" property="userId" jdbcType="INTEGER" />
     <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
     <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
     <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <resultMap id="PubBtyResultMap" type="com.sam.yh.model.PubBattery" >
     <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
     <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -19,6 +21,7 @@
     u.user_id as user_id,
     u.battery_id as battery_id,
     b.pub_sn as pub_sn,
+    b.imei as imei,
     u.buy_date as buy_date
     from user_battery u
     inner join
@@ -32,6 +35,7 @@
     u.user_id as user_id,
     u.battery_id as battery_id,
     b.pub_sn as pub_sn,
+    b.imei as imei,
     u.buy_date as buy_date
     from user_battery u
     inner join
@@ -42,6 +46,7 @@
   <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
     select 
     b.pub_sn as pub_sn,
+    b.imei as imei,
     b.sim_no as sim_no
     from user_battery u
     inner join

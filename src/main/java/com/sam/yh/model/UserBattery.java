@@ -5,6 +5,7 @@ import java.util.Date;
 public class UserBattery extends UserBatteryKey {
 
     private String btyPubSn;
+    private String bytImei;
     private Date buyDate;
 
     public String getBtyPubSn() {
@@ -13,6 +14,14 @@ public class UserBattery extends UserBatteryKey {
 
     public void setBtyPubSn(String btyPubSn) {
         this.btyPubSn = btyPubSn;
+    }
+
+    public String getBytImei() {
+        return bytImei;
+    }
+
+    public void setBytImei(String bytImei) {
+        this.bytImei = bytImei;
     }
 
     public Date getBuyDate() {

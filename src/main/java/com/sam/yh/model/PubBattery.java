@@ -3,6 +3,7 @@ package com.sam.yh.model;
 public class PubBattery {
 
     private String btyPubSn;
+    private String bytImei;
     private String btySimNo;
 
     public String getBtyPubSn() {
@@ -11,6 +12,14 @@ public class PubBattery {
 
     public void setBtyPubSn(String btyPubSn) {
         this.btyPubSn = btyPubSn;
+    }
+
+    public String getBytImei() {
+        return bytImei;
+    }
+
+    public void setBytImei(String bytImei) {
+        this.bytImei = bytImei;
     }
 
     public String getBtySimNo() {

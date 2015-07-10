@@ -9,6 +9,8 @@ public class PubBatteryInfo {
 
     private String btyPubSn;
 
+    private String bytImei;
+
     private String ownerPhone;
 
     private String longitude;
@@ -63,6 +65,14 @@ public class PubBatteryInfo {
 
     public String getOwnerPhone() {
         return ownerPhone;
+    }
+
+    public String getBytImei() {
+        return bytImei;
+    }
+
+    public void setBytImei(String bytImei) {
+        this.bytImei = bytImei;
     }
 
     public void setOwnerPhone(String ownerPhone) {

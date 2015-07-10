@@ -76,6 +76,7 @@ public class UserBtyInfoController {
         UserBtyInfo userBtyInfo = new UserBtyInfo();
         userBtyInfo.setOwnerPhone(pubBatteryInfo.getOwnerPhone());
         userBtyInfo.setBtyPubSn(pubBatteryInfo.getBtyPubSn());
+        userBtyInfo.setBtyImei(pubBatteryInfo.getBytImei());
         userBtyInfo.setLongitude(pubBatteryInfo.getLongitude());
         userBtyInfo.setLatitude(pubBatteryInfo.getLatitude());
         userBtyInfo.setTemperature(pubBatteryInfo.getTemperature());

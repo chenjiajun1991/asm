@@ -3,6 +3,7 @@ package com.sam.yh.resp.bean;
 public class UserBtyInfo {
 
     private String btyPubSn;
+    private String btyImei;
     private String ownerPhone;
     private String longitude;
     private String latitude;
@@ -15,6 +16,14 @@ public class UserBtyInfo {
 
     public void setBtyPubSn(String btyPubSn) {
         this.btyPubSn = btyPubSn;
+    }
+
+    public String getBtyImei() {
+        return btyImei;
+    }
+
+    public void setBtyImei(String btyImei) {
+        this.btyImei = btyImei;
     }
 
     public String getOwnerPhone() {

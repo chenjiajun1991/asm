@@ -9,6 +9,8 @@
     <result column="pub_sn" property="pubSn" jdbcType="VARCHAR" />
     <result column="imei" property="imei" jdbcType="VARCHAR" />
     <result column="sim_no" property="simNo" jdbcType="VARCHAR" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="gsim_no" property="gsmSimNo" jdbcType="VARCHAR" />
     <result column="reseller_id" property="resellerId" jdbcType="INTEGER" />
     <result column="sale_status" property="saleStatus" jdbcType="BIT" />
     <result column="city_id" property="cityId" jdbcType="INTEGER" />
@@ -18,7 +20,7 @@
     <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, sn, status, bty_type, pub_sn, imei, sim_no, reseller_id, sale_status, city_id, 
+    id, sn, status, bty_type, pub_sn, imei, sim_no, imsi, gsim_no, reseller_id, sale_status, city_id, 
     create_date, sale_date, warning_date, expiry_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -69,12 +71,12 @@
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
     insert into battery (sn, status, 
-      bty_type, pub_sn, imei, sim_no, 
+      bty_type, pub_sn, imei, sim_no, imsi, gsim_no,
       reseller_id, sale_status, city_id, 
       create_date, sale_date, warning_date, 
       expiry_date)
     values (#{sn,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
-      #{btyType,jdbcType=BIT}, #{pubSn,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, 
+      #{btyType,jdbcType=BIT}, #{pubSn,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, #{gsmSimNo,jdbcType=VARCHAR},
       #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{cityId,jdbcType=INTEGER}, 
       #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{warningDate,jdbcType=TIMESTAMP}, 
       #{expiryDate,jdbcType=TIMESTAMP})
@@ -99,6 +101,12 @@
       </if>
       <if test="simNo != null" >
         sim_no,
+      </if>
+      <if test="imsi != null" >
+        imsi,
+      </if>
+      <if test="gsmSimNo != null" >
+        gsim_no,
       </if>
       <if test="resellerId != null" >
         reseller_id,
@@ -140,6 +148,12 @@
       </if>
       <if test="simNo != null" >
         #{simNo,jdbcType=VARCHAR},
+      </if>
+      <if test="imsi != null" >
+        #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="gsmSimNo != null" >
+        #{gsmSimNo,jdbcType=VARCHAR},
       </if>
       <if test="resellerId != null" >
         #{resellerId,jdbcType=INTEGER},
@@ -185,6 +199,12 @@
       <if test="simNo != null" >
         sim_no = #{simNo,jdbcType=VARCHAR},
       </if>
+      <if test="imsi != null" >
+        imsi = #{imsi,jdbcType=VARCHAR},
+      </if>
+      <if test="gsmSimNo != null" >
+        gsim_no = #{gsmSimNo,jdbcType=VARCHAR},
+      </if>
       <if test="resellerId != null" >
         reseller_id = #{resellerId,jdbcType=INTEGER},
       </if>
@@ -217,6 +237,8 @@
       pub_sn = #{pubSn,jdbcType=VARCHAR},
       imei = #{imei,jdbcType=VARCHAR},
       sim_no = #{simNo,jdbcType=VARCHAR},
+      imsi = #{imsi,jdbcType=VARCHAR},
+      gsim_no = #{gsmSimNo,jdbcType=VARCHAR},
       reseller_id = #{resellerId,jdbcType=INTEGER},
       sale_status = #{saleStatus,jdbcType=BIT},
       city_id = #{cityId,jdbcType=INTEGER},

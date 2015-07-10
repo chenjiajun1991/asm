@@ -17,6 +17,10 @@ public class Battery {
 
     private String simNo;
 
+    private String imsi;
+
+    private String gsmSimNo;
+
     private Integer resellerId;
 
     private Boolean saleStatus;
@@ -85,6 +89,22 @@ public class Battery {
 
     public void setSimNo(String simNo) {
         this.simNo = simNo == null ? null : simNo.trim();
+    }
+
+    public String getImsi() {
+        return imsi;
+    }
+
+    public void setImsi(String imsi) {
+        this.imsi = imsi == null ? null : imsi.trim();
+    }
+
+    public String getGsmSimNo() {
+        return gsmSimNo;
+    }
+
+    public void setGsmSimNo(String gsmSimNo) {
+        this.gsmSimNo = gsmSimNo == null ? null : gsmSimNo.trim();
     }
 
     public Integer getResellerId() {

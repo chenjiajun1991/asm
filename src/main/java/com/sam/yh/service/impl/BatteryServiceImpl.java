@@ -30,6 +30,15 @@ public class BatteryServiceImpl implements BatteryService {
         if (battery == null) {
             return null;
         }
+        if (battery.getImsi() == null || battery.getGsmSimNo() == null) {
+            if (batteryInfoReqVo.getImsi() != null) {
+                battery.setImsi(batteryInfoReqVo.getImsi());
+            }
+            if (batteryInfoReqVo.getPhonenumber() != null) {
+                battery.setGsmSimNo(batteryInfoReqVo.getPhonenumber());
+            }
+            batteryMapper.updateByPrimaryKeySelective(battery);
+        }
         BatteryInfo info = new BatteryInfo();
         info.setBatteryId(battery.getId());
         info.setLongitude(batteryInfoReqVo.getLongitude());

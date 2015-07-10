@@ -3,6 +3,8 @@ package com.sam.yh.req.bean;
 public class BatteryInfoReq {
 
     private String imei;
+    private String imsi;
+    private String phonenumber;
     private String longitude;
     private String latitude;
     private String temperature;
@@ -14,6 +16,22 @@ public class BatteryInfoReq {
 
     public void setImei(String imei) {
         this.imei = imei;
+    }
+
+    public String getImsi() {
+        return imsi;
+    }
+
+    public void setImsi(String imsi) {
+        this.imsi = imsi;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
     }
 
     public String getLongitude() {
@@ -50,8 +68,8 @@ public class BatteryInfoReq {
 
     @Override
     public String toString() {
-        return "BatteryInfoReq [imei=" + imei + ", longitude=" + longitude + ", latitude=" + latitude + ", temperature=" + temperature + ", voltage=" + voltage
-                + "]";
+        return "BatteryInfoReq [imei=" + imei + ", imsi=" + imsi + ", phonenumber=" + phonenumber + ", longitude=" + longitude + ", latitude=" + latitude
+                + ", temperature=" + temperature + ", voltage=" + voltage + "]";
     }
 
 }

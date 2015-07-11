@@ -9,7 +9,12 @@ public class SamConstants {
     /**
      * 相同类型的验证码一天内最大的发送次数
      */
-    public static final int MXA_SMS_SEND_TIME = 100;
+    public static final int MXA_SMS_SEND_TIME = 10;
+
+    /**
+     * 电池信息异常一天内最大的发送次数
+     */
+    public static final int MXA_WARNING_SEND_TIME = 3;
 
     /**
      * 验证码的有效时间（分钟）

@@ -171,7 +171,8 @@ public class UserCodeServiceImpl implements UserCodeService {
             send = true;
         }
 
-        if (now.after(userCode.getExpiryDate())) {
+        int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes() + 1) : 1;
+        if (now.after(userCode.getExpiryDate()) || sendTimes <= SamConstants.MXA_WARNING_SEND_TIME) {
             userCode.setSendTimes(userCode.getSendTimes() + 1);
             userCode.setSendDate(now);
             userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));

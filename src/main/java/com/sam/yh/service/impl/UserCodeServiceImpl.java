@@ -149,5 +149,41 @@ public class UserCodeServiceImpl implements UserCodeService {
         }
     }
 
+    @Override
+    public boolean sendWarningMsg(String mobilePhone, String btyImei) throws CrudException {
+
+        boolean send = false;
+        int type = UserCodeType.BTY_WARNING.getType();
+        UserCode userCode = fetchByUserName(btyImei, type);
+
+        Date now = new Date();
+        if (userCode == null) {
+            userCode = new UserCode();
+            userCode.setMobilePhone(btyImei);
+            userCode.setCodeType(type);
+            userCode.setDynamicCode(mobilePhone);
+            userCode.setSendTimes(1);
+            userCode.setStatus(true);
+            userCode.setSendDate(now);
+            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+
+            userCodeMapper.insert(userCode);
+            send = true;
+        }
+
+        if (now.after(userCode.getExpiryDate())) {
+            userCode.setSendDate(now);
+            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+
+            userCodeMapper.updateByPrimaryKey(userCode);
+            send = true;
+        }
+
+        if (send) {
+            SmsSendUtils.sendWarningMsg(mobilePhone, btyImei);
+        }
+
+        return send;
+    }
 
 }

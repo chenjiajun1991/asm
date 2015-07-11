@@ -58,6 +58,12 @@ public class SmsSendUtils {
         String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪。";
         return sendSms(mobilePhone, content);
     }
+    
+    public static boolean sendWarningMsg(String mobilePhone, String btyImei) {
+        // TODO
+        String content = "您的电池IMEI" + btyImei + "温度或电压出现异常，请登录APP查看。";
+        return sendSms(mobilePhone, content);
+    }
 
     private static boolean sendSms(final String mobilePhone, String content) {
         logger.info("send sms to " + mobilePhone + ", content:" + content);

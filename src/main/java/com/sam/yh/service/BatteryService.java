@@ -10,7 +10,7 @@ import com.sam.yh.req.bean.BatteryInfoReq;
 public interface BatteryService {
 
     @Transactional
-    public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo);
+    public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException;
 
     @Transactional
     public Battery addBattery(Battery battery);

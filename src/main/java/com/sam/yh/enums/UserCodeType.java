@@ -9,7 +9,8 @@ public enum UserCodeType {
     SIGNUP_CODE(1, "注册短信验证码"), 
     RESETPWD_CODE(2, "重置密码验证码"), 
     USER_SALT(3, "注册盐"), 
-    BTY_SALT(4, "电池盐");
+    BTY_SALT(4, "电池盐"),
+    BTY_WARNING(5, "异常警告");
     private static List<Integer> types = new ArrayList<Integer>();
 
     static {

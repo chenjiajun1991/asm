@@ -25,4 +25,7 @@ public interface UserCodeService {
     @Transactional
     public boolean verifyAuthCode(String mobilePhone, int type, String authCode) throws CrudException;
 
+    @Transactional
+    public boolean sendWarningMsg(String mobilePhone, String btyImei) throws CrudException;
+
 }

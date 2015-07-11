@@ -6,14 +6,20 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.TempUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.BatteryMapper;
+import com.sam.yh.dao.UserMapper;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.User;
+import com.sam.yh.model.UserBattery;
 import com.sam.yh.req.bean.BatteryInfoReq;
 import com.sam.yh.service.BatteryService;
+import com.sam.yh.service.UserBatteryService;
+import com.sam.yh.service.UserCodeService;
 
 @Service
 public class BatteryServiceImpl implements BatteryService {
@@ -24,8 +30,17 @@ public class BatteryServiceImpl implements BatteryService {
     @Resource
     private BatteryInfoMapper batteryInfoMapper;
 
+    @Resource
+    private UserBatteryService userBatteryService;
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private UserCodeService userCodeService;
+
     @Override
-    public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) {
+    public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException {
         Battery battery = fetchBtyByIMEI(batteryInfoReqVo.getImei());
         if (battery == null) {
             return null;
@@ -43,22 +58,54 @@ public class BatteryServiceImpl implements BatteryService {
         info.setBatteryId(battery.getId());
         info.setLongitude(batteryInfoReqVo.getLongitude());
         info.setLatitude(batteryInfoReqVo.getLatitude());
-        info.setTemperature(batteryInfoReqVo.getTemperature());
-        info.setVoltage(batteryInfoReqVo.getVoltage());
+        info.setTemperature(convertAdcToTemp(batteryInfoReqVo.getTemperature()));
+        info.setVoltage(convertAdcToVo(batteryInfoReqVo.getVoltage()));
         // TODO
         // info.setSampleDate(batteryInfoReqVo.getSampleDate());
         info.setSampleDate(new Date());
-        info.setStatus(getBatteryStatus(batteryInfoReqVo));
+        boolean status = getBatteryStatus(batteryInfoReqVo);
+        info.setStatus(status);
         info.setReceiveDate(new Date());
 
         batteryInfoMapper.insert(info);
 
+        if (!status) {
+            sendWarningMsg(battery);
+        }
+
         return battery;
     }
 
+    private String convertAdcToTemp(String adc) {
+        return TempUtils.isWarning(adc) ? adc : TempUtils.getTemp(adc);
+    }
+
+    private String convertAdcToVo(String adc) {
+        float tem = Float.valueOf(adc);
+        float vol = (float) ((int) ((tem / 10.73) * 10)) / 10;
+        return String.valueOf(vol);
+    }
+
     private boolean getBatteryStatus(BatteryInfoReq batteryInfoReqVo) {
-        // TODO
-        return true;
+        boolean status = true;
+        String adcTmp = batteryInfoReqVo.getTemperature();
+        if (TempUtils.isWarning(adcTmp)) {
+            status = false;
+        }
+
+        float adcVol = Float.valueOf(batteryInfoReqVo.getVoltage());
+        if (adcVol < 10 || adcVol > 90) {
+            status = false;
+        }
+
+        return status;
+    }
+
+    private void sendWarningMsg(Battery battery) throws CrudException {
+
+        UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
+        User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+        userCodeService.sendWarningMsg(user.getMobilePhone(), battery.getImei());
     }
 
     @Override

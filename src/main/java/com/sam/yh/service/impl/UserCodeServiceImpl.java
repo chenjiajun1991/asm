@@ -172,6 +172,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         }
 
         if (now.after(userCode.getExpiryDate())) {
+            userCode.setSendTimes(userCode.getSendTimes() + 1);
             userCode.setSendDate(now);
             userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
 

@@ -34,7 +34,7 @@ public class AuthCodeController {
     @RequestMapping(value = "/sms", method = RequestMethod.POST)
     public SamResponse sendSmsCode(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         SmsAuthCodeReq req = JSON.parseObject(jsonReq, SmsAuthCodeReq.class);
 

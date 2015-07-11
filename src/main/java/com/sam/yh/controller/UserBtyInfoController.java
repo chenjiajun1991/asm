@@ -35,7 +35,7 @@ public class UserBtyInfoController {
     @RequestMapping(value = "/btyinfo", method = RequestMethod.POST)
     public SamResponse fetchBtyInfo(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         FetchBtyInfoReq req = JSON.parseObject(jsonReq, FetchBtyInfoReq.class);
 

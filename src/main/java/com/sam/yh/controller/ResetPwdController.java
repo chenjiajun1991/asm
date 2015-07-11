@@ -35,7 +35,7 @@ public class ResetPwdController {
     @RequestMapping(value = "/forgot", method = RequestMethod.POST)
     public SamResponse resetUserPwd(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         UserPwdResetReq req = JSON.parseObject(jsonReq, UserPwdResetReq.class);
 

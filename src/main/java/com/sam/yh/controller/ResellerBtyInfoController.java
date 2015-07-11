@@ -35,7 +35,7 @@ public class ResellerBtyInfoController {
     @RequestMapping(value = "/btyinfo", method = RequestMethod.POST)
     public SamResponse fetchResellerBtyInfo(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         ResellerBtyInfoReq req = JSON.parseObject(jsonReq, ResellerBtyInfoReq.class);
 

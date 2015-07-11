@@ -32,7 +32,7 @@ public class LogResellerController {
 
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     public SamResponse logReseller(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
         LogResellerReq req = JSON.parseObject(jsonReq, LogResellerReq.class);
 
         try {

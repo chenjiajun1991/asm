@@ -32,7 +32,7 @@ public class RemoveFollowerController {
 
     @RequestMapping(value = "/bty/unshare", method = RequestMethod.POST)
     public SamResponse shareBty(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         BtyShareReq req = JSON.parseObject(jsonReq, BtyShareReq.class);
 

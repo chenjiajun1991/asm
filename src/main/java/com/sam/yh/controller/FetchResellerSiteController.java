@@ -33,7 +33,7 @@ public class FetchResellerSiteController {
 
     @RequestMapping(value = "/site", method = RequestMethod.POST)
     public SamResponse fetchResellerInfo(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
         FetchResellerReq req = JSON.parseObject(jsonReq, FetchResellerReq.class);
 
         try {

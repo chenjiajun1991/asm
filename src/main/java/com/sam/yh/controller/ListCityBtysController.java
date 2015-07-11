@@ -31,7 +31,7 @@ public class ListCityBtysController {
 
     @RequestMapping(value = "/sales", method = RequestMethod.POST)
     public SamResponse submitBtySpec(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         CitySalesReq req = JSON.parseObject(jsonReq, CitySalesReq.class);
         List<Integer> cityIds = req.getCitys();

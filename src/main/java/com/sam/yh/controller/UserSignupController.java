@@ -56,7 +56,7 @@ public class UserSignupController {
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public SamResponse signup(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         UserSignupReq req = JSON.parseObject(jsonReq, UserSignupReq.class);
 

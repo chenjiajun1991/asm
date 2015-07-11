@@ -36,7 +36,7 @@ public class ListBtyFollowersController {
 
     @RequestMapping(value = "/bty/followers", method = RequestMethod.POST)
     public SamResponse listFollowers(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         ListFollowersReq req = JSON.parseObject(jsonReq, ListFollowersReq.class);
 

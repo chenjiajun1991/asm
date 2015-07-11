@@ -35,7 +35,7 @@ public class ListUserBtysController {
 
     @RequestMapping(value = "/btys", method = RequestMethod.POST)
     public SamResponse fetchBtys(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         FetchBtyInfoReq req = JSON.parseObject(jsonReq, FetchBtyInfoReq.class);
 

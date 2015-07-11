@@ -39,7 +39,7 @@ public class FetchResellersController {
 
     @RequestMapping(value = "/infos", method = RequestMethod.POST)
     public SamResponse fetchResellers(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
         FetchResellersReq req = JSON.parseObject(jsonReq, FetchResellersReq.class);
 
         try {

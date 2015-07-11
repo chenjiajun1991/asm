@@ -32,7 +32,7 @@ public class FollowUserBtyController {
 
     @RequestMapping(value = "/bty/follow", method = RequestMethod.POST)
     public SamResponse followBty(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
 
         BtyFollowReq req = JSON.parseObject(jsonReq, BtyFollowReq.class);
 

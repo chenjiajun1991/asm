@@ -33,7 +33,7 @@ public class SubmitBtySpecController {
     @RequestMapping(value = "/btyspec", method = RequestMethod.POST)
     public SamResponse submitBtySpec(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
-        logger.debug("Request json String:" + jsonReq);
+        logger.info("Request json String:" + jsonReq);
         SubmitBtySpecReq req = JSON.parseObject(jsonReq, SubmitBtySpecReq.class);
 
         try {

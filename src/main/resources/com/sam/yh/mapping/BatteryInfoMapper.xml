@@ -35,13 +35,14 @@
     i.longitude as longitude,
     i.latitude as latitude
     from battery_info i
-    where i.id =
-    (select bi.id 
+    inner join
+    (select MAX(bi.id) as id
     from battery b 
     inner join battery_info bi 
     on b.id=bi.battery_id 
     where b.reseller_id = #{resellerId,jdbcType=INTEGER} 
-    and i.battery_id = bi.battery_id ORDER BY bi.sample_date DESC LIMIT 0,1)
+    GROUP BY bi.battery_id) gb
+    on i.id = gb.id
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from battery_info

@@ -19,6 +19,10 @@ public class AppVersionUtils {
         return ANDRIOD_DOWNLOADURL;
     }
 
+    public static String getLatestVersion() {
+        return ANDROID_VERSION;
+    }
+
     public static AppVersionStatus checkVersion(BaseReq req) {
         String version = req.getVersion();
         if (StringUtils.equalsIgnoreCase("android", req.getDeviceType())) {

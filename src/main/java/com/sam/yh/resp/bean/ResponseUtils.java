@@ -83,6 +83,7 @@ public class ResponseUtils {
         resp.setResult("存在强制更新");
         UpdateResp respData = new UpdateResp();
         respData.setDownloadUrl(AppVersionUtils.getDownloadUrl());
+        respData.setLatestVer(AppVersionUtils.getLatestVersion());
         resp.setData(respData);
 
         return resp;
@@ -94,6 +95,7 @@ public class ResponseUtils {
         resp.setResult("存在可选更新");
         UpdateResp respData = new UpdateResp();
         respData.setDownloadUrl(AppVersionUtils.getDownloadUrl());
+        respData.setLatestVer(AppVersionUtils.getLatestVersion());
         resp.setData(respData);
 
         return resp;

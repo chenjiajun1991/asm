@@ -34,7 +34,7 @@ public class AppVersionController {
             if (StringUtils.equals(AppVersionStatus.FORCE_UPDATE.getStatus(), verStatus.getStatus())) {
                 return ResponseUtils.getForceUpdateResp();
             } else if (StringUtils.equals(AppVersionStatus.OPTIONAL_UPDATE.getStatus(), verStatus.getStatus())) {
-                return ResponseUtils.getForceUpdateResp();
+                return ResponseUtils.getOptionalUpdateresp();
             } else {
                 return ResponseUtils.getNormalResp("");
             }

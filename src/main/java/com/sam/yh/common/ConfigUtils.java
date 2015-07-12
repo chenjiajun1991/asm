@@ -17,6 +17,9 @@ public class ConfigUtils {
     public static final String SMS_ENABLE = "sms.enable";
     public static final String ADMIN_PHONE = "admin.phone";
 
+    public static final String ANDROID_LATEST_VERSION = "android.latest.version";
+    public static final String ANDRIOD_LATEST_DOWNLOADURL = "android.latest.downloadurl";
+
     public static PropertiesConfiguration getConfig() {
         if (config == null) {
             synchronized (ConfigUtils.class) {

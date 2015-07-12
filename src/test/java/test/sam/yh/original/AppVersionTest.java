@@ -1,27 +1,68 @@
 package test.sam.yh.original;
 
+import static org.junit.Assert.assertEquals;
+
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.req.bean.BaseReq;
-import com.sam.yh.req.bean.UserSignupReq;
 
 public class AppVersionTest {
+    private static final Logger logger = LoggerFactory.getLogger(AppVersionTest.class);
 
-    public static void main(String[] args) {
-        UserSignupReq req = new UserSignupReq();
-        req.setAuthCode("123456");
-        req.setDeviceInfo("AAAAA");
-        req.setPassword1("123456789");
-        req.setPassword2("123456789");
-        req.setUserPhone("1234");
-        req.setAppName("jucaifu");
-        req.setVersion("0.0.1");
-        req.setDeviceType("ios");
+    private static Server server;
+    private RestTemplate restTemplate = new RestTemplate();
 
-        String jsonStr = JSON.toJSONString(req);
-        System.out.println(jsonStr);
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        // 创建一个server
+        server = new Server(8080);
+        WebAppContext context = new WebAppContext();
+        String webapp = "F:/github/asm/WebContent";
+        context.setDescriptor(webapp + "/WEB-INF/web.xml"); // 指定web.xml配置文件
+        context.setResourceBase(webapp); // 指定webapp目录
+        context.setContextPath("/");
+        context.setParentLoaderPriority(true);
 
-        BaseReq baseReq = JSON.parseObject(jsonStr, BaseReq.class);
-        System.out.println(JSON.toJSON(baseReq));
+        server.setHandler(context);
+        server.start();
     }
 
+    @Test
+    public void testShareBtyService() {
+
+        BaseReq reqObj = new BaseReq();
+        reqObj.setAppName("samyh");
+        reqObj.setDeviceType("android");
+        reqObj.setVersion("0.0.1");
+        String jsonReq = JSON.toJSONString(reqObj);
+        logger.info("Reuqest json String:" + jsonReq);
+
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/open/ver.json").build().toUriString();
+
+        logger.info("Request URL:" + url);
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.add("jsonReq", jsonReq);
+        String resp = restTemplate.postForObject(url, params, String.class);
+
+        logger.info("Response:" + resp);
+
+        assertEquals("hello", resp);
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        server.stop(); // 当测试结束时停止服务器
+    }
 }

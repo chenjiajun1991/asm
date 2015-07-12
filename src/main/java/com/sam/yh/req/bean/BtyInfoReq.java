@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class BtyInfoReq extends BaseReq {
+public class BtyInfoReq {
 
     private String btySimNo;
 

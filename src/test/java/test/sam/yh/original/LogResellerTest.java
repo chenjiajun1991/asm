@@ -42,9 +42,9 @@ public class LogResellerTest {
     public void testLogResellerService() {
 
         LogResellerReq reqObj = new LogResellerReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setAdminPhone("15618672987");
         reqObj.setResellerName("六毛");
         reqObj.setResellerPhone("13900000025");

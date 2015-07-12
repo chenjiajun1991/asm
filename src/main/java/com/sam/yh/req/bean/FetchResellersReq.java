@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class FetchResellersReq extends BaseReq {
+public class FetchResellersReq {
 
     private String adminPhone;
     private int pageNo;

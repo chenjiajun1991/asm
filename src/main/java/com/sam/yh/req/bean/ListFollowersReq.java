@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class ListFollowersReq extends BaseReq {
+public class ListFollowersReq {
 
     private String userPhone;
     private String btyPubSn;

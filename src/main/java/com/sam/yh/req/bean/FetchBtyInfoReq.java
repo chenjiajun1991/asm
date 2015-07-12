@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class FetchBtyInfoReq extends BaseReq {
+public class FetchBtyInfoReq {
 
     private String userPhone;
 

@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.common.AppVersionUtils;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
-import com.sam.yh.enums.AppVersionStatus;
 import com.sam.yh.req.bean.UserPwdResetReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -42,11 +40,6 @@ public class ResetPwdController {
         UserPwdResetReq req = JSON.parseObject(jsonReq, UserPwdResetReq.class);
 
         try {
-            AppVersionStatus verStatus = AppVersionUtils.checkVersion(req);
-            if (StringUtils.equals(AppVersionStatus.FORCE_UPDATE.getStatus(), verStatus.getStatus())) {
-                return ResponseUtils.getForceUpdateResp();
-            }
-
             validatePwdResetArgs(req);
 
             userService.resetPwd(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());

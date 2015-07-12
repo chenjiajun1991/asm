@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class LogResellerReq extends BaseReq {
+public class LogResellerReq {
 
     private String adminPhone;
     private String resellerName;

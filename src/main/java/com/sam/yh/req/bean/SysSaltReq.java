@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class SysSaltReq extends BaseReq {
+public class SysSaltReq {
 
     private String userName;
     private String saltType;

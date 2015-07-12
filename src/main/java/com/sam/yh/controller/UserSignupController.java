@@ -63,11 +63,6 @@ public class UserSignupController {
         UserSignupReq req = JSON.parseObject(jsonReq, UserSignupReq.class);
 
         try {
-            AppVersionStatus verStatus = AppVersionUtils.checkVersion(req);
-            if (StringUtils.equals(AppVersionStatus.FORCE_UPDATE.getStatus(), verStatus.getStatus())) {
-                return ResponseUtils.getForceUpdateResp();
-            }
-
             validateSignupArgs(req);
 
             User user = userService.signup(req.getUserPhone(), req.getAuthCode(), req.getPassword1(), req.getDeviceInfo());

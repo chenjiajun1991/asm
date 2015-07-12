@@ -42,9 +42,9 @@ public class FetchSoldBtysTest {
     public void testFetchSoldBtys() {
 
         ResellerBtyInfoReq reqObj = new ResellerBtyInfoReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setResellerPhone("13900000016");
         reqObj.setPageNo(1);
         reqObj.setSize(10);

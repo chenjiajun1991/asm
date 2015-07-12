@@ -2,7 +2,7 @@ package com.sam.yh.req.bean;
 
 import java.util.List;
 
-public class CitySalesReq extends BaseReq {
+public class CitySalesReq {
 
     private List<Integer> citys;
 

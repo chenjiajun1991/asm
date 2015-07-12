@@ -42,9 +42,9 @@ public class SubmitBtySpecTest {
     public void testSubmitBtySpecService() {
 
         SubmitBtySpecReq reqObj = new SubmitBtySpecReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setUserName("nate3");
         reqObj.setUserPhone("13900000017");
         reqObj.setBtyImei("10014");

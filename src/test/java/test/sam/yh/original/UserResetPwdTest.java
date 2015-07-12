@@ -42,9 +42,9 @@ public class UserResetPwdTest {
     public void testResetPwdService() {
 
         UserPwdResetReq reqObj = new UserPwdResetReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("13900000013");
         reqObj.setPassword1("123456789a");
         reqObj.setPassword2("123456789a");

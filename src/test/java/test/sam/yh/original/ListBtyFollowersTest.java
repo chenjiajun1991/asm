@@ -42,9 +42,9 @@ public class ListBtyFollowersTest {
     public void testListFollowers() {
 
         ListFollowersReq reqObj = new ListFollowersReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("15618672987");
         reqObj.setBtyPubSn("A10001");
 

@@ -42,9 +42,9 @@ public class BtyShareTest {
     public void testShareBtyService() {
 
         BtyShareReq reqObj = new BtyShareReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("15618672987");
         reqObj.setBtyPubSn("A10001");
         reqObj.setFriendPhone("13900000001");

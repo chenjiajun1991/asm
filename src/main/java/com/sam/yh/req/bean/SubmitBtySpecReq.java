@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class SubmitBtySpecReq extends BaseReq {
+public class SubmitBtySpecReq {
 
     private String userName;
     private String userPhone;

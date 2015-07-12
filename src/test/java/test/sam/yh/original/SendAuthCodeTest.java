@@ -42,9 +42,9 @@ public class SendAuthCodeTest {
     public void testResetPwdService() {
 
         SmsAuthCodeReq reqObj = new SmsAuthCodeReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("13900000013");
         reqObj.setAuthType("2");
 

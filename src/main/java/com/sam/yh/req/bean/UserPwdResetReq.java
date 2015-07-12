@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class UserPwdResetReq extends BaseReq {
+public class UserPwdResetReq {
 
     private String userPhone;
     private String authCode;

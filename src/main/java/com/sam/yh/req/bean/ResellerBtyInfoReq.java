@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class ResellerBtyInfoReq extends BaseReq {
+public class ResellerBtyInfoReq {
 
     private String resellerPhone;
 

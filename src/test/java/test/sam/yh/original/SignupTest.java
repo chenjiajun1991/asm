@@ -42,9 +42,9 @@ public class SignupTest {
     public void testSignupService() {
 
         UserSignupReq reqObj = new UserSignupReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("13900000014");
         reqObj.setAuthCode("364296");
         reqObj.setDeviceInfo("AAAAAAAAAAAA");

@@ -42,9 +42,9 @@ public class FetchBtyInfoTest {
     public void testFetchBtyInfo() {
 
         BtyInfoReq reqObj = new BtyInfoReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setBtySimNo("15200000005");
 
         String jsonReq = JSON.toJSONString(reqObj);

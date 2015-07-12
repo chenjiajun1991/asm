@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class UserSignupReq extends BaseReq {
+public class UserSignupReq {
 
     private String userPhone;
     private String authCode;

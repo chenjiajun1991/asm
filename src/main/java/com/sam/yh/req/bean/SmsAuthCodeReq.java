@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class SmsAuthCodeReq extends BaseReq {
+public class SmsAuthCodeReq {
 
     private String userPhone;
     private String authType;

@@ -1,6 +1,6 @@
 package com.sam.yh.req.bean;
 
-public class BtyShareReq extends BaseReq {
+public class BtyShareReq {
 
     private String userPhone;
     private String btyPubSn;

@@ -45,9 +45,9 @@ public class ListCitySalesTest {
     public void testCitySales() {
 
         CitySalesReq reqObj = new CitySalesReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         List<Integer> citys = Arrays.asList(1, 2, 3);
         reqObj.setCitys(citys);
         String jsonReq = JSON.toJSONString(reqObj);

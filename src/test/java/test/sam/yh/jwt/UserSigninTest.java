@@ -49,9 +49,9 @@ public class UserSigninTest {
     public void testSigninService() {
 
         UserSigninReq reqObj = new UserSigninReq();
-        reqObj.setAppName("samyh");
-        reqObj.setDeviceType("android");
-        reqObj.setVersion("0.0.1");
+        // reqObj.setAppName("samyh");
+        // reqObj.setDeviceType("android");
+        // reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("13900000014");
         reqObj.setPassword("123456789");
         reqObj.setDeviceInfo("XXXXXXXXXXX");

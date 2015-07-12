@@ -22,6 +22,7 @@ public class SmsSendUtils {
     private static final String ACCOUNT = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_ACCOUNT);
     private static final String PASSWORD = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_PASSWORD);
     private static final boolean SMS_ENABLE = ConfigUtils.getConfig().getBoolean(ConfigUtils.SMS_ENABLE);
+    private static final String SHORT_URL = ConfigUtils.getConfig().getString(ConfigUtils.ANDRIOD_LATEST_SHORTURL);
 
     public static boolean sendSignupAuthCode(String mobilePhone, String authCode) {
         // TODO
@@ -43,7 +44,7 @@ public class SmsSendUtils {
 
     public static boolean sendLogResellerSuccess(String mobilePhone, String initPwd) {
         // TODO
-        String content = "恭喜您已经成为亚亨蓄电池经销商，初始密码为" + initPwd;
+        String content = "恭喜您已经成为亚亨蓄电池经销商，初始密码为" + initPwd + "，请点击下载"  + SHORT_URL ;
         return sendSms(mobilePhone, content);
     }
 
@@ -55,10 +56,10 @@ public class SmsSendUtils {
 
     public static boolean sendBuyInfo(String mobilePhone) {
         // TODO
-        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪。";
+        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪，请点击下载"  + SHORT_URL;
         return sendSms(mobilePhone, content);
     }
-    
+
     public static boolean sendWarningMsg(String mobilePhone, String btyImei) {
         // TODO
         String content = "您的电池IMEI" + btyImei + "温度或电压出现异常，请登录APP查看。";

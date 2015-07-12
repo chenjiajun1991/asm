@@ -19,6 +19,7 @@ public class ConfigUtils {
 
     public static final String ANDROID_LATEST_VERSION = "android.latest.version";
     public static final String ANDRIOD_LATEST_DOWNLOADURL = "android.latest.downloadurl";
+    public static final String ANDRIOD_LATEST_SHORTURL = "android.latest.shortUrl";
 
     public static PropertiesConfiguration getConfig() {
         if (config == null) {

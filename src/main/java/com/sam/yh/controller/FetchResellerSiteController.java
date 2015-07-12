@@ -2,6 +2,7 @@ package com.sam.yh.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.AppVersionUtils;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchResellerException;
+import com.sam.yh.enums.AppVersionStatus;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.req.bean.FetchResellerReq;
 import com.sam.yh.resp.bean.ResellerSiteResp;
@@ -37,6 +40,11 @@ public class FetchResellerSiteController {
         FetchResellerReq req = JSON.parseObject(jsonReq, FetchResellerReq.class);
 
         try {
+            AppVersionStatus verStatus = AppVersionUtils.checkVersion(req);
+            if (StringUtils.equals(AppVersionStatus.FORCE_UPDATE.getStatus(), verStatus.getStatus())) {
+                return ResponseUtils.getForceUpdateResp();
+            }
+
             validateResellerArgs(req);
 
             Reseller reseller = resellerService.fetchReseller(req.getResellerPhone());

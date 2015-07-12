@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.AppVersionUtils;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.BtyFollowException;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.enums.AppVersionStatus;
 import com.sam.yh.req.bean.BtyFollowReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
@@ -37,6 +39,11 @@ public class FollowUserBtyController {
         BtyFollowReq req = JSON.parseObject(jsonReq, BtyFollowReq.class);
 
         try {
+            AppVersionStatus verStatus = AppVersionUtils.checkVersion(req);
+            if (StringUtils.equals(AppVersionStatus.FORCE_UPDATE.getStatus(), verStatus.getStatus())) {
+                return ResponseUtils.getForceUpdateResp();
+            }
+
             validateBtyFollowArgs(req);
 
             userService.followBty(req.getUserPhone(), req.getBtyPubSn(), req.getBtyOwnerPhone());

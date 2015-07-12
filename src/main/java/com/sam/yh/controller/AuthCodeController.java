@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.AppVersionUtils;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
+import com.sam.yh.enums.AppVersionStatus;
 import com.sam.yh.enums.UserCodeType;
 import com.sam.yh.req.bean.SmsAuthCodeReq;
 import com.sam.yh.resp.bean.ResponseUtils;
@@ -39,6 +41,11 @@ public class AuthCodeController {
         SmsAuthCodeReq req = JSON.parseObject(jsonReq, SmsAuthCodeReq.class);
 
         try {
+            AppVersionStatus verStatus = AppVersionUtils.checkVersion(req);
+            if (StringUtils.equals(AppVersionStatus.FORCE_UPDATE.getStatus(), verStatus.getStatus())) {
+                return ResponseUtils.getForceUpdateResp();
+            }
+
             validateSmsArgs(req);
             int type = Integer.valueOf(req.getAuthType());
             if (type == UserCodeType.SIGNUP_CODE.getType()) {

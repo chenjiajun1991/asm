@@ -2,9 +2,7 @@ package com.sam.yh.common.msg;
 
 import java.io.StringReader;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
@@ -32,14 +30,12 @@ public class FetchReplaySmsTask {
 
     public void run() {
         String respInfo = CtcSmsUtils.getSms();
-        Map<String, ReplaySms> smsMap = parseResp(respInfo);
+        List<ReplaySms> smsMap = parseResp(respInfo);
         forwardSmsByMail(smsMap);
 
     }
 
-    private Map<String, ReplaySms> parseResp(String respInfo) {
-        Map<String, ReplaySms> msgs = new HashMap<String, ReplaySms>();
-
+    private List<ReplaySms> parseResp(String respInfo) {
         SmsReplayResp resp = null;
         try {
             JAXBContext context = JAXBContext.newInstance(SmsReplayResp.class);
@@ -51,17 +47,13 @@ public class FetchReplaySmsTask {
         }
 
         if (resp == null || resp.getResult() != 0) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
-        for (ReplaySms sms : resp.getSms()) {
-            msgs.put(sms.getPhone(), sms);
-
-        }
-        return msgs;
+        return resp.getSms();
     }
 
-    private void forwardSmsByMail(Map<String, ReplaySms> smsMap) {
-        for (Entry<String, ReplaySms> sms : smsMap.entrySet()) {
+    private void forwardSmsByMail(List<ReplaySms> msgs) {
+        for (ReplaySms sms : msgs) {
             JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
             // 设定mail server
             senderImpl.setHost(HOST);
@@ -78,8 +70,8 @@ public class FetchReplaySmsTask {
 
             mailMessage.setTo(REVEIVER);
             mailMessage.setFrom(SENDER);
-            mailMessage.setSubject(sms.getKey());
-            mailMessage.setText("用户回复消息，时间：" + sms.getValue().getDelivertime() + "，内容：" + sms.getValue().getContent());
+            mailMessage.setSubject(sms.getPhone());
+            mailMessage.setText("用户回复消息，时间：" + sms.getDelivertime() + "，内容：" + sms.getContent());
 
             // 发送邮件
             senderImpl.send(mailMessage);

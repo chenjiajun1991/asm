@@ -65,7 +65,7 @@
 	<!-- spring框架的Scheduled定时器 -->
 	<task:scheduled-tasks>
 		<task:scheduled ref="fetchReplaySmsTask" method="run"
-			cron="0 */2 * * * ?" />
+			cron="0 */10 * * * ?" />
 	</task:scheduled-tasks>
 
 </beans> 

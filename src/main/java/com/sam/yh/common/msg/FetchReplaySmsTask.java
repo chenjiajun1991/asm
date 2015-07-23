@@ -32,7 +32,6 @@ public class FetchReplaySmsTask {
 
     public void run() {
         String respInfo = CtcSmsUtils.getSms();
-        respInfo = "<?xml version='1.0' encoding='utf-8'?> <response> <result>0</result> <desc>ip鉴权失败</desc> <sms> <phone>15618672987</phone> <content>xxxxxxxxx</content> <subcode>xxxxx</subcode> <delivertime>xxxxxx</delivertime> </sms> <sms> <phone>13916253957</phone> <content>yyyyy</content> <subcode>yyyyyy</subcode> <delivertime>yyyyyyy</delivertime> </sms> </response>";
         Map<String, ReplaySms> smsMap = parseResp(respInfo);
         forwardSmsByMail(smsMap);
 

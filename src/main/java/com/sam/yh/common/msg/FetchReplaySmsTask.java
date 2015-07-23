@@ -53,6 +53,9 @@ public class FetchReplaySmsTask {
     }
 
     private void forwardSmsByMail(List<ReplaySms> msgs) {
+        if (msgs == null) {
+            return;
+        }
         for (ReplaySms sms : msgs) {
             JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
             // 设定mail server

@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import com.ctc.smscloud.xml.webservice.utils.WebServiceXmlClientUtil;
 import com.sam.yh.common.ConfigUtils;
 
-public class SmsSendUtils {
+public class CtcSmsUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(SmsSendUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(CtcSmsUtils.class);
 
     private static final String SERVERURL = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_SERVERURL);
     private static final String ACCOUNT = ConfigUtils.getConfig().getString(ConfigUtils.DAHANT_ACCOUNT);
@@ -44,7 +44,7 @@ public class SmsSendUtils {
 
     public static boolean sendLogResellerSuccess(String mobilePhone, String initPwd) {
         // TODO
-        String content = "恭喜您已经成为亚亨蓄电池经销商，初始密码为" + initPwd + "，请点击下载"  + SHORT_URL ;
+        String content = "恭喜您已经成为亚亨蓄电池经销商，初始密码为" + initPwd + "，请点击下载" + SHORT_URL;
         return sendSms(mobilePhone, content);
     }
 
@@ -56,7 +56,7 @@ public class SmsSendUtils {
 
     public static boolean sendBuyInfo(String mobilePhone) {
         // TODO
-        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪，请点击下载"  + SHORT_URL;
+        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪，请点击下载" + SHORT_URL;
         return sendSms(mobilePhone, content);
     }
 
@@ -118,6 +118,15 @@ public class SmsSendUtils {
         WebServiceXmlClientUtil.setServerUrl(SERVERURL);
         logger.info("send sms to " + mobilePhone + ", msgid:" + msgid);
         String respInfo = WebServiceXmlClientUtil.getReport(ACCOUNT, PASSWORD, msgid, mobilePhone);
+        logger.info(respInfo);
+
+        return respInfo;
+    }
+
+    public static String getSms() {
+        WebServiceXmlClientUtil.setServerUrl(SERVERURL);
+        logger.info("get user repaly sms");
+        String respInfo = WebServiceXmlClientUtil.getSms(ACCOUNT, PASSWORD);
         logger.info(respInfo);
 
         return respInfo;

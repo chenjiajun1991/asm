@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
-import com.sam.yh.common.msg.SmsSendUtils;
+import com.sam.yh.common.msg.CtcSmsUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchResellerException;
 import com.sam.yh.crud.exception.LoggingResellerException;
@@ -106,7 +106,7 @@ public class ResellerServiceImpl implements ResellerService {
 
         userBatteryMapper.insert(userBattery);
 
-        SmsSendUtils.sendBuyInfo(submitBtySpecReq.getUserPhone());
+        CtcSmsUtils.sendBuyInfo(submitBtySpecReq.getUserPhone());
 
     }
 
@@ -171,7 +171,7 @@ public class ResellerServiceImpl implements ResellerService {
                 userMapper.updateByPrimaryKeySelective(user);
 
                 createReseller(user.getUserId(), logResellerReq);
-                SmsSendUtils.sendLogResellerSuccess(resellerPhone);
+                CtcSmsUtils.sendLogResellerSuccess(resellerPhone);
             }
         } else {
             createUser(logResellerReq);
@@ -200,7 +200,7 @@ public class ResellerServiceImpl implements ResellerService {
 
         createReseller(user.getUserId(), logResellerReq);
 
-        SmsSendUtils.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
+        CtcSmsUtils.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
     }
 
     private void createReseller(int userId, LogResellerReq logResellerReq) {

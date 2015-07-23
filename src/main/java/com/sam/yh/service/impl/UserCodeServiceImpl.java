@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
-import com.sam.yh.common.msg.SmsSendUtils;
+import com.sam.yh.common.msg.CtcSmsUtils;
 import com.sam.yh.crud.exception.AuthCodeSendException;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
@@ -37,7 +37,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             throw new UserSignupException("手机号码已经注册");
         }
         String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
-        return SmsSendUtils.sendSignupAuthCode(mobilePhone, authCode);
+        return CtcSmsUtils.sendSignupAuthCode(mobilePhone, authCode);
     }
 
     @Override
@@ -47,12 +47,12 @@ public class UserCodeServiceImpl implements UserCodeService {
             throw new UserSignupException("未注册的手机号码");
         }
         String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType());
-        return SmsSendUtils.sendResetPwdAuthCode(mobilePhone, authCode);
+        return CtcSmsUtils.sendResetPwdAuthCode(mobilePhone, authCode);
     }
 
     @Override
     public boolean sendTestAuthCode(String mobilePhone) throws CrudException {
-        return SmsSendUtils.sendTestSms(mobilePhone, "123456");
+        return CtcSmsUtils.sendTestSms(mobilePhone, "123456");
     }
 
     @Override
@@ -182,7 +182,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         }
 
         if (send) {
-            SmsSendUtils.sendWarningMsg(mobilePhone, btyImei);
+            CtcSmsUtils.sendWarningMsg(mobilePhone, btyImei);
         }
 
         return send;

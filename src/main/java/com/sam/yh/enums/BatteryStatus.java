@@ -2,9 +2,10 @@ package com.sam.yh.enums;
 
 public enum BatteryStatus {
 
-    NORMAL("1", "正常"), 
-    V_ABNORMAL("2", "电压异常"), 
-    T_ABNORMAL("3", "温度异常");
+    NORMAL("0", "正常"), 
+    V_ABNORMAL("1", "电压异常"), 
+    T_ABNORMAL("2", "温度异常"), 
+    LOCKED("3", "电池锁定");
 
     private String status;
     private String desc;

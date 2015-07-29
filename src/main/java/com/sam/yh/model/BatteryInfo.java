@@ -3,7 +3,7 @@ package com.sam.yh.model;
 import java.util.Date;
 
 public class BatteryInfo {
-    private Integer id;
+    private Long id;
 
     private Integer batteryId;
 
@@ -15,17 +15,17 @@ public class BatteryInfo {
 
     private String voltage;
 
-    private Boolean status;
+    private String status;
 
     private Date receiveDate;
 
     private Date sampleDate;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -69,11 +69,11 @@ public class BatteryInfo {
         this.voltage = voltage == null ? null : voltage.trim();
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

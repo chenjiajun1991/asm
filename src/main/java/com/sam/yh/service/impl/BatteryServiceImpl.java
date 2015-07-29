@@ -12,6 +12,7 @@ import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.UserMapper;
+import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.User;
@@ -63,13 +64,13 @@ public class BatteryServiceImpl implements BatteryService {
         // TODO
         // info.setSampleDate(batteryInfoReqVo.getSampleDate());
         info.setSampleDate(new Date());
-        boolean status = getBatteryStatus(batteryInfoReqVo);
-        info.setStatus(status);
+        BatteryStatus status = getBatteryStatus(batteryInfoReqVo);
+        info.setStatus(status.getStatus());
         info.setReceiveDate(new Date());
 
         batteryInfoMapper.insert(info);
 
-        if (!status) {
+        if (BatteryStatus.T_ABNORMAL.getStatus().equals(status.getStatus()) || BatteryStatus.V_ABNORMAL.getStatus().equals(status.getStatus())) {
             sendWarningMsg(battery);
         }
 
@@ -86,16 +87,16 @@ public class BatteryServiceImpl implements BatteryService {
         return String.valueOf(vol);
     }
 
-    private boolean getBatteryStatus(BatteryInfoReq batteryInfoReqVo) {
-        boolean status = true;
+    private BatteryStatus getBatteryStatus(BatteryInfoReq batteryInfoReqVo) {
+        BatteryStatus status = BatteryStatus.NORMAL;
         String adcTmp = batteryInfoReqVo.getTemperature();
         if (TempUtils.isWarning(adcTmp)) {
-            status = false;
+            status = BatteryStatus.T_ABNORMAL;
         }
 
         float adcVol = Float.valueOf(batteryInfoReqVo.getVoltage());
         if (adcVol < 10 || adcVol > 90) {
-            status = false;
+            status = BatteryStatus.V_ABNORMAL;
         }
 
         return status;

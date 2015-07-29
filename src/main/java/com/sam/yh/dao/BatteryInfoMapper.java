@@ -6,13 +6,13 @@ import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.resp.bean.ResellerBtyInfo;
 
 public interface BatteryInfoMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(BatteryInfo record);
 
     int insertSelective(BatteryInfo record);
 
-    BatteryInfo selectByPrimaryKey(Integer id);
+    BatteryInfo selectByPrimaryKey(Long id);
 
     BatteryInfo selectByBtyId(Integer btyId);
 

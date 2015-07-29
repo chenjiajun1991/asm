@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sam.yh.dao.BatteryInfoMapper" >
   <resultMap id="BaseResultMap" type="com.sam.yh.model.BatteryInfo" >
-    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="battery_id" property="batteryId" jdbcType="INTEGER" />
     <result column="longitude" property="longitude" jdbcType="VARCHAR" />
     <result column="latitude" property="latitude" jdbcType="VARCHAR" />
     <result column="temperature" property="temperature" jdbcType="VARCHAR" />
     <result column="voltage" property="voltage" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="CHAR" />
     <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
     <result column="sample_date" property="sampleDate" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -16,11 +16,11 @@
     id, battery_id, longitude, latitude, temperature, voltage, status, receive_date, 
     sample_date
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from battery_info
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -44,18 +44,18 @@
     GROUP BY bi.battery_id) gb
     on i.id = gb.id
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from battery_info
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.BatteryInfo" >
     insert into battery_info (id, battery_id, longitude, 
       latitude, temperature, voltage, 
       status, receive_date, sample_date
       )
-    values (#{id,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{batteryId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=VARCHAR}, #{temperature,jdbcType=VARCHAR}, #{voltage,jdbcType=VARCHAR}, 
-      #{status,jdbcType=BIT}, #{receiveDate,jdbcType=TIMESTAMP}, #{sampleDate,jdbcType=TIMESTAMP}
+      #{status,jdbcType=CHAR}, #{receiveDate,jdbcType=TIMESTAMP}, #{sampleDate,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.sam.yh.model.BatteryInfo" >
@@ -91,7 +91,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=BIGINT},
       </if>
       <if test="batteryId != null" >
         #{batteryId,jdbcType=INTEGER},
@@ -109,7 +109,7 @@
         #{voltage,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
-        #{status,jdbcType=BIT},
+        #{status,jdbcType=CHAR},
       </if>
       <if test="receiveDate != null" >
         #{receiveDate,jdbcType=TIMESTAMP},

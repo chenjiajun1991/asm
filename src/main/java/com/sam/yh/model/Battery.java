@@ -27,11 +27,15 @@ public class Battery {
 
     private Integer cityId;
 
+    private String lockLongitude;
+
+    private String lockLatitude;
+
     private Date createDate;
 
     private Date saleDate;
 
-    private Date warningDate;
+    private Date lockDate;
 
     private Date expiryDate;
 
@@ -131,6 +135,22 @@ public class Battery {
         this.cityId = cityId;
     }
 
+    public String getLockLongitude() {
+        return lockLongitude;
+    }
+
+    public void setLockLongitude(String lockLongitude) {
+        this.lockLongitude = lockLongitude == null ? null : lockLongitude.trim();
+    }
+
+    public String getLockLatitude() {
+        return lockLatitude;
+    }
+
+    public void setLockLatitude(String lockLatitude) {
+        this.lockLatitude = lockLatitude == null ? null : lockLatitude.trim();
+    }
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -147,12 +167,12 @@ public class Battery {
         this.saleDate = saleDate;
     }
 
-    public Date getWarningDate() {
-        return warningDate;
+    public Date getLockDate() {
+        return lockDate;
     }
 
-    public void setWarningDate(Date warningDate) {
-        this.warningDate = warningDate;
+    public void setLockDate(Date lockDate) {
+        this.lockDate = lockDate;
     }
 
     public Date getExpiryDate() {

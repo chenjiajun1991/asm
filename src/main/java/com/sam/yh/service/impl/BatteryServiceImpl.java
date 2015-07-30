@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.ConfigUtils;
+import com.sam.yh.common.DistanceUtils;
 import com.sam.yh.common.TempUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtyInfoException;
@@ -74,6 +76,14 @@ public class BatteryServiceImpl implements BatteryService {
             sendWarningMsg(battery);
         }
 
+        if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())) {
+            long moveDis = (long) DistanceUtils.GetDistance(batteryInfoReqVo.getLongitude(), batteryInfoReqVo.getLatitude(), battery.getLockLongitude(),
+                    battery.getLockLatitude());
+            if (moveDis > ConfigUtils.getConfig().getLong(ConfigUtils.MOVE_DISTANCE)) {
+                sendMovingMsg(battery);
+            }
+        }
+
         return battery;
     }
 
@@ -107,6 +117,13 @@ public class BatteryServiceImpl implements BatteryService {
         UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
         User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
         userCodeService.sendWarningMsg(user.getMobilePhone(), battery.getImei());
+    }
+
+    private void sendMovingMsg(Battery battery) throws CrudException {
+
+        UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
+        User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+        userCodeService.sendMovingMsg(user.getMobilePhone(), battery.getImei());
     }
 
     @Override

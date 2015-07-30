@@ -28,4 +28,7 @@ public interface UserCodeService {
     @Transactional
     public boolean sendWarningMsg(String mobilePhone, String btyImei) throws CrudException;
 
+    @Transactional
+    public boolean sendMovingMsg(String mobilePhone, String btyImei) throws CrudException;
+
 }

@@ -66,6 +66,12 @@ public class CtcSmsUtils {
         return sendSms(mobilePhone, content);
     }
 
+    public static boolean sendMovingMsg(String mobilePhone, String btyImei) {
+        // TODO
+        String content = "您的电池IMEI" + btyImei + "设置位置锁定后发生异常移动，请登录APP查看最新地点。";
+        return sendSms(mobilePhone, content);
+    }
+
     private static boolean sendSms(final String mobilePhone, String content) {
         logger.info("send sms to " + mobilePhone + ", content:" + content);
         if (!SMS_ENABLE) {

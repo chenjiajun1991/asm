@@ -26,9 +26,8 @@
     select 
     <include refid="Base_Column_List" />
     from battery_info
-    where battery_id = #{btyId,jdbcType=INTEGER}
-    order by sample_date desc
-    limit 1
+    where id = 
+    (select max(id) from battery_info where battery_id = #{btyId,jdbcType=INTEGER})
   </select>
   <select id="selectByReseller" resultType="com.sam.yh.resp.bean.ResellerBtyInfo" parameterType="java.lang.Integer" >
     select 

@@ -26,6 +26,8 @@ public class ConfigUtils {
     public static final String MAIL_USERNAME = "mail.username";
     public static final String MAIL_PASSWORD = "mail.password";
     public static final String MAIL_REVEIVER ="mail.receiver";
+    
+    public static final String MOVE_DISTANCE = "move.distance";
 
     public static PropertiesConfiguration getConfig() {
         if (config == null) {

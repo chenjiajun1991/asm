@@ -14,14 +14,16 @@
     <result column="reseller_id" property="resellerId" jdbcType="INTEGER" />
     <result column="sale_status" property="saleStatus" jdbcType="BIT" />
     <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="lock_longitude" property="lockLongitude" jdbcType="VARCHAR" />
+    <result column="lock_latitude" property="lockLatitude" jdbcType="VARCHAR" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="sale_date" property="saleDate" jdbcType="TIMESTAMP" />
-    <result column="warning_date" property="warningDate" jdbcType="TIMESTAMP" />
+    <result column="lock_date" property="lockDate" jdbcType="TIMESTAMP" />
     <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, sn, status, bty_type, pub_sn, imei, sim_no, imsi, gsim_no, reseller_id, sale_status, city_id, 
-    create_date, sale_date, warning_date, expiry_date
+    lock_longitude, lock_latitude, create_date, sale_date, lock_date, expiry_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -71,14 +73,16 @@
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
     insert into battery (sn, status, 
-      bty_type, pub_sn, imei, sim_no, imsi, gsim_no,
+      bty_type, pub_sn, imei, sim_no, imsi, gsim_no, 
       reseller_id, sale_status, city_id, 
-      create_date, sale_date, warning_date, 
+      lock_longitude, lock_latitude, 
+      create_date, sale_date, lock_date, 
       expiry_date)
     values (#{sn,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
       #{btyType,jdbcType=BIT}, #{pubSn,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, #{gsmSimNo,jdbcType=VARCHAR},
       #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{cityId,jdbcType=INTEGER}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{warningDate,jdbcType=TIMESTAMP}, 
+      #{lockLongitude,jdbcType=VARCHAR}, #{lockLatitude,jdbcType=VARCHAR},
+      #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{lockDate,jdbcType=TIMESTAMP}, 
       #{expiryDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
@@ -117,14 +121,20 @@
       <if test="cityId != null" >
         city_id,
       </if>
+      <if test="lockLongitude != null" >
+        lock_longitude,
+      </if>
+      <if test="lockLatitude != null" >
+        lock_latitude,
+      </if>
       <if test="createDate != null" >
         create_date,
       </if>
       <if test="saleDate != null" >
         sale_date,
       </if>
-      <if test="warningDate != null" >
-        warning_date,
+      <if test="lockDate != null" >
+        lock_date,
       </if>
       <if test="expiryDate != null" >
         expiry_date,
@@ -164,14 +174,20 @@
       <if test="cityId != null" >
         #{cityId,jdbcType=INTEGER},
       </if>
+      <if test="lockLongitude != null" >
+        #{lockLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="lockLatitude != null" >
+        #{lockLatitude,jdbcType=VARCHAR},
+      </if>
       <if test="createDate != null" >
         #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="saleDate != null" >
         #{saleDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="warningDate != null" >
-        #{warningDate,jdbcType=TIMESTAMP},
+      <if test="lockDate != null" >
+        #{lockDate,jdbcType=TIMESTAMP},
       </if>
       <if test="expiryDate != null" >
         #{expiryDate,jdbcType=TIMESTAMP},
@@ -214,14 +230,20 @@
       <if test="cityId != null" >
         city_id = #{cityId,jdbcType=INTEGER},
       </if>
+      <if test="lockLongitude != null" >
+        lock_longitude =  #{lockLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="lockLatitude != null" >
+        lock_latitude = #{lockLatitude,jdbcType=VARCHAR},
+      </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
       <if test="saleDate != null" >
         sale_date = #{saleDate,jdbcType=TIMESTAMP},
       </if>
-      <if test="warningDate != null" >
-        warning_date = #{warningDate,jdbcType=TIMESTAMP},
+      <if test="lockDate != null" >
+        lock_date = #{lockDate,jdbcType=TIMESTAMP},
       </if>
       <if test="expiryDate != null" >
         expiry_date = #{expiryDate,jdbcType=TIMESTAMP},
@@ -242,9 +264,11 @@
       reseller_id = #{resellerId,jdbcType=INTEGER},
       sale_status = #{saleStatus,jdbcType=BIT},
       city_id = #{cityId,jdbcType=INTEGER},
+      lock_longitude =  #{lockLongitude,jdbcType=VARCHAR},
+      lock_latitude = #{lockLatitude,jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       sale_date = #{saleDate,jdbcType=TIMESTAMP},
-      warning_date = #{warningDate,jdbcType=TIMESTAMP},
+      lock_date = #{lockDate,jdbcType=TIMESTAMP},
       expiry_date = #{expiryDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>

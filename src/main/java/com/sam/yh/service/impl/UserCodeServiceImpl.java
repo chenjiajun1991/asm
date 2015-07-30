@@ -152,8 +152,28 @@ public class UserCodeServiceImpl implements UserCodeService {
     @Override
     public boolean sendWarningMsg(String mobilePhone, String btyImei) throws CrudException {
 
-        boolean send = false;
         int type = UserCodeType.BTY_WARNING.getType();
+        boolean send = needToSendMsg(mobilePhone, btyImei, type);
+        if (send) {
+            CtcSmsUtils.sendWarningMsg(mobilePhone, btyImei);
+        }
+
+        return send;
+    }
+
+    @Override
+    public boolean sendMovingMsg(String mobilePhone, String btyImei) throws CrudException {
+        int type = UserCodeType.BTY_MOVING.getType();
+        boolean send = needToSendMsg(mobilePhone, btyImei, type);
+        if (send) {
+            CtcSmsUtils.sendMovingMsg(mobilePhone, btyImei);
+        }
+
+        return send;
+    }
+
+    private boolean needToSendMsg(String mobilePhone, String btyImei, int type) {
+        boolean send = false;
         UserCode userCode = fetchByUserName(btyImei, type);
 
         Date now = new Date();
@@ -180,11 +200,6 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCodeMapper.updateByPrimaryKey(userCode);
             send = true;
         }
-
-        if (send) {
-            CtcSmsUtils.sendWarningMsg(mobilePhone, btyImei);
-        }
-
         return send;
     }
 

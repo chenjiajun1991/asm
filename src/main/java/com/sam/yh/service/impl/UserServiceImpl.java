@@ -18,14 +18,17 @@ import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
 import com.sam.yh.crud.exception.BtyFollowException;
+import com.sam.yh.crud.exception.BtyLockException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.PwdResetException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserFollowMapper;
 import com.sam.yh.dao.UserMapper;
+import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.enums.UserCodeType;
 import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
@@ -56,6 +59,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private BatteryMapper batteryMapper;
 
     @Resource
     private BatteryInfoMapper batteryInfoMapper;
@@ -378,4 +384,63 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void lockBty(String mobilePhone, String btyPubSn) throws CrudException {
+        User owner = fetchUserByPhone(mobilePhone);
+        if (owner == null) {
+            throw new BtyLockException("用户不存在");
+        }
+
+        Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
+        if (battery == null) {
+            throw new BtyLockException("电池不存在");
+        }
+        UserBatteryKey key = new UserBatteryKey();
+        key.setUserId(owner.getUserId());
+        key.setBatteryId(battery.getId());
+        UserBattery userBattery = userBatteryMapper.selectByPrimaryKey(key);
+        if (userBattery == null) {
+            throw new BtyLockException("只能锁定自己购买的电池");
+        }
+
+        if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())) {
+            throw new BtyLockException("电池已经锁定，请先解锁");
+        }
+
+        BatteryInfo latestInfo = batteryInfoMapper.selectByBtyId(battery.getId());
+
+        battery.setStatus(BatteryStatus.LOCKED.getStatus());
+        battery.setLockLongitude(latestInfo.getLongitude());
+        battery.setLockLatitude(latestInfo.getLatitude());
+        battery.setLockDate(new Date());
+
+        batteryMapper.updateByPrimaryKeySelective(battery);
+
+    }
+
+    @Override
+    public void unlockBty(String mobilePhone, String btyPubSn) throws CrudException {
+        User owner = fetchUserByPhone(mobilePhone);
+        if (owner == null) {
+            throw new BtyLockException("用户不存在");
+        }
+
+        Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
+        if (battery == null) {
+            throw new BtyLockException("电池不存在");
+        }
+        UserBatteryKey key = new UserBatteryKey();
+        key.setUserId(owner.getUserId());
+        key.setBatteryId(battery.getId());
+        UserBattery userBattery = userBatteryMapper.selectByPrimaryKey(key);
+        if (userBattery == null) {
+            throw new BtyLockException("只能解锁自己购买的电池");
+        }
+
+        battery.setStatus(BatteryStatus.NORMAL.getStatus());
+        battery.setLockDate(new Date());
+
+        batteryMapper.updateByPrimaryKeySelective(battery);
+
+    }
 }

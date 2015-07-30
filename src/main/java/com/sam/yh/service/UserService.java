@@ -40,5 +40,11 @@ public interface UserService {
     @Transactional
     public void unfollowBty(String mobilePhone, String btyPubSn) throws CrudException;
 
+    @Transactional
+    public void lockBty(String mobilePhone, String btyPubSn) throws CrudException;
+
+    @Transactional
+    public void unlockBty(String mobilePhone, String btyPubSn) throws CrudException;
+
     public String getUserType(String mobilePhone) throws CrudException;
 }

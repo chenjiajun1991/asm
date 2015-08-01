@@ -46,7 +46,7 @@ public class BtyLockTest {
         // reqObj.setDeviceType("android");
         // reqObj.setVersion("0.0.1");
         reqObj.setUserPhone("15618672987");
-        reqObj.setBtyPubSn("A10001");
+        reqObj.setBtyImei("A10001");
         String jsonReq = JSON.toJSONString(reqObj);
         logger.info("Reuqest json String:" + jsonReq);
 

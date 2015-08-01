@@ -3,7 +3,7 @@ package com.sam.yh.req.bean;
 public class BtyLockReq {
 
     private String userPhone;
-    private String btyPubSn;
+    private String btyImei;
 
     public String getUserPhone() {
         return userPhone;
@@ -13,12 +13,12 @@ public class BtyLockReq {
         this.userPhone = userPhone;
     }
 
-    public String getBtyPubSn() {
-        return btyPubSn;
+    public String getBtyImei() {
+        return btyImei;
     }
 
-    public void setBtyPubSn(String btyPubSn) {
-        this.btyPubSn = btyPubSn;
+    public void setBtyImei(String btyImei) {
+        this.btyImei = btyImei;
     }
 
 }

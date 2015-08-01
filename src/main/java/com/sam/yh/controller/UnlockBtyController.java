@@ -39,7 +39,7 @@ public class UnlockBtyController {
         try {
             validateBtyUnlockArgs(req);
 
-            userService.unlockBty(req.getUserPhone().trim(), req.getBtyPubSn().trim());
+            userService.unlockBty(req.getUserPhone().trim(), req.getBtyImei().trim());
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
         } catch (IllegalParamsException e) {
@@ -61,7 +61,7 @@ public class UnlockBtyController {
         if (!MobilePhoneUtils.isValidPhone(btyLockReq.getUserPhone())) {
             throw new IllegalParamsException("请输入正确的手机号码");
         }
-        if (StringUtils.isBlank(btyLockReq.getBtyPubSn())) {
+        if (StringUtils.isBlank(btyLockReq.getBtyImei())) {
             throw new IllegalParamsException("不存在的电池");
         }
     }

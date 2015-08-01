@@ -385,13 +385,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void lockBty(String mobilePhone, String btyPubSn) throws CrudException {
+    public void lockBty(String mobilePhone, String btyImei) throws CrudException {
         User owner = fetchUserByPhone(mobilePhone);
         if (owner == null) {
             throw new BtyLockException("用户不存在");
         }
 
-        Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
+        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
         if (battery == null) {
             throw new BtyLockException("电池不存在");
         }
@@ -419,13 +419,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void unlockBty(String mobilePhone, String btyPubSn) throws CrudException {
+    public void unlockBty(String mobilePhone, String btyImei) throws CrudException {
         User owner = fetchUserByPhone(mobilePhone);
         if (owner == null) {
             throw new BtyLockException("用户不存在");
         }
 
-        Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
+        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
         if (battery == null) {
             throw new BtyLockException("电池不存在");
         }

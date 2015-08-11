@@ -20,14 +20,19 @@ public class ConfigUtils {
     public static final String ANDROID_LATEST_VERSION = "android.latest.version";
     public static final String ANDRIOD_LATEST_DOWNLOADURL = "android.latest.downloadurl";
     public static final String ANDRIOD_LATEST_SHORTURL = "android.latest.shortUrl";
-    
+
     public static final String MAIL_HOST = "mail.host";
     public static final String MAIL_SENDER = "mail.sender";
     public static final String MAIL_USERNAME = "mail.username";
     public static final String MAIL_PASSWORD = "mail.password";
-    public static final String MAIL_REVEIVER ="mail.receiver";
-    
+    public static final String MAIL_REVEIVER = "mail.receiver";
+
     public static final String MOVE_DISTANCE = "move.distance";
+
+    public static final String M2M_URL = "m2m.url";
+    public static final String M2M_USERNAME = "m2m.username";
+    public static final String M2M_PASSWORD = "m2m.password";
+    public static final String M2M_APIKEY = "m2m.apikey";
 
     public static PropertiesConfiguration getConfig() {
         if (config == null) {

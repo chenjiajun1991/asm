@@ -21,6 +21,8 @@ public class Battery {
 
     private String gsmSimNo;
 
+    private String iccid;
+
     private Integer resellerId;
 
     private Boolean saleStatus;
@@ -109,6 +111,14 @@ public class Battery {
 
     public void setGsmSimNo(String gsmSimNo) {
         this.gsmSimNo = gsmSimNo == null ? null : gsmSimNo.trim();
+    }
+
+    public String getIccid() {
+        return iccid;
+    }
+
+    public void setIccid(String iccid) {
+        this.iccid = iccid == null ? null : iccid.trim();
     }
 
     public Integer getResellerId() {

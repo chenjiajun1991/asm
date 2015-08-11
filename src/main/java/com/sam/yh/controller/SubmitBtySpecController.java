@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.crud.exception.M2mEditTermalException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
 import com.sam.yh.resp.bean.ResponseUtils;
@@ -48,6 +49,8 @@ public class SubmitBtySpecController {
             logger.error("signin exception, " + req.getUserPhone(), e);
             if (e instanceof SubmitBtySpecException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
+            } else if (e instanceof M2mEditTermalException) {
+                return ResponseUtils.getServiceErrorResp("云电池Sim卡激活失败，请联系客服。");
             } else {
                 return ResponseUtils.getSysErrorResp();
             }

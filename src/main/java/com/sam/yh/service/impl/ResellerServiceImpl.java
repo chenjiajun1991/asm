@@ -37,6 +37,7 @@ import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
 import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
+import com.sam.yh.unicom.sim.UnicomM2mUtils;
 
 @Service
 public class ResellerServiceImpl implements ResellerService {
@@ -86,6 +87,8 @@ public class ResellerServiceImpl implements ResellerService {
             throw new SubmitBtySpecException("经销商信息未添加");
         }
 
+        String iccid = UnicomM2mUtils.activateSimCard(submitBtySpecReq.getBtySimNo());
+
         //
         User user = userService.fetchUserByPhone(submitBtySpecReq.getUserPhone());
         if (user == null) {
@@ -95,7 +98,7 @@ public class ResellerServiceImpl implements ResellerService {
 
         //
         boolean isCloudBty = true;
-        Battery battery = addBattery(submitBtySpecReq.getBtySN(), submitBtySpecReq.getBtyImei(), submitBtySpecReq.getBtySimNo(), isCloudBty,
+        Battery battery = addBattery(submitBtySpecReq.getBtySN(), submitBtySpecReq.getBtyImei(), submitBtySpecReq.getBtySimNo(), iccid, isCloudBty,
                 reseller.getUserId(), reseller.getCityId());
 
         //
@@ -131,12 +134,13 @@ public class ResellerServiceImpl implements ResellerService {
         return user;
     }
 
-    private Battery addBattery(String btySn, String imei, String simNo, boolean isCloudBty, int resellerId, int cityId) {
+    private Battery addBattery(String btySn, String imei, String simNo, String iccid, boolean isCloudBty, int resellerId, int cityId) {
         Date now = new Date();
         Battery battery = new Battery();
         battery.setSn(btySn);
         battery.setPubSn(RandomCodeUtils.genBtyPubSn());
         battery.setImei(imei);
+        battery.setIccid(iccid);
         battery.setSimNo(simNo);
         battery.setBtyType(isCloudBty);
         battery.setStatus(BatteryStatus.NORMAL.getStatus());

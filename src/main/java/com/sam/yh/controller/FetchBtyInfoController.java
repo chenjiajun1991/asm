@@ -69,7 +69,7 @@ public class FetchBtyInfoController {
     }
 
     private void validateBtyArgs(BtyInfoReq btyInfoReq) throws IllegalParamsException {
-        if (!MobilePhoneUtils.isValidPhone(btyInfoReq.getBtySimNo())) {
+        if (!MobilePhoneUtils.isValidM2MPhone(btyInfoReq.getBtySimNo())) {
             throw new IllegalParamsException("请输入正确的电池sim卡号");
         }
     }

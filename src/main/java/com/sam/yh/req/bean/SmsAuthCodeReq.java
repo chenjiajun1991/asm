@@ -4,6 +4,8 @@ public class SmsAuthCodeReq {
 
     private String userPhone;
     private String authType;
+    // test
+    private String content;
 
     public String getUserPhone() {
         return userPhone;
@@ -19,6 +21,14 @@ public class SmsAuthCodeReq {
 
     public void setAuthType(String authType) {
         this.authType = authType;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }

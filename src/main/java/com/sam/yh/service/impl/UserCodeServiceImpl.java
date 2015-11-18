@@ -51,8 +51,8 @@ public class UserCodeServiceImpl implements UserCodeService {
     }
 
     @Override
-    public boolean sendTestAuthCode(String mobilePhone) throws CrudException {
-        return CtcSmsUtils.sendTestSms(mobilePhone, "123456");
+    public boolean sendTestAuthCode(String mobilePhone, String content) throws CrudException {
+        return CtcSmsUtils.sendTestSms(mobilePhone, content);
     }
 
     @Override

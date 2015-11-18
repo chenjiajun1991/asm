@@ -31,7 +31,7 @@ public class AuthCodeController {
     @Autowired
     UserCodeService userCodeService;
 
-    @RequestMapping(value = "/sms", method = RequestMethod.POST)
+    @RequestMapping(value = "/sms", method = { RequestMethod.POST, RequestMethod.GET })
     public SamResponse sendSmsCode(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
 
         logger.info("Request json String:" + jsonReq);
@@ -55,7 +55,7 @@ public class AuthCodeController {
                 }
 
             } else if (type == UserCodeType.TEST_CODE.getType()) {
-                if (userCodeService.sendTestAuthCode(req.getUserPhone())) {
+                if (userCodeService.sendTestAuthCode(req.getUserPhone(), req.getContent())) {
                     return ResponseUtils.getNormalResp("短信已成功发送");
                 } else {
                     return ResponseUtils.getErrorResp("短信发送失败");

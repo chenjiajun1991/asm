@@ -17,7 +17,7 @@ public interface UserCodeService {
     public boolean sendResetPwdAuthCode(String mobilePhone) throws CrudException;
 
     @Transactional
-    public boolean sendTestAuthCode(String mobilePhone) throws CrudException;
+    public boolean sendTestAuthCode(String mobilePhone, String content) throws CrudException;
 
     @Transactional
     public UserCode fetchByUserName(String mobilePhone, int type);

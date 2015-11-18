@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>sam.yh</groupId>
 	<artifactId>sam</artifactId>
-	<version>0.2.1-SNAPSHOT</version>
+	<version>0.2.3-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<build>
 		<pluginManagement>
@@ -295,6 +295,16 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.0.33.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.wss</groupId>

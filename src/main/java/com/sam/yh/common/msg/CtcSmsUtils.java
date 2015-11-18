@@ -36,9 +36,9 @@ public class CtcSmsUtils {
         return sendSms(mobilePhone, content);
     }
 
-    public static boolean sendTestSms(String mobilePhone, String authCode) {
+    public static boolean sendTestSms(String mobilePhone, String content) {
         // TODO
-        String content = "您正在测试亚亨蓄电池短信验证码，验证码为" + authCode;
+        // String content = "您正在测试亚亨蓄电池短信验证码，验证码为" + authCode;
         return sendSms(mobilePhone, content);
     }
 

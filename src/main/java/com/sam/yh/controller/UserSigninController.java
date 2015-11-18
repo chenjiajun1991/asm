@@ -1,5 +1,9 @@
 package com.sam.yh.controller;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.sam.yh.common.ConfigUtils;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.common.PwdUtils;
@@ -65,7 +70,7 @@ public class UserSigninController {
     }
 
     private void validateSigninArgs(UserSigninReq userSigninReq) throws IllegalParamsException {
-        if (!MobilePhoneUtils.isValidPhone(userSigninReq.getUserPhone())) {
+        if (!MobilePhoneUtils.isValidPhone(userSigninReq.getUserPhone()) && !isAdminPhone(userSigninReq.getUserPhone())) {
             throw new IllegalParamsException("请输入正确的手机号码");
         }
 
@@ -73,6 +78,16 @@ public class UserSigninController {
             throw new IllegalParamsException("密码长度为8-20位字符");
         }
 
+    }
+
+    private boolean isAdminPhone(String userPhone) {
+        List<Object> adminPhones = ConfigUtils.getConfig().getList(ConfigUtils.ADMIN_PHONE);
+        Set<String> admins = new HashSet<String>();
+        for (Object adminPhone : adminPhones) {
+            admins.add((String) adminPhone);
+        }
+
+        return admins.contains(userPhone);
     }
 
 }

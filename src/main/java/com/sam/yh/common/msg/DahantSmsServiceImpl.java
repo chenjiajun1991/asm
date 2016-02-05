@@ -83,7 +83,7 @@ public class DahantSmsServiceImpl implements DahantSmsService {
     @Override
     public boolean sendMovingMsg(String mobilePhone, String btyImei) {
         // TODO
-        String content = "您的电池IMEI" + btyImei + "设置位置锁定后发生异常移动，请登录APP查看最新地点。";
+        String content = "您的电池IMEI" + btyImei + "设置位置锁定后发生异常移动，请登录APP查看最新地点。如您忘记关闭布防，请及时关闭。";
         return sendSms(mobilePhone, content);
     }
 

@@ -1,5 +1,6 @@
 package com.sam.yh.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -167,9 +168,13 @@ public class UserCodeServiceImpl implements UserCodeService {
     @Override
     public boolean sendMovingMsg(String mobilePhone, String btyImei) throws CrudException {
         int type = UserCodeType.BTY_MOVING.getType();
+        Calendar now = Calendar.getInstance();
+        if (now.get(Calendar.HOUR_OF_DAY) < 7) {
+            return false;
+        }
         boolean send = needToSendMsg(mobilePhone, btyImei, type);
         if (send) {
-            dahantSmsService.sendMovingMsg(mobilePhone, btyImei);
+            send = dahantSmsService.sendMovingMsg(mobilePhone, btyImei);
         }
 
         return send;

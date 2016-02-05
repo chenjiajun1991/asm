@@ -51,14 +51,14 @@ public class ListBtyFollowersController {
         } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
-            logger.error("fetch my byt followers exception, " + req.getUserPhone(), e);
+            logger.error("fetch my bty followers exception, " + req.getUserPhone(), e);
             if (e instanceof FetchFollowerException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else {
                 return ResponseUtils.getSysErrorResp();
             }
         } catch (Exception e) {
-            logger.error("fetch my byt followers exception, " + req.getUserPhone(), e);
+            logger.error("fetch my bty followers exception, " + req.getUserPhone(), e);
             return ResponseUtils.getSysErrorResp();
         }
     }

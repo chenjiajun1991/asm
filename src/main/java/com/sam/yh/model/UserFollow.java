@@ -12,6 +12,8 @@ public class UserFollow extends UserFollowKey {
 
     private Date followDate;
 
+    private String followerNickName;
+
     public String getBtyPubSn() {
         return btyPubSn;
     }
@@ -43,4 +45,13 @@ public class UserFollow extends UserFollowKey {
     public void setFollowDate(Date followDate) {
         this.followDate = followDate;
     }
+
+    public String getFollowerNickName() {
+        return followerNickName;
+    }
+
+    public void setFollowerNickName(String followerNickName) {
+        this.followerNickName = followerNickName == null ? null : followerNickName;
+    }
+
 }

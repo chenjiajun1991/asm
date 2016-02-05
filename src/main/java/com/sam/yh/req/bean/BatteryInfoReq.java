@@ -1,7 +1,10 @@
 package com.sam.yh.req.bean;
 
-public class BatteryInfoReq {
+import java.io.Serializable;
 
+public class BatteryInfoReq implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String imei;
     private String imsi;
     private String phonenumber;

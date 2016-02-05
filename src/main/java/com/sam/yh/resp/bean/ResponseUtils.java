@@ -1,8 +1,9 @@
 package com.sam.yh.resp.bean;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
-import com.sam.yh.common.AppVersionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ResponseUtils {
 
@@ -13,6 +14,20 @@ public class ResponseUtils {
     public static final String OPTIONAL_UPDATE = "10004";
     public static final String RESCODE_PROCESS_ERROR = "10009";
     public static final String RESCODE_UNKNOW_EXCEPTION = "10099";
+    public static String AndroidApkVersion;
+    public static String AndroidApkDownloadUrl;
+
+    @Resource
+    private String apkVersion;
+
+    @Resource
+    private String apkDownloadUrl;
+
+    @PostConstruct
+    public void init() {
+        AndroidApkVersion = apkVersion;
+        AndroidApkDownloadUrl = apkDownloadUrl;
+    }
 
     public static SamResponse getNormalResp(String result) {
         SamResponse resp = new SamResponse();
@@ -82,8 +97,8 @@ public class ResponseUtils {
         resp.setResCode(FORCE_UPDATE);
         resp.setResult("存在强制更新");
         UpdateResp respData = new UpdateResp();
-        respData.setDownloadUrl(AppVersionUtils.getDownloadUrl());
-        respData.setLatestVer(AppVersionUtils.getLatestVersion());
+        respData.setDownloadUrl(AndroidApkDownloadUrl);
+        respData.setLatestVer(AndroidApkVersion);
         resp.setData(respData);
 
         return resp;
@@ -94,8 +109,8 @@ public class ResponseUtils {
         resp.setResCode(OPTIONAL_UPDATE);
         resp.setResult("存在可选更新");
         UpdateResp respData = new UpdateResp();
-        respData.setDownloadUrl(AppVersionUtils.getDownloadUrl());
-        respData.setLatestVer(AppVersionUtils.getLatestVersion());
+        respData.setDownloadUrl(AndroidApkDownloadUrl);
+        respData.setLatestVer(AndroidApkVersion);
         resp.setData(respData);
 
         return resp;

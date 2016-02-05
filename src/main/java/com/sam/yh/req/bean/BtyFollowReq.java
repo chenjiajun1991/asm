@@ -1,10 +1,15 @@
 package com.sam.yh.req.bean;
 
-public class BtyFollowReq {
+import java.io.Serializable;
+
+public class BtyFollowReq implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String userPhone;
     private String btyPubSn;
     private String btyOwnerPhone;
+    private String friendNickName;
 
     public String getUserPhone() {
         return userPhone;
@@ -28,6 +33,14 @@ public class BtyFollowReq {
 
     public void setBtyPubSn(String btyPubSn) {
         this.btyPubSn = btyPubSn;
+    }
+
+    public String getFriendNickName() {
+        return friendNickName;
+    }
+
+    public void setFriendNickName(String friendNickName) {
+        this.friendNickName = friendNickName;
     }
 
 }

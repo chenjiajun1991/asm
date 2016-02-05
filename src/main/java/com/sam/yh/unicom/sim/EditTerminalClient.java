@@ -31,13 +31,18 @@ import com.sun.xml.wss.XWSSecurityException;
 import com.sun.xml.wss.impl.callback.PasswordCallback;
 import com.sun.xml.wss.impl.callback.UsernameCallback;
 
-public class EditTerminalClient implements ApiClientConstant {
+public class EditTerminalClient {
 
     private static final Logger logger = LoggerFactory.getLogger(EditTerminalClient.class);
+    private static final String NAMESPACE_URI = "http://api.jasperwireless.com/ws/schema";
+    private static final String PREFIX = "jws";
 
     private SOAPConnectionFactory connectionFactory;
     private MessageFactory messageFactory;
     private URL url;
+    private String userName;
+    private String password;
+    private String apiKey;
 
     private XWSSProcessorFactory processorFactory;
 
@@ -49,11 +54,15 @@ public class EditTerminalClient implements ApiClientConstant {
      * @throws MalformedURLException
      * @throws XWSSecurityException
      */
-    public EditTerminalClient() throws SOAPException, MalformedURLException, XWSSecurityException {
+    public EditTerminalClient(String serviceUrl, String username, String password, String apikey) throws SOAPException, MalformedURLException,
+            XWSSecurityException {
         connectionFactory = SOAPConnectionFactory.newInstance();
         messageFactory = MessageFactory.newInstance();
         processorFactory = XWSSProcessorFactory.newInstance();
-        this.url = new URL(SERVICE_URL);
+        this.url = new URL(serviceUrl);
+        this.userName = username;
+        this.password = password;
+        this.apiKey = apikey;
         // System.setProperty("javax.net.ssl.trustStore",
         // "F:/github/asm/src/main/resources/jssecacerts");
     }
@@ -105,7 +114,7 @@ public class EditTerminalClient implements ApiClientConstant {
         versionElement.setValue("1.0");
         Name license = envelope.createName("licenseKey", PREFIX, NAMESPACE_URI);
         SOAPElement licenseElement = terminalRequestElement.addChildElement(license);
-        licenseElement.setValue(APIKEY);
+        licenseElement.setValue(apiKey);
         Name iccidName = envelope.createName("iccid", PREFIX, NAMESPACE_URI);
         SOAPElement iccidElement = terminalRequestElement.addChildElement(iccidName);
         iccidElement.setValue(iccid);
@@ -129,14 +138,15 @@ public class EditTerminalClient implements ApiClientConstant {
      */
     private SOAPMessage secureMessage(SOAPMessage message) throws IOException, XWSSecurityException {
         CallbackHandler callbackHandler = new CallbackHandler() {
+            @Override
             public void handle(Callback[] callbacks) throws UnsupportedCallbackException {
                 for (int i = 0; i < callbacks.length; i++) {
                     if (callbacks[i] instanceof UsernameCallback) {
                         UsernameCallback callback = (UsernameCallback) callbacks[i];
-                        callback.setUsername(USERNAME);
+                        callback.setUsername(userName);
                     } else if (callbacks[i] instanceof PasswordCallback) {
                         PasswordCallback callback = (PasswordCallback) callbacks[i];
-                        callback.setPassword(PASSWORD);
+                        callback.setPassword(password);
                     } else {
                         throw new UnsupportedCallbackException(callbacks[i]);
                     }

@@ -1,6 +1,11 @@
 package com.sam.yh.controller;
 
+import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.util.AttributeKey;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,13 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.common.SamConstants;
+import com.sam.yh.model.Battery;
 import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.req.bean.FetchBtyInfoReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.resp.bean.UserBtyInfo;
 import com.sam.yh.resp.bean.UserBtyInfoResp;
+import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.UserService;
+import com.sam.yh.service.socket.SamBtyDataHandler;
 
 @RestController
 @RequestMapping("/user")
@@ -31,6 +40,8 @@ public class UserBtyInfoController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    BatteryService batteryService;
 
     @RequestMapping(value = "/btyinfo", method = RequestMethod.POST)
     public SamResponse fetchBtyInfo(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
@@ -41,6 +52,48 @@ public class UserBtyInfoController {
 
         try {
             validateUserArgs(req.getUserPhone());
+
+            UserBtyInfoResp respData = new UserBtyInfoResp();
+
+            List<PubBatteryInfo> selfBtys = userService.fetchSelfBtyInfo(req.getUserPhone());
+            for (PubBatteryInfo batteryInfo : selfBtys) {
+                respData.getSelfBtyInfo().add(convertToUserBtyInfo(batteryInfo));
+            }
+
+            List<PubBatteryInfo> friendBtys = userService.fetchFriendsBtyInfo(req.getUserPhone());
+            for (PubBatteryInfo batteryInfo : friendBtys) {
+                respData.getFriendsBtyInfo().add(convertToUserBtyInfo(batteryInfo));
+            }
+
+            return ResponseUtils.getNormalResp(respData);
+        } catch (IllegalParamsException e) {
+            return ResponseUtils.getParamsErrorResp(e.getMessage());
+        } catch (Exception e) {
+            logger.error("fetch bty info exception, " + req.getUserPhone(), e);
+            return ResponseUtils.getSysErrorResp();
+        }
+
+    }
+
+    @RequestMapping(value = "/btyinfo/real", method = RequestMethod.POST)
+    public SamResponse fetchBtyInfoReal(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+
+        logger.info("Request json String:" + jsonReq);
+
+        FetchBtyInfoReq req = JSON.parseObject(jsonReq, FetchBtyInfoReq.class);
+
+        try {
+            validateUserArgs(req.getUserPhone());
+
+            for (PubBatteryInfo batteryInfo : userService.fetchSelfBtyInfo(req.getUserPhone())) {
+                sendReq(batteryInfo.getBytImei());
+            }
+
+            for (PubBatteryInfo batteryInfo : userService.fetchFriendsBtyInfo(req.getUserPhone())) {
+                sendReq(batteryInfo.getBytImei());
+            }
+
+            TimeUnit.SECONDS.sleep(SamConstants.MAX_WAIT_SECONDS);
 
             UserBtyInfoResp respData = new UserBtyInfoResp();
 
@@ -81,6 +134,28 @@ public class UserBtyInfoController {
         userBtyInfo.setTemperature(pubBatteryInfo.getTemperature());
         userBtyInfo.setVoltage(pubBatteryInfo.getVoltage());
         return userBtyInfo;
+    }
+
+    private void sendReq(String btyimei) {
+        Battery battery = batteryService.fetchBtyByIMEI(btyimei);
+        if (battery == null) {
+            logger.error("电池不存在, " + btyimei);
+            return;
+        }
+        boolean hasConn = false;
+        ChannelGroup channelGroup = SamBtyDataHandler.getChannels();
+        for (Channel c : channelGroup) {
+            String imei = (String) c.attr(AttributeKey.valueOf("IMEI")).get();
+            logger.info("已经连接的imei：" + imei);
+            if (imei != null && imei.equals(battery.getImei())) {
+                c.writeAndFlush("tellme" + imei + "\n");
+                hasConn = true;
+            }
+
+        }
+        if (!hasConn) {
+            logger.error("未获取到长连接, " + btyimei);
+        }
     }
 
 }

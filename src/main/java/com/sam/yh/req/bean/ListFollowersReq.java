@@ -1,7 +1,10 @@
 package com.sam.yh.req.bean;
 
-public class ListFollowersReq {
+import java.io.Serializable;
 
+public class ListFollowersReq implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String userPhone;
     private String btyPubSn;
 

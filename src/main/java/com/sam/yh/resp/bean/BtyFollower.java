@@ -1,7 +1,10 @@
 package com.sam.yh.resp.bean;
 
-public class BtyFollower {
+import java.io.Serializable;
 
+public class BtyFollower implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private String followerName;
     private String followerPhone;
 

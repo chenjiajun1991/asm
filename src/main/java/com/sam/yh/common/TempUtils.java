@@ -34,7 +34,7 @@ public class TempUtils {
         result[21] = new Pair(18, 540);
         result[22] = new Pair(16, 560);
         result[23] = new Pair(14, 580);
-        result[34] = new Pair(12, 600);
+        result[24] = new Pair(12, 600);
         result[25] = new Pair(10, 620);
         result[26] = new Pair(8, 640);
         result[27] = new Pair(6, 660);

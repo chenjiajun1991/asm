@@ -7,6 +7,7 @@
     <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
     <result column="imei" property="bytImei" jdbcType="VARCHAR" />
     <result column="follow_status" property="followStatus" jdbcType="BIT" />
+    <result column="follower_name" property="followerNickName" jdbcType="VARCHAR" />
     <result column="follow_date" property="followDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <resultMap id="PubBtyResultMap" type="com.sam.yh.model.PubBattery" >
@@ -57,7 +58,7 @@
   </select>
   <select id="selectBtyFollowers" resultType="com.sam.yh.resp.bean.BtyFollower" parameterType="java.lang.Integer" >
     select 
-    u.user_name as followerName,
+    f.follower_name as followerName,
     u.mobile_phone as followerPhone
     from user_follow f
     inner join
@@ -71,10 +72,10 @@
       and battery_id = #{batteryId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.UserFollow" >
-    insert into user_follow (user_id, battery_id, follow_status, 
+    insert into user_follow (user_id, battery_id, follower_name, follow_status, 
       follow_date)
-    values (#{userId,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{followStatus,jdbcType=BIT}, 
-      #{followDate,jdbcType=TIMESTAMP})
+    values (#{userId,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{followerNickName,jdbcType=VARCHAR}, 
+      #{followStatus,jdbcType=BIT}, #{followDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.sam.yh.model.UserFollow" >
     insert into user_follow
@@ -84,6 +85,9 @@
       </if>
       <if test="batteryId != null" >
         battery_id,
+      </if>
+      <if test="followerNickName != null" >
+        follower_name,
       </if>
       <if test="followStatus != null" >
         follow_status,
@@ -101,6 +105,9 @@
       </if>
       <if test="followStatus != null" >
         #{followStatus,jdbcType=BIT},
+      </if>
+      <if test="followerNickName != null" >
+        #{followerNickName,jdbcType=VARCHAR},
       </if>
       <if test="followDate != null" >
         #{followDate,jdbcType=TIMESTAMP},

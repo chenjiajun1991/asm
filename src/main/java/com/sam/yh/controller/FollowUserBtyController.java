@@ -39,7 +39,7 @@ public class FollowUserBtyController {
         try {
             validateBtyFollowArgs(req);
 
-            userService.followBty(req.getUserPhone(), req.getBtyPubSn(), req.getBtyOwnerPhone());
+            userService.followBty(req.getUserPhone(), req.getBtyPubSn(), req.getBtyOwnerPhone(), req.getFriendNickName());
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
         } catch (IllegalParamsException e) {

@@ -4,9 +4,10 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.sam.yh.common.ConfigUtils;
 import com.sam.yh.common.DistanceUtils;
 import com.sam.yh.common.TempUtils;
 import com.sam.yh.crud.exception.CrudException;
@@ -27,6 +28,8 @@ import com.sam.yh.service.UserCodeService;
 @Service
 public class BatteryServiceImpl implements BatteryService {
 
+    private static final Logger logger = LoggerFactory.getLogger(BatteryServiceImpl.class);
+
     @Resource
     private BatteryMapper batteryMapper;
 
@@ -42,8 +45,15 @@ public class BatteryServiceImpl implements BatteryService {
     @Resource
     private UserCodeService userCodeService;
 
+    @Resource
+    private Long MoveDis;
+
     @Override
     public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException {
+        if (batteryInfoReqVo == null) {
+            return null;
+        }
+        logger.info("Upload battery info request:" + batteryInfoReqVo);
         Battery battery = fetchBtyByIMEI(batteryInfoReqVo.getImei());
         if (battery == null) {
             return null;
@@ -79,7 +89,7 @@ public class BatteryServiceImpl implements BatteryService {
         if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())) {
             long moveDis = (long) DistanceUtils.GetDistance(batteryInfoReqVo.getLongitude(), batteryInfoReqVo.getLatitude(), battery.getLockLongitude(),
                     battery.getLockLatitude());
-            if (moveDis > ConfigUtils.getConfig().getLong(ConfigUtils.MOVE_DISTANCE)) {
+            if (moveDis > MoveDis) {
                 sendMovingMsg(battery);
             }
         }

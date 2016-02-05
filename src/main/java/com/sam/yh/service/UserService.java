@@ -29,10 +29,10 @@ public interface UserService {
     public User fetchUserByPhone(String mobilePhone);
 
     @Transactional
-    public void followBty(String mobilePhone, String btyPubSn, String btyOwnerPhone) throws CrudException;
+    public void followBty(String mobilePhone, String btyPubSn, String btyOwnerPhone, String friendNickName) throws CrudException;
 
     @Transactional
-    public void shareBty(String mobilePhone, String btyPubSn, String friendPhone) throws CrudException;
+    public void shareBty(String mobilePhone, String btyPubSn, String friendPhone, String friendNickName) throws CrudException;
 
     @Transactional
     public void unshareBty(String mobilePhone, String btyPubSn, String friendPhone) throws CrudException;

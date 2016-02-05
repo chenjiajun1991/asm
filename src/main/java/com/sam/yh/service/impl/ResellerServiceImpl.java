@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
-import com.sam.yh.common.msg.CtcSmsUtils;
+import com.sam.yh.common.msg.DahantSmsService;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchResellerException;
 import com.sam.yh.crud.exception.LoggingResellerException;
@@ -37,7 +37,7 @@ import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
 import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
-import com.sam.yh.unicom.sim.UnicomM2mUtils;
+import com.sam.yh.unicom.sim.UnicomM2mService;
 
 @Service
 public class ResellerServiceImpl implements ResellerService {
@@ -63,6 +63,12 @@ public class ResellerServiceImpl implements ResellerService {
     @Resource
     BatteryInfoMapper batteryInfoMapper;
 
+    @Resource
+    private DahantSmsService dahantSmsService;
+
+    @Resource
+    UnicomM2mService unicomM2mService;
+
     @Override
     public void submitBtySpec(SubmitBtySpecReq submitBtySpecReq) throws CrudException {
         if (batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei()) != null) {
@@ -87,7 +93,7 @@ public class ResellerServiceImpl implements ResellerService {
             throw new SubmitBtySpecException("经销商信息未添加");
         }
 
-        String iccid = UnicomM2mUtils.activateSimCard(submitBtySpecReq.getBtySimNo());
+        String iccid = unicomM2mService.activateSimCard(submitBtySpecReq.getBtySimNo());
 
         //
         User user = userService.fetchUserByPhone(submitBtySpecReq.getUserPhone());
@@ -109,7 +115,7 @@ public class ResellerServiceImpl implements ResellerService {
 
         userBatteryMapper.insert(userBattery);
 
-        CtcSmsUtils.sendBuyInfo(submitBtySpecReq.getUserPhone());
+        dahantSmsService.sendBuyInfo(submitBtySpecReq.getUserPhone());
 
     }
 
@@ -175,7 +181,7 @@ public class ResellerServiceImpl implements ResellerService {
                 userMapper.updateByPrimaryKeySelective(user);
 
                 createReseller(user.getUserId(), logResellerReq);
-                CtcSmsUtils.sendLogResellerSuccess(resellerPhone);
+                dahantSmsService.sendLogResellerSuccess(resellerPhone);
             }
         } else {
             createUser(logResellerReq);
@@ -204,7 +210,7 @@ public class ResellerServiceImpl implements ResellerService {
 
         createReseller(user.getUserId(), logResellerReq);
 
-        CtcSmsUtils.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
+        dahantSmsService.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
     }
 
     private void createReseller(int userId, LogResellerReq logResellerReq) {

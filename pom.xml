@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>sam.yh</groupId>
 	<artifactId>sam</artifactId>
-	<version>0.2.3-SNAPSHOT</version>
+	<version>0.2.7-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<build>
 		<pluginManagement>
@@ -312,6 +312,16 @@
 			<version>3.0</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/WebContent/WEB-INF/lib/xws-security-3.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.5</version>
 		</dependency>
 	</dependencies>
 </project>

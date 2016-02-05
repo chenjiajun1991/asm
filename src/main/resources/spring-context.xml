@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+    
+    <context:component-scan base-package="com.sam.yh" />
+    
+    <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="file:D:/opt/conf/sam_yh/sam_yh_battery.properties" />
+	</bean>
+	
+	<bean id="dhServerUrl" class="java.lang.String">
+		<constructor-arg value="${dahant.serverurl}" />
+	</bean>
+	<bean id="dhUserName" class="java.lang.String">
+		<constructor-arg value="${dahant.account}" />
+	</bean>
+	<bean id="dhPassword" class="java.lang.String">
+		<constructor-arg value="${dahant.password}" />
+	</bean>
+	<bean id="smsEnable" class="java.lang.Boolean">
+		<constructor-arg value="${sms.enable}" />
+	</bean>
+	<bean id="adminPhones" class="java.lang.String">
+		<constructor-arg value="${admin.phone}" />
+	</bean>
+	<bean id="apkVersion" class="java.lang.String">
+		<constructor-arg value="${android.latest.version}" />
+	</bean>
+	<bean id="apkDownloadUrl" class="java.lang.String">
+		<constructor-arg value="${android.latest.downloadurl}" />
+	</bean>
+	<bean id="apkShortUrl" class="java.lang.String">
+		<constructor-arg value="${android.latest.shortUrl}" />
+	</bean>
+	<bean id="mailHost" class="java.lang.String">
+		<constructor-arg value="${mail.host}" />
+	</bean>
+	<bean id="mailSender" class="java.lang.String">
+		<constructor-arg value="${mail.sender}" />
+	</bean>
+	<bean id="mailUserName" class="java.lang.String">
+		<constructor-arg value="${mail.username}" />
+	</bean>
+	<bean id="mailPassword" class="java.lang.String">
+		<constructor-arg value="${mail.password}" />
+	</bean>
+	<bean id="mailReceiver" class="java.lang.String">
+		<constructor-arg value="${mail.receiver}" />
+	</bean>
+	<bean id="MoveDis" class="java.lang.Long">
+		<constructor-arg value="${move.distance}" />
+	</bean>
+	<bean id="m2mUrl" class="java.lang.String">
+		<constructor-arg value="${m2m.url}" />
+	</bean>
+	<bean id="m2mUserName" class="java.lang.String">
+		<constructor-arg value="${m2m.username}" />
+	</bean>
+	<bean id="m2mPassword" class="java.lang.String">
+		<constructor-arg value="${m2m.password}" />
+	</bean>
+	<bean id="m2mApiKey" class="java.lang.String">
+		<constructor-arg value="${m2m.apikey}" />
+	</bean>
+	<bean id="samPort" name="samPort" class="java.lang.Integer" >
+		<constructor-arg value="60080" />
+	</bean>
+</beans>

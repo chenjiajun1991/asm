@@ -25,4 +25,6 @@ public class SamConstants {
      * 用户关注好友电池的最大数量
      */
     public static final int MAX_FOLLOW_COUNT = 10;
+
+    public static final long MAX_WAIT_SECONDS = 4;
 }

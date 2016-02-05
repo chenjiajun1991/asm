@@ -5,22 +5,15 @@
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans    
-                            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd    
                             http://www.springframework.org/schema/context    
-                            http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                            http://www.springframework.org/schema/context/spring-context-4.0.xsd    
                             http://www.springframework.org/schema/mvc    
                             http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
                             http://www.springframework.org/schema/tx
     						http://www.springframework.org/schema/tx/spring-tx.xsd
     						http://www.springframework.org/schema/task
     						http://www.springframework.org/schema/task/spring-task-4.0.xsd">
-	<!-- 自动扫描 -->
-	<context:component-scan base-package="com.sam.yh" />
-	<!-- 引入配置文件 -->
-	<bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:jdbc.properties" />
-	</bean>
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
@@ -62,10 +55,23 @@
 	<!-- enable transaction annotation support -->
 	<tx:annotation-driven transaction-manager="txManager" />
 
+	<!-- <bean id="tcpServer" class="netty.NettyTCPServer" init-method="createServerBootstrap"
+		destroy-method="stopServer">
+		<property name="pipelineFactory" ref="pipelineFactory"></property>
+	</bean>
+
+	<bean id="pipelineFactory" class="netty.HandshakePipelineFactory">
+		<lookup-method name="createHandshakeHandler" bean="handshakeHandler" />
+		<property name="stringDecoder" ref="stringDecoder"></property>
+		<property name="stringEncoder" ref="stringEncoder"></property>
+		<property name="nulEncoder" ref="nulEncoder"></property>
+		<property name="frameSize" value="256"></property>
+	</bean> -->
+
 	<!-- spring框架的Scheduled定时器 -->
 	<task:scheduled-tasks>
 		<task:scheduled ref="fetchReplaySmsTask" method="run"
 			cron="0 */10 * * * ?" />
 	</task:scheduled-tasks>
-
+	
 </beans> 

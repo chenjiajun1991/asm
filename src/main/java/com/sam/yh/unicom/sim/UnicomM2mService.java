@@ -1,16 +1,27 @@
 package com.sam.yh.unicom.sim;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.sam.yh.crud.exception.M2mEditTermalException;
 
-public class UnicomM2mUtils {
+@Service
+public class UnicomM2mService {
 
     private static final String ACTIVATE_VALUE = "ACTIVATED_NAME";
     private static final String DEACTIVATE_VALUE = "DEACTIVATED_NAME";
 
-    private UnicomM2mUtils() {
-    }
+    @Resource
+    String m2mUrl;
+    @Resource
+    String m2mApiKey;
+    @Resource
+    String m2mUserName;
+    @Resource
+    String m2mPassword;
 
-    public static String activateSimCard(String msisdn) throws M2mEditTermalException {
+    public String activateSimCard(String msisdn) throws M2mEditTermalException {
         try {
             if (msisdn.startsWith("1") && msisdn.length() == 13) {
                 msisdn = "86" + msisdn;
@@ -20,7 +31,7 @@ public class UnicomM2mUtils {
             }
             String iccid = getIccidByMsimdn(msisdn);
 
-            EditTerminalClient client = new EditTerminalClient();
+            EditTerminalClient client = new EditTerminalClient(m2mUrl, m2mUserName, m2mPassword, m2mApiKey);
             client.callWebService(iccid, ACTIVATE_VALUE);
 
             return iccid;
@@ -29,11 +40,11 @@ public class UnicomM2mUtils {
         }
     }
 
-    public static void deactivateSimCard(String msisdn) throws M2mEditTermalException {
+    public void deactivateSimCard(String msisdn) throws M2mEditTermalException {
         try {
             String iccid = getIccidByMsimdn(msisdn);
 
-            EditTerminalClient client = new EditTerminalClient();
+            EditTerminalClient client = new EditTerminalClient(m2mUrl, m2mUserName, m2mPassword, m2mApiKey);
             client.callWebService(iccid, DEACTIVATE_VALUE);
 
         } catch (Exception e) {
@@ -42,9 +53,9 @@ public class UnicomM2mUtils {
 
     }
 
-    private static String getIccidByMsimdn(String msisdn) throws M2mEditTermalException {
+    private String getIccidByMsimdn(String msisdn) throws M2mEditTermalException {
         try {
-            GetTerminalsByMsisdnClient client = new GetTerminalsByMsisdnClient();
+            GetTerminalsByMsisdnClient client = new GetTerminalsByMsisdnClient(m2mUrl, m2mUserName, m2mPassword, m2mApiKey);
             return client.callWebService(msisdn);
         } catch (Exception e) {
             throw new M2mEditTermalException(e);

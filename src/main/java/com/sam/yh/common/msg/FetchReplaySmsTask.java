@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -15,21 +16,27 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
-import com.sam.yh.common.ConfigUtils;
-
 @Service
 public class FetchReplaySmsTask {
 
     private static final Logger logger = LoggerFactory.getLogger(FetchReplaySmsTask.class);
 
-    private static final String HOST = ConfigUtils.getConfig().getString(ConfigUtils.MAIL_HOST);
-    private static final String SENDER = ConfigUtils.getConfig().getString(ConfigUtils.MAIL_SENDER);
-    private static final String USERNAME = ConfigUtils.getConfig().getString(ConfigUtils.MAIL_USERNAME);
-    private static final String PASSWORD = ConfigUtils.getConfig().getString(ConfigUtils.MAIL_PASSWORD);
-    private static final String REVEIVER = ConfigUtils.getConfig().getString(ConfigUtils.MAIL_REVEIVER);
+    @Resource
+    private String mailHost;
+    @Resource
+    private String mailSender;
+    @Resource
+    private String mailUserName;
+    @Resource
+    private String mailPassword;
+    @Resource
+    private String mailReceiver;
+
+    @Resource
+    private DahantSmsService dahantSmsService;
 
     public void run() {
-        String respInfo = CtcSmsUtils.getSms();
+        String respInfo = dahantSmsService.getSms();
         List<ReplaySms> smsMap = parseResp(respInfo);
         forwardSmsByMail(smsMap);
 
@@ -59,9 +66,9 @@ public class FetchReplaySmsTask {
         for (ReplaySms sms : msgs) {
             JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
             // 设定mail server
-            senderImpl.setHost(HOST);
-            senderImpl.setUsername(USERNAME);
-            senderImpl.setPassword(PASSWORD);
+            senderImpl.setHost(mailHost);
+            senderImpl.setUsername(mailUserName);
+            senderImpl.setPassword(mailPassword);
 
             Properties prop = new Properties();
             // 将这个参数设为true，让服务器进行认证,认证用户名和密码是否正确
@@ -71,8 +78,8 @@ public class FetchReplaySmsTask {
             // 建立邮件消息
             SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-            mailMessage.setTo(REVEIVER);
-            mailMessage.setFrom(SENDER);
+            mailMessage.setTo(mailReceiver);
+            mailMessage.setFrom(mailSender);
             mailMessage.setSubject(sms.getPhone());
             mailMessage.setText("用户回复消息，时间：" + sms.getDelivertime() + "，内容：" + sms.getContent());
 

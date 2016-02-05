@@ -1,11 +1,11 @@
 package com.sam.yh.controller;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
-import com.sam.yh.common.ConfigUtils;
+import com.google.common.collect.Sets;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.common.PwdUtils;
@@ -34,6 +34,9 @@ public class UserSigninController {
 
     @Autowired
     UserService userService;
+
+    @Resource
+    private String adminPhones;
 
     private static final Logger logger = LoggerFactory.getLogger(UserSigninController.class);
 
@@ -81,13 +84,11 @@ public class UserSigninController {
     }
 
     private boolean isAdminPhone(String userPhone) {
-        List<Object> adminPhones = ConfigUtils.getConfig().getList(ConfigUtils.ADMIN_PHONE);
-        Set<String> admins = new HashSet<String>();
-        for (Object adminPhone : adminPhones) {
-            admins.add((String) adminPhone);
+        String[] phones = StringUtils.split(adminPhones, ",");
+        if (phones == null || phones.length == 0) {
+            logger.error("获取admin phone 失败");
         }
-
+        Set<String> admins = Sets.newHashSet(phones);
         return admins.contains(userPhone);
     }
-
 }

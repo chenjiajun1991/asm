@@ -1,39 +1,33 @@
 package com.sam.yh.common;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import com.sam.yh.enums.AppVersionStatus;
 import com.sam.yh.req.bean.BaseReq;
 
-public class AppVersionUtils {
-    private static String ANDROID_VERSION;
-    private static String ANDRIOD_DOWNLOADURL;
+@Service
+public class AppVersionCheckService {
 
-    static {
-        ANDROID_VERSION = ConfigUtils.getConfig().getString(ConfigUtils.ANDROID_LATEST_VERSION, "0.0.1");
-        ANDRIOD_DOWNLOADURL = ConfigUtils.getConfig().getString(ConfigUtils.ANDRIOD_LATEST_DOWNLOADURL,
-                "http://samyh.oss-cn-shenzhen.aliyuncs.com/YahengBattery.apk");
-    }
+    @Resource
+    private String apkVersion;
 
-    public static String getDownloadUrl() {
-        return ANDRIOD_DOWNLOADURL;
-    }
+    @Resource
+    private String apkDownloadUrl;
 
-    public static String getLatestVersion() {
-        return ANDROID_VERSION;
-    }
-
-    public static AppVersionStatus checkVersion(BaseReq req) {
+    public AppVersionStatus checkVersion(BaseReq req) {
         String version = req.getVersion();
         if (StringUtils.equalsIgnoreCase("android", req.getDeviceType())) {
-            return compair(version, ANDROID_VERSION);
+            return compair(version, apkVersion);
         } else {
             return null;
         }
 
     }
 
-    private static AppVersionStatus compair(String reqVer, String lastVer) {
+    private AppVersionStatus compair(String reqVer, String lastVer) {
 
         AppVersionStatus status = AppVersionStatus.NO_UPDATE;
         if (StringUtils.equals(reqVer, lastVer)) {

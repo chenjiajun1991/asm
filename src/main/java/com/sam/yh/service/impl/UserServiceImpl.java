@@ -3,7 +3,6 @@ package com.sam.yh.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +12,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.sam.yh.common.ConfigUtils;
+import com.google.common.collect.Sets;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
@@ -74,6 +73,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private ResellerMapper resellerMapper;
+
+    @Resource
+    private String adminPhones;
 
     @Override
     public User signup(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
@@ -216,7 +218,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void followBty(String mobilePhone, String btyPubSn, String btyOwnerPhone) throws CrudException {
+    public void followBty(String mobilePhone, String btyPubSn, String btyOwnerPhone, String friendNickName) throws CrudException {
         User user = fetchUserByPhone(mobilePhone);
         if (user == null) {
             throw new BtyFollowException("用户不存在");
@@ -249,12 +251,12 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        innerFollow(user, battery);
+        innerFollow(user, battery, friendNickName);
 
     }
 
     @Override
-    public void shareBty(String mobilePhone, String btyPubSn, String friendPhone) throws CrudException {
+    public void shareBty(String mobilePhone, String btyPubSn, String friendPhone, String friendNickName) throws CrudException {
         User owner = fetchUserByPhone(mobilePhone);
         if (owner == null) {
             throw new BtyFollowException("用户不存在");
@@ -287,11 +289,11 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        innerFollow(shareUser, battery);
+        innerFollow(shareUser, battery, friendNickName);
 
     }
 
-    private void innerFollow(User follower, Battery battery) {
+    private void innerFollow(User follower, Battery battery, String friendNickName) {
         Date now = new Date();
 
         UserFollowKey followKey = new UserFollowKey();
@@ -308,6 +310,7 @@ public class UserServiceImpl implements UserService {
             UserFollow userFollow = new UserFollow();
             userFollow.setUserId(follower.getUserId());
             userFollow.setBatteryId(battery.getId());
+            userFollow.setFollowerNickName(friendNickName);
             userFollow.setFollowStatus(true);
             userFollow.setFollowDate(now);
 
@@ -360,11 +363,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getUserType(String mobilePhone) throws CrudException {
-        List<Object> adminPhones = ConfigUtils.getConfig().getList(ConfigUtils.ADMIN_PHONE);
-        Set<String> admins = new HashSet<String>();
-        for (Object adminPhone : adminPhones) {
-            admins.add((String) adminPhone);
-        }
+        String[] phones = StringUtils.split(adminPhones, ",");
+
+        Set<String> admins = Sets.newHashSet(phones);
 
         if (admins.contains(mobilePhone)) {
             return UserType.ADMIN.getType();

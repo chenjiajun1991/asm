@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
-import com.sam.yh.common.msg.CtcSmsUtils;
+import com.sam.yh.common.msg.DahantSmsService;
 import com.sam.yh.crud.exception.AuthCodeSendException;
 import com.sam.yh.crud.exception.AuthCodeVerifyException;
 import com.sam.yh.crud.exception.CrudException;
@@ -30,6 +30,9 @@ public class UserCodeServiceImpl implements UserCodeService {
     @Resource
     private UserCodeMapper userCodeMapper;
 
+    @Resource
+    private DahantSmsService dahantSmsService;
+
     @Override
     public boolean sendSignupAuthCode(String mobilePhone) throws CrudException {
         User user = userMapper.selectByPhone(mobilePhone);
@@ -37,7 +40,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             throw new UserSignupException("手机号码已经注册");
         }
         String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
-        return CtcSmsUtils.sendSignupAuthCode(mobilePhone, authCode);
+        return dahantSmsService.sendSignupAuthCode(mobilePhone, authCode);
     }
 
     @Override
@@ -47,12 +50,12 @@ public class UserCodeServiceImpl implements UserCodeService {
             throw new UserSignupException("未注册的手机号码");
         }
         String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType());
-        return CtcSmsUtils.sendResetPwdAuthCode(mobilePhone, authCode);
+        return dahantSmsService.sendResetPwdAuthCode(mobilePhone, authCode);
     }
 
     @Override
     public boolean sendTestAuthCode(String mobilePhone, String content) throws CrudException {
-        return CtcSmsUtils.sendTestSms(mobilePhone, content);
+        return dahantSmsService.sendTestSms(mobilePhone, content);
     }
 
     @Override
@@ -125,7 +128,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCode.setSendTimes(sendTimes);
 
             userCodeMapper.updateByPrimaryKey(userCode);
-            return smsCode;
+            return userCode.getDynamicCode();
         }
 
     }
@@ -155,7 +158,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         int type = UserCodeType.BTY_WARNING.getType();
         boolean send = needToSendMsg(mobilePhone, btyImei, type);
         if (send) {
-            CtcSmsUtils.sendWarningMsg(mobilePhone, btyImei);
+            dahantSmsService.sendWarningMsg(mobilePhone, btyImei);
         }
 
         return send;
@@ -166,7 +169,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         int type = UserCodeType.BTY_MOVING.getType();
         boolean send = needToSendMsg(mobilePhone, btyImei, type);
         if (send) {
-            CtcSmsUtils.sendMovingMsg(mobilePhone, btyImei);
+            dahantSmsService.sendMovingMsg(mobilePhone, btyImei);
         }
 
         return send;

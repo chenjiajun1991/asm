@@ -1,0 +1,1 @@
+alter table user_follow add column follower_name varchar(32) after battery_id;

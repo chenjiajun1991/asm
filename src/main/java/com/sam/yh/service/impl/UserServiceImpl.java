@@ -303,6 +303,7 @@ public class UserServiceImpl implements UserService {
         UserFollow userFollowExist = userFollowMapper.selectByPrimaryKey(followKey);
         if (userFollowExist != null) {
             userFollowExist.setFollowStatus(true);
+            userFollowExist.setFollowerNickName(friendNickName);
             userFollowExist.setFollowDate(now);
 
             userFollowMapper.updateByPrimaryKeySelective(userFollowExist);

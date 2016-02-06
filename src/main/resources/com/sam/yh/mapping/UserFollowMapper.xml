@@ -120,6 +120,9 @@
       <if test="followStatus != null" >
         follow_status = #{followStatus,jdbcType=BIT},
       </if>
+      <if test="followerNickName != null" >
+        follower_name = #{followerNickName,jdbcType=VARCHAR},
+      </if>
       <if test="followDate != null" >
         follow_date = #{followDate,jdbcType=TIMESTAMP},
       </if>
@@ -130,6 +133,7 @@
   <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.UserFollow" >
     update user_follow
     set follow_status = #{followStatus,jdbcType=BIT},
+      follower_name = #{followerNickName,jdbcType=VARCHAR},
       follow_date = #{followDate,jdbcType=TIMESTAMP}
     where user_id = #{userId,jdbcType=INTEGER}
       and battery_id = #{batteryId,jdbcType=INTEGER}

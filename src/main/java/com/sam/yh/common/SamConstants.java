@@ -26,5 +26,5 @@ public class SamConstants {
      */
     public static final int MAX_FOLLOW_COUNT = 10;
 
-    public static final long MAX_WAIT_SECONDS = 4;
+    public static final long MAX_WAIT_SECONDS = 2;
 }

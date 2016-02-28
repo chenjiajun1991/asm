@@ -17,12 +17,19 @@ import com.sam.yh.enums.AppVersionStatus;
 import com.sam.yh.req.bean.BaseReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
+import com.sam.yh.resp.bean.UpdateResp;
 
 @RestController
 @RequestMapping("/open")
 public class AppVersionController {
 
     private static final Logger logger = LoggerFactory.getLogger(AppVersionController.class);
+
+    @Resource
+    private String apkVersion;
+
+    @Resource
+    private String apkDownloadUrl;
 
     @Resource
     AppVersionCheckService appVersionCheckService;
@@ -35,10 +42,14 @@ public class AppVersionController {
         BaseReq req = JSON.parseObject(jsonReq, BaseReq.class);
         try {
             AppVersionStatus verStatus = appVersionCheckService.checkVersion(req);
+
+            UpdateResp respObj = new UpdateResp();
+            respObj.setLatestVer(apkVersion);
+            respObj.setDownloadUrl(apkDownloadUrl);
             if (StringUtils.equals(AppVersionStatus.FORCE_UPDATE.getStatus(), verStatus.getStatus())) {
-                return ResponseUtils.getForceUpdateResp();
+                return ResponseUtils.getForceUpdateResp(respObj);
             } else if (StringUtils.equals(AppVersionStatus.OPTIONAL_UPDATE.getStatus(), verStatus.getStatus())) {
-                return ResponseUtils.getOptionalUpdateresp();
+                return ResponseUtils.getOptionalUpdateresp(respObj);
             } else {
                 return ResponseUtils.getNormalResp("");
             }
@@ -48,5 +59,4 @@ public class AppVersionController {
             return ResponseUtils.getErrorResp("版本检测异常");
         }
     }
-
 }

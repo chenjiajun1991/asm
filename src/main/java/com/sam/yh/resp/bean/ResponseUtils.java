@@ -1,8 +1,5 @@
 package com.sam.yh.resp.bean;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class ResponseUtils {
@@ -16,18 +13,6 @@ public class ResponseUtils {
     public static final String RESCODE_UNKNOW_EXCEPTION = "10099";
     public static String AndroidApkVersion;
     public static String AndroidApkDownloadUrl;
-
-    @Resource
-    private String apkVersion;
-
-    @Resource
-    private String apkDownloadUrl;
-
-    @PostConstruct
-    public void init() {
-        AndroidApkVersion = apkVersion;
-        AndroidApkDownloadUrl = apkDownloadUrl;
-    }
 
     public static SamResponse getNormalResp(String result) {
         SamResponse resp = new SamResponse();
@@ -92,26 +77,20 @@ public class ResponseUtils {
         return resp;
     }
 
-    public static SamResponse getForceUpdateResp() {
+    public static SamResponse getForceUpdateResp(Object respObj) {
         SamResponse resp = new SamResponse();
         resp.setResCode(FORCE_UPDATE);
         resp.setResult("存在强制更新");
-        UpdateResp respData = new UpdateResp();
-        respData.setDownloadUrl(AndroidApkDownloadUrl);
-        respData.setLatestVer(AndroidApkVersion);
-        resp.setData(respData);
+        resp.setData(respObj);
 
         return resp;
     }
 
-    public static SamResponse getOptionalUpdateresp() {
+    public static SamResponse getOptionalUpdateresp(Object respObj) {
         SamResponse resp = new SamResponse();
         resp.setResCode(OPTIONAL_UPDATE);
         resp.setResult("存在可选更新");
-        UpdateResp respData = new UpdateResp();
-        respData.setDownloadUrl(AndroidApkDownloadUrl);
-        respData.setLatestVer(AndroidApkVersion);
-        resp.setData(respData);
+        resp.setData(respObj);
 
         return resp;
     }

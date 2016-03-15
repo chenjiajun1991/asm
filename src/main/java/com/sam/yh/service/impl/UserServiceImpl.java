@@ -22,6 +22,7 @@ import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.PwdResetException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
@@ -32,6 +33,7 @@ import com.sam.yh.enums.UserCodeType;
 import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
@@ -64,6 +66,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private BatteryInfoMapper batteryInfoMapper;
+
+    @Resource
+    private BatteryInfoNstMapper batteryInfoNstMapper;
 
     @Resource
     private UserFollowMapper userFollowMapper;
@@ -175,9 +180,9 @@ public class UserServiceImpl implements UserService {
         List<UserBattery> btys = userBatteryService.fetchUserBattery(user.getUserId());
         List<PubBatteryInfo> btyInfo = new ArrayList<PubBatteryInfo>();
         for (UserBattery userBattery : btys) {
-            BatteryInfo info = batteryInfoMapper.selectByBtyId(userBattery.getBatteryId());
-            if (info != null) {
-                PubBatteryInfo pubInfo = new PubBatteryInfo(info);
+            BatteryInfoNst nstInfo = batteryInfoNstMapper.selectByBtyId(userBattery.getBatteryId());
+            if (nstInfo != null) {
+                PubBatteryInfo pubInfo = new PubBatteryInfo(nstInfo);
                 pubInfo.setBtyPubSn(userBattery.getBtyPubSn());
                 pubInfo.setBytImei(userBattery.getBytImei());
                 pubInfo.setOwnerPhone(user.getMobilePhone());
@@ -197,11 +202,11 @@ public class UserServiceImpl implements UserService {
         List<UserFollow> btys = userBatteryService.fetchUserFollowBty(user.getUserId());
         List<PubBatteryInfo> btyInfo = new ArrayList<PubBatteryInfo>();
         for (UserFollow userFollow : btys) {
-            BatteryInfo info = batteryInfoMapper.selectByBtyId(userFollow.getBatteryId());
-            if (info != null) {
-                UserBattery userBattery = userBatteryService.fetchUserByBtyId(info.getBatteryId());
+            BatteryInfoNst nstInfo = batteryInfoNstMapper.selectByBtyId(userFollow.getBatteryId());
+            if (nstInfo != null) {
+                UserBattery userBattery = userBatteryService.fetchUserByBtyId(nstInfo.getBatteryId());
                 User owner = userMapper.selectByPrimaryKey(userBattery.getUserId());
-                PubBatteryInfo pubInfo = new PubBatteryInfo(info);
+                PubBatteryInfo pubInfo = new PubBatteryInfo(nstInfo);
                 pubInfo.setBtyPubSn(userFollow.getBtyPubSn());
                 pubInfo.setBytImei(userFollow.getBytImei());
                 pubInfo.setOwnerPhone(owner.getMobilePhone());

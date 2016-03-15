@@ -1,5 +1,6 @@
 package com.sam.yh.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -13,11 +14,13 @@ import com.sam.yh.common.TempUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.req.bean.BatteryInfoReq;
@@ -32,6 +35,9 @@ public class BatteryServiceImpl implements BatteryService {
 
     @Resource
     private BatteryMapper batteryMapper;
+
+    @Resource
+    private BatteryInfoNstMapper batteryInfoNstMapper;
 
     @Resource
     private BatteryInfoMapper batteryInfoMapper;
@@ -82,6 +88,8 @@ public class BatteryServiceImpl implements BatteryService {
 
         batteryInfoMapper.insert(info);
 
+        updateBatteryInfoNst(info);
+
         if (BatteryStatus.T_ABNORMAL.getStatus().equals(status.getStatus()) || BatteryStatus.V_ABNORMAL.getStatus().equals(status.getStatus())) {
             sendWarningMsg(battery);
         }
@@ -95,6 +103,40 @@ public class BatteryServiceImpl implements BatteryService {
         }
 
         return battery;
+    }
+
+    private BatteryInfoNst updateBatteryInfoNst(BatteryInfo btyInfo) {
+        Integer batteryId = btyInfo.getBatteryId();
+        BatteryInfoNst batteryInfoNst = batteryInfoNstMapper.selectByBtyId(batteryId);
+        if (batteryInfoNst == null) {
+            batteryInfoNst = new BatteryInfoNst();
+            batteryInfoNst.setBatteryId(batteryId);
+            copyProps(btyInfo, batteryInfoNst);
+            batteryInfoNstMapper.insertSelective(batteryInfoNst);
+        } else {
+            copyProps(btyInfo, batteryInfoNst);
+            batteryInfoNstMapper.updateByPrimaryKeySelective(batteryInfoNst);
+        }
+
+        return batteryInfoNst;
+
+    }
+
+    private void copyProps(BatteryInfo btyInfo, BatteryInfoNst batteryInfoNst) {
+        BigDecimal longitude = new BigDecimal(btyInfo.getLongitude());
+        BigDecimal latitude = new BigDecimal(btyInfo.getLatitude());
+        if (BigDecimal.ZERO.compareTo(longitude) != 0) {
+            batteryInfoNst.setLongitude(btyInfo.getLongitude());
+        }
+        if (BigDecimal.ZERO.compareTo(latitude) != 0) {
+            batteryInfoNst.setLatitude(btyInfo.getLatitude());
+        }
+        batteryInfoNst.setTemperature(btyInfo.getTemperature());
+        batteryInfoNst.setVoltage(btyInfo.getVoltage());
+        batteryInfoNst.setStatus(btyInfo.getStatus());
+        batteryInfoNst.setReceiveDate(new Date());
+        batteryInfoNst.setSampleDate(new Date());
+
     }
 
     private String convertAdcToTemp(String adc) {
@@ -173,19 +215,23 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     @Override
-    public BatteryInfo fetchBtyInfo(String btySimNo) throws CrudException {
+    public BatteryInfoNst fetchBtyInfo(String btySimNo) throws CrudException {
         Battery battery = batteryMapper.selectBySimNo(btySimNo);
         if (battery == null) {
             throw new FetchBtyInfoException("电池不存在");
         }
 
-        BatteryInfo info = batteryInfoMapper.selectByBtyId(battery.getId());
+        BatteryInfoNst nstInfo = batteryInfoNstMapper.selectByBtyId(battery.getId());
 
-        if (info == null) {
+        if (nstInfo != null) {
+            return nstInfo;
+        }
+        BatteryInfo batteryInfo = batteryInfoMapper.selectByBtyId(battery.getId());
+        if (batteryInfo == null) {
             throw new FetchBtyInfoException("未接收到此电池发送的信息");
         }
+        return updateBatteryInfoNst(batteryInfo);
 
-        return info;
     }
 
 }

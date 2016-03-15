@@ -2,16 +2,10 @@ package com.sam.yh.model;
 
 import java.util.Date;
 
-public class PubBatteryInfo {
+public class BatteryInfoNst {
     private Long id;
 
     private Integer batteryId;
-
-    private String btyPubSn;
-
-    private String bytImei;
-
-    private String ownerPhone;
 
     private String longitude;
 
@@ -23,25 +17,11 @@ public class PubBatteryInfo {
 
     private String status;
 
+    private String extension;
+
     private Date receiveDate;
 
     private Date sampleDate;
-
-    public PubBatteryInfo() {
-        super();
-    }
-
-    public PubBatteryInfo(BatteryInfoNst batteryInfo) {
-        this.id = batteryInfo.getId();
-        this.batteryId = batteryInfo.getBatteryId();
-        this.longitude = batteryInfo.getLongitude();
-        this.latitude = batteryInfo.getLatitude();
-        this.temperature = batteryInfo.getTemperature();
-        this.voltage = batteryInfo.getVoltage();
-        this.status = batteryInfo.getStatus();
-        this.receiveDate = batteryInfo.getReceiveDate();
-        this.sampleDate = batteryInfo.getSampleDate();
-    }
 
     public Long getId() {
         return id;
@@ -57,30 +37,6 @@ public class PubBatteryInfo {
 
     public void setBatteryId(Integer batteryId) {
         this.batteryId = batteryId;
-    }
-
-    public String getBtyPubSn() {
-        return btyPubSn;
-    }
-
-    public String getOwnerPhone() {
-        return ownerPhone;
-    }
-
-    public String getBytImei() {
-        return bytImei;
-    }
-
-    public void setBytImei(String bytImei) {
-        this.bytImei = bytImei;
-    }
-
-    public void setOwnerPhone(String ownerPhone) {
-        this.ownerPhone = ownerPhone;
-    }
-
-    public void setBtyPubSn(String btyPubSn) {
-        this.btyPubSn = btyPubSn == null ? null : btyPubSn.trim();
     }
 
     public String getLongitude() {
@@ -120,7 +76,15 @@ public class PubBatteryInfo {
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.status = status == null ? null : status.trim();
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension == null ? null : extension.trim();
     }
 
     public Date getReceiveDate() {

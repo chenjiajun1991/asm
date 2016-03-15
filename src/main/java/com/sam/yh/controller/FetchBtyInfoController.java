@@ -25,7 +25,7 @@ import com.sam.yh.common.SamConstants;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.model.Battery;
-import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.req.bean.BtyInfoReq;
 import com.sam.yh.resp.bean.BtyInfoResp;
 import com.sam.yh.resp.bean.ResponseUtils;
@@ -50,7 +50,7 @@ public class FetchBtyInfoController {
         try {
             validateBtyArgs(req);
 
-            BatteryInfo info = batteryService.fetchBtyInfo(req.getBtySimNo());
+            BatteryInfoNst info = batteryService.fetchBtyInfo(req.getBtySimNo());
             BtyInfoResp respData = new BtyInfoResp();
             respData.setLatitude(info.getLatitude());
             respData.setLongitude(info.getLongitude());
@@ -89,7 +89,7 @@ public class FetchBtyInfoController {
 
             TimeUnit.SECONDS.sleep(SamConstants.MAX_WAIT_SECONDS);
 
-            BatteryInfo info = batteryService.fetchBtyInfo(req.getBtySimNo());
+            BatteryInfoNst info = batteryService.fetchBtyInfo(req.getBtySimNo());
             BtyInfoResp respData = new BtyInfoResp();
             respData.setLatitude(info.getLatitude());
             respData.setLongitude(info.getLongitude());

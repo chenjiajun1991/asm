@@ -4,7 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.Battery;
-import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.req.bean.BatteryInfoReq;
 
 public interface BatteryService {
@@ -34,5 +34,5 @@ public interface BatteryService {
     public int countCityBtys(int cityId);
 
     @Transactional
-    public BatteryInfo fetchBtyInfo(String btySimNo) throws CrudException;
+    public BatteryInfoNst fetchBtyInfo(String btySimNo) throws CrudException;
 }

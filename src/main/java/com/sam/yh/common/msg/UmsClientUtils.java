@@ -5,6 +5,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -26,14 +28,14 @@ public class UmsClientUtils {
 
     }
 
-    public static boolean sendSms(final String mobilePhone, String content) {
+    public static boolean sendSms(final String umsSpCode, final String umsUserName, final String umsPassword, final String mobilePhone, String content) {
         boolean result = false;
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://sms.api.ums86.com:8899/sms/Api/Send.do");
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("SpCode", "103906"));
-        nvps.add(new BasicNameValuePair("LoginName", "fj_hdl"));
-        nvps.add(new BasicNameValuePair("Password", "SAMworld888"));
+        nvps.add(new BasicNameValuePair("SpCode", umsSpCode));
+        nvps.add(new BasicNameValuePair("LoginName", umsUserName));
+        nvps.add(new BasicNameValuePair("Password", umsPassword));
         nvps.add(new BasicNameValuePair("MessageContent", content));
         nvps.add(new BasicNameValuePair("UserNumber", mobilePhone));
         nvps.add(new BasicNameValuePair("SerialNumber", String.valueOf(System.currentTimeMillis())));
@@ -48,9 +50,17 @@ public class UmsClientUtils {
                 // do something useful with the response body
                 // and ensure it is fully consumed
                 String repContent = EntityUtils.toString(entity, Charset.forName("GBK"));
+                String[] strs = StringUtils.split(repContent, "&");
                 logger.info(repContent);
+                if (ArrayUtils.isNotEmpty(strs)) {
+                    for (String string : strs) {
+                        String[] pairs = StringUtils.split(string, "=");
+                        if (ArrayUtils.isNotEmpty(strs) && StringUtils.equals(pairs[0], "result") && StringUtils.equals(pairs[1], "0")) {
+                            result = true;
+                        }
+                    }
+                }
 
-                result = true;
             }
         } catch (Exception e) {
             logger.error("{}", ExceptionUtils.getStackTrace(e));
@@ -69,7 +79,7 @@ public class UmsClientUtils {
 
     public static void main(String[] args) {
         // sendSms("15618672987", "您的验证码为" + "123459");
-        sendSms("15618672987", "你有一项编号为" + "12345678" + "的事务需要处理");
+        sendSms("103906", "fj_hdl", "SAMworld888", "15618672987", "你有一项编号为" + "12345678" + "的事务需要处理");
 
     }
 

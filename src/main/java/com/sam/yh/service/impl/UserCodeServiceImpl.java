@@ -30,9 +30,8 @@ public class UserCodeServiceImpl implements UserCodeService {
     private UserMapper userMapper;
     @Resource
     private UserCodeMapper userCodeMapper;
-
     @Resource
-    private DahantSmsService dahantSmsService;
+    private DahantSmsService defaultUmsSmsService;
 
     @Override
     public boolean sendSignupAuthCode(String mobilePhone) throws CrudException {
@@ -41,7 +40,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             throw new UserSignupException("手机号码已经注册");
         }
         String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.SIGNUP_CODE.getType());
-        return dahantSmsService.sendSignupAuthCode(mobilePhone, authCode);
+        return defaultUmsSmsService.sendSignupAuthCode(mobilePhone, authCode);
     }
 
     @Override
@@ -51,12 +50,12 @@ public class UserCodeServiceImpl implements UserCodeService {
             throw new UserSignupException("未注册的手机号码");
         }
         String authCode = sendAndSaveSmsCode(mobilePhone, UserCodeType.RESETPWD_CODE.getType());
-        return dahantSmsService.sendResetPwdAuthCode(mobilePhone, authCode);
+        return defaultUmsSmsService.sendResetPwdAuthCode(mobilePhone, authCode);
     }
 
     @Override
     public boolean sendTestAuthCode(String mobilePhone, String content) throws CrudException {
-        return dahantSmsService.sendTestSms(mobilePhone, content);
+        return defaultUmsSmsService.sendTestSms(mobilePhone, content);
     }
 
     @Override
@@ -113,6 +112,10 @@ public class UserCodeServiceImpl implements UserCodeService {
             throw new AuthCodeSendException("已经超过最大发送次数");
         }
 
+        if (System.currentTimeMillis() - userCode.getSendDate().getTime() < 120 * 1000L) {
+            throw new AuthCodeSendException("短信发送太快，请稍候");
+        }
+
         int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes() + 1) : 1;
         if (!userCode.getStatus() || now.after(userCode.getExpiryDate())) {
             // 验证码无效
@@ -159,7 +162,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         int type = UserCodeType.BTY_WARNING.getType();
         boolean send = needToSendMsg(mobilePhone, btyImei, type);
         if (send) {
-            dahantSmsService.sendWarningMsg(mobilePhone, btyImei);
+            defaultUmsSmsService.sendWarningMsg(mobilePhone, btyImei);
         }
 
         return send;
@@ -174,7 +177,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         }
         boolean send = needToSendMsg(mobilePhone, btyImei, type);
         if (send) {
-            send = dahantSmsService.sendMovingMsg(mobilePhone, btyImei);
+            send = defaultUmsSmsService.sendMovingMsg(mobilePhone, btyImei);
         }
 
         return send;

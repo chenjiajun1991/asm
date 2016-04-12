@@ -11,6 +11,7 @@
     
     <bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<!-- <property name="location" value="file:/home/samyh/conf/sam_yh/sam_yh_battery.properties" /> -->
 		<property name="location" value="file:D:/opt/conf/sam_yh/sam_yh_battery.properties" />
 	</bean>
 	
@@ -22,6 +23,15 @@
 	</bean>
 	<bean id="dhPassword" class="java.lang.String">
 		<constructor-arg value="${dahant.password}" />
+	</bean>
+	<bean id="umsSpCode" class="java.lang.String">
+		<constructor-arg value="${fj.ums.spcode}" />
+	</bean>
+	<bean id="umsUserName" class="java.lang.String">
+		<constructor-arg value="${fj.ums.account}" />
+	</bean>
+	<bean id="umsPassword" class="java.lang.String">
+		<constructor-arg value="${fj.ums.password}" />
 	</bean>
 	<bean id="smsEnable" class="java.lang.Boolean">
 		<constructor-arg value="${sms.enable}" />

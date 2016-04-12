@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.ctc.smscloud.xml.webservice.utils.WebServiceXmlClientUtil;
 
-@Service
+@Service("defaultDahantSmsService")
 public class DahantSmsServiceImpl implements DahantSmsService {
 
     private static final Logger logger = LoggerFactory.getLogger(DahantSmsServiceImpl.class);

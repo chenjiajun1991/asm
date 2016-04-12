@@ -10,6 +10,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -33,12 +34,14 @@ public class FetchReplaySmsTask {
     private String mailReceiver;
 
     @Resource
-    private DahantSmsService dahantSmsService;
+    private DahantSmsService defaultUmsSmsService;
 
     public void run() {
-        String respInfo = dahantSmsService.getSms();
-        List<ReplaySms> smsMap = parseResp(respInfo);
-        forwardSmsByMail(smsMap);
+        String respInfo = defaultUmsSmsService.getSms();
+        if (StringUtils.isNotBlank(respInfo)) {
+            List<ReplaySms> smsMap = parseResp(respInfo);
+            forwardSmsByMail(smsMap);
+        }
 
     }
 

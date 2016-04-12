@@ -64,7 +64,7 @@ public class ResellerServiceImpl implements ResellerService {
     BatteryInfoMapper batteryInfoMapper;
 
     @Resource
-    private DahantSmsService dahantSmsService;
+    private DahantSmsService defaultUmsSmsService;
 
     @Resource
     UnicomM2mService unicomM2mService;
@@ -115,7 +115,7 @@ public class ResellerServiceImpl implements ResellerService {
 
         userBatteryMapper.insert(userBattery);
 
-        dahantSmsService.sendBuyInfo(submitBtySpecReq.getUserPhone());
+        defaultUmsSmsService.sendBuyInfo(submitBtySpecReq.getUserPhone());
 
     }
 
@@ -181,7 +181,7 @@ public class ResellerServiceImpl implements ResellerService {
                 userMapper.updateByPrimaryKeySelective(user);
 
                 createReseller(user.getUserId(), logResellerReq);
-                dahantSmsService.sendLogResellerSuccess(resellerPhone);
+                defaultUmsSmsService.sendLogResellerSuccess(resellerPhone);
             }
         } else {
             createUser(logResellerReq);
@@ -210,7 +210,7 @@ public class ResellerServiceImpl implements ResellerService {
 
         createReseller(user.getUserId(), logResellerReq);
 
-        dahantSmsService.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
+        defaultUmsSmsService.sendLogResellerSuccess(logResellerReq.getResellerPhone(), initPwd);
     }
 
     private void createReseller(int userId, LogResellerReq logResellerReq) {

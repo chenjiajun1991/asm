@@ -14,3 +14,6 @@ CREATE TABLE `battery_info_newest` (
   PRIMARY KEY (`id`),
   KEY `IX_BTYINFOS` (`battery_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter table battery_info_newest change column longitude longitude varchar(30) NOT NULL DEFAULT '0.000000';
+alter table battery_info_newest change column latitude latitude varchar(30) NOT NULL DEFAULT '0.000000';

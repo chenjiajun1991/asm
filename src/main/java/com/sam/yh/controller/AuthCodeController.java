@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.crud.exception.AuthCodeSendException;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.enums.UserCodeType;
@@ -70,6 +71,8 @@ public class AuthCodeController {
         } catch (CrudException e) {
             logger.error("send sms exception, " + req.getUserPhone(), e);
             if (e instanceof UserSignupException) {
+                return ResponseUtils.getServiceErrorResp(e.getMessage());
+            } else if (e instanceof AuthCodeSendException) {
                 return ResponseUtils.getServiceErrorResp(e.getMessage());
             } else {
                 return ResponseUtils.getSysErrorResp();

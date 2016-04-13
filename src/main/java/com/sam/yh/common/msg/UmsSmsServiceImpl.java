@@ -25,7 +25,7 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     @Override
     public boolean sendSignupAuthCode(String mobilePhone, String authCode) {
         // TODO
-        String content = "您正在注册为亚亨蓄电池会员，注册验证码为" + "，请在30分钟内使用！";
+        String content = "您正在注册为亚亨蓄电池会员，注册验证码为" + authCode + "，请在30分钟内使用！";
         return sendSms(mobilePhone, content);
     }
 

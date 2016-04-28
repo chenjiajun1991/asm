@@ -42,7 +42,7 @@ public class SubmitBtySpecController {
 
             resellerService.submitBtySpec(req);
 
-            return ResponseUtils.getNormalResp(StringUtils.EMPTY);
+            return ResponseUtils.getNormalResp("电池绑定成功");
         } catch (IllegalParamsException e) {
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {

@@ -21,10 +21,11 @@
     <result column="sale_date" property="saleDate" jdbcType="TIMESTAMP" />
     <result column="lock_date" property="lockDate" jdbcType="TIMESTAMP" />
     <result column="expiry_date" property="expiryDate" jdbcType="TIMESTAMP" />
+    <result column="bty_quantity" property="btyQuantity" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, sn, status, bty_type, pub_sn, imei, sim_no, imsi, gsim_no, iccid, reseller_id, sale_status, city_id, 
-    lock_longitude, lock_latitude, create_date, sale_date, lock_date, expiry_date
+    lock_longitude, lock_latitude, create_date, sale_date, lock_date, expiry_date, bty_quantity
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -78,13 +79,13 @@
       reseller_id, sale_status, city_id, 
       lock_longitude, lock_latitude, 
       create_date, sale_date, lock_date, 
-      expiry_date)
+      expiry_date, bty_quantity)
     values (#{sn,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
       #{btyType,jdbcType=BIT}, #{pubSn,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, #{simNo,jdbcType=VARCHAR}, #{imsi,jdbcType=VARCHAR}, #{gsmSimNo,jdbcType=VARCHAR},
       #{iccid,jdbcType=VARCHAR}, #{resellerId,jdbcType=INTEGER}, #{saleStatus,jdbcType=BIT}, #{cityId,jdbcType=INTEGER}, 
       #{lockLongitude,jdbcType=VARCHAR}, #{lockLatitude,jdbcType=VARCHAR},
       #{createDate,jdbcType=TIMESTAMP}, #{saleDate,jdbcType=TIMESTAMP}, #{lockDate,jdbcType=TIMESTAMP}, 
-      #{expiryDate,jdbcType=TIMESTAMP})
+      #{expiryDate,jdbcType=TIMESTAMP}, #{btyQuantity,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.sam.yh.model.Battery" useGeneratedKeys="true" keyProperty="id">
     insert into battery
@@ -143,6 +144,9 @@
       <if test="expiryDate != null" >
         expiry_date,
       </if>
+      <if test="btyQuantity != null" >
+        bty_quantity,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="sn != null" >
@@ -198,6 +202,9 @@
       </if>
       <if test="expiryDate != null" >
         #{expiryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="btyQuantity != null" >
+        #{btyQuantity,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -258,6 +265,9 @@
       <if test="expiryDate != null" >
         expiry_date = #{expiryDate,jdbcType=TIMESTAMP},
       </if>
+      <if test="btyQuantity != null" >
+        bty_quantity = #{btyQuantity,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -280,7 +290,8 @@
       create_date = #{createDate,jdbcType=TIMESTAMP},
       sale_date = #{saleDate,jdbcType=TIMESTAMP},
       lock_date = #{lockDate,jdbcType=TIMESTAMP},
-      expiry_date = #{expiryDate,jdbcType=TIMESTAMP}
+      expiry_date = #{expiryDate,jdbcType=TIMESTAMP},
+      bty_quantity = #{btyQuantity,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -1,13 +1,20 @@
 package com.sam.yh.req.bean;
 
-public class SubmitBtySpecReq {
+import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+public class SubmitBtySpecReq implements Serializable {
+
+    private static final long serialVersionUID = -115181405613943874L;
     private String userName;
     private String userPhone;
     private String btySN;
     private String btyImei;
     private String btySimNo;
     private String resellerPhone;
+    private Integer btyQuantity;
 
     public String getUserName() {
         return userName;
@@ -55,6 +62,19 @@ public class SubmitBtySpecReq {
 
     public void setResellerPhone(String resellerPhone) {
         this.resellerPhone = resellerPhone;
+    }
+
+    public Integer getBtyQuantity() {
+        return btyQuantity;
+    }
+
+    public void setBtyQuantity(Integer btyQuantity) {
+        this.btyQuantity = btyQuantity;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

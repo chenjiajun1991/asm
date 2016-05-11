@@ -15,6 +15,8 @@ public interface DahantSmsService {
 
     public boolean sendWarningMsg(String mobilePhone, String btyImei);
 
+    public boolean sendVoltageWarningMsg(String mobilePhone, String btyImei, String voltage);
+
     public boolean sendMovingMsg(String mobilePhone, String btyImei);
 
     public String getSms();

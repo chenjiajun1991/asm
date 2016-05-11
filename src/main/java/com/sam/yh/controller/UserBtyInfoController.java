@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.common.PowerCalUtil;
 import com.sam.yh.common.SamConstants;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.PubBatteryInfo;
@@ -133,6 +134,8 @@ public class UserBtyInfoController {
         userBtyInfo.setLatitude(pubBatteryInfo.getLatitude());
         userBtyInfo.setTemperature(pubBatteryInfo.getTemperature());
         userBtyInfo.setVoltage(pubBatteryInfo.getVoltage());
+        Battery battery = batteryService.fetchBtyById(pubBatteryInfo.getBatteryId());
+        userBtyInfo.setPower(PowerCalUtil.calPower(pubBatteryInfo.getVoltage(), battery.getBtyQuantity()));
         return userBtyInfo;
     }
 

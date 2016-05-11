@@ -41,6 +41,8 @@ public class Battery {
 
     private Date expiryDate;
 
+    private Integer btyQuantity;
+
     public Integer getId() {
         return id;
     }
@@ -192,4 +194,13 @@ public class Battery {
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
     }
+
+    public Integer getBtyQuantity() {
+        return btyQuantity;
+    }
+
+    public void setBtyQuantity(Integer btyQuantity) {
+        this.btyQuantity = btyQuantity;
+    }
+
 }

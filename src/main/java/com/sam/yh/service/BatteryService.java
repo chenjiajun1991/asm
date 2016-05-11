@@ -18,6 +18,8 @@ public interface BatteryService {
     @Transactional
     public Battery fetchBtyByIMEI(String imei);
 
+    public Battery fetchBtyById(int id);
+
     @Transactional
     public Battery fetchBtyByPubSn(String pubSn);
 

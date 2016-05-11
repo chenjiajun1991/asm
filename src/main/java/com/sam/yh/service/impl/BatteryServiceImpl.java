@@ -78,7 +78,18 @@ public class BatteryServiceImpl implements BatteryService {
         info.setLongitude(batteryInfoReqVo.getLongitude());
         info.setLatitude(batteryInfoReqVo.getLatitude());
         info.setTemperature(convertAdcToTemp(batteryInfoReqVo.getTemperature()));
-        info.setVoltage(convertAdcToVo(batteryInfoReqVo.getVoltage()));
+        String voltage = convertAdcToVo(batteryInfoReqVo.getVoltage());
+        info.setVoltage(voltage);
+        // 临时代码，调整电池的节数
+        int BtyQuantity = battery.getBtyQuantity() == null ? 4 : battery.getBtyQuantity();
+        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 54d) {
+            Battery temBattery = new Battery();
+            temBattery.setId(battery.getId());
+            BtyQuantity = 5;
+            temBattery.setBtyQuantity(BtyQuantity);
+            batteryMapper.updateByPrimaryKeySelective(temBattery);
+        }
+
         // TODO
         // info.setSampleDate(batteryInfoReqVo.getSampleDate());
         info.setSampleDate(new Date());
@@ -90,8 +101,12 @@ public class BatteryServiceImpl implements BatteryService {
 
         updateBatteryInfoNst(info);
 
-        if (BatteryStatus.T_ABNORMAL.getStatus().equals(status.getStatus()) || BatteryStatus.V_ABNORMAL.getStatus().equals(status.getStatus())) {
+        if (TempUtils.isWarning(batteryInfoReqVo.getTemperature())) {
             sendWarningMsg(battery);
+        }
+
+        if (Double.parseDouble(voltage) < (BtyQuantity * 10.5d)) {
+            sendVolageWarningMsg(battery, voltage);
         }
 
         if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())) {
@@ -171,6 +186,13 @@ public class BatteryServiceImpl implements BatteryService {
         userCodeService.sendWarningMsg(user.getMobilePhone(), battery.getImei());
     }
 
+    private void sendVolageWarningMsg(Battery battery, String voltage) throws CrudException {
+
+        UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
+        User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+        userCodeService.sendWarningMsg(user.getMobilePhone(), battery.getImei(), voltage);
+    }
+
     private void sendMovingMsg(Battery battery) throws CrudException {
 
         UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
@@ -232,6 +254,11 @@ public class BatteryServiceImpl implements BatteryService {
         }
         return updateBatteryInfoNst(batteryInfo);
 
+    }
+
+    @Override
+    public Battery fetchBtyById(int id) {
+        return batteryMapper.selectByPrimaryKey(id);
     }
 
 }

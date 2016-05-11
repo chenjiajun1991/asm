@@ -11,8 +11,8 @@
     
     <bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<!-- <property name="location" value="file:/home/samyh/conf/sam_yh/sam_yh_battery.properties" /> -->
-		<property name="location" value="file:D:/opt/conf/sam_yh/sam_yh_battery.properties" />
+		<property name="location" value="file:/home/samyh/conf/sam_yh/sam_yh_battery.properties" />
+		<!-- <property name="location" value="file:D:/opt/conf/sam_yh/sam_yh_battery.properties" /> -->
 	</bean>
 	
 	<bean id="dhServerUrl" class="java.lang.String">

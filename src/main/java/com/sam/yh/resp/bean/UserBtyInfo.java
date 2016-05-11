@@ -1,7 +1,13 @@
 package com.sam.yh.resp.bean;
 
-public class UserBtyInfo {
+import java.io.Serializable;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+public class UserBtyInfo implements Serializable {
+
+    private static final long serialVersionUID = 2393329207228215900L;
     private String btyPubSn;
     private String btyImei;
     private String ownerPhone;
@@ -9,6 +15,7 @@ public class UserBtyInfo {
     private String latitude;
     private String temperature;
     private String voltage;
+    private Integer power;
 
     public String getBtyPubSn() {
         return btyPubSn;
@@ -64,6 +71,19 @@ public class UserBtyInfo {
 
     public void setVoltage(String voltage) {
         this.voltage = voltage;
+    }
+
+    public Integer getPower() {
+        return power;
+    }
+
+    public void setPower(Integer power) {
+        this.power = power;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

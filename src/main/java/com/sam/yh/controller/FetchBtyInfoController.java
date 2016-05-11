@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
+import com.sam.yh.common.PowerCalUtil;
 import com.sam.yh.common.SamConstants;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtyInfoException;
@@ -56,6 +57,8 @@ public class FetchBtyInfoController {
             respData.setLongitude(info.getLongitude());
             respData.setTemperature(info.getTemperature());
             respData.setVoltage(info.getVoltage());
+            Battery battery = batteryService.fetchBtyById(info.getBatteryId());
+            respData.setPower(PowerCalUtil.calPower(info.getVoltage(), battery.getBtyQuantity()));
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateString = formatter.format(info.getReceiveDate());
@@ -95,6 +98,8 @@ public class FetchBtyInfoController {
             respData.setLongitude(info.getLongitude());
             respData.setTemperature(info.getTemperature());
             respData.setVoltage(info.getVoltage());
+            Battery battery = batteryService.fetchBtyById(info.getBatteryId());
+            respData.setPower(PowerCalUtil.calPower(info.getVoltage(), battery.getBtyQuantity()));
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String dateString = formatter.format(info.getReceiveDate());

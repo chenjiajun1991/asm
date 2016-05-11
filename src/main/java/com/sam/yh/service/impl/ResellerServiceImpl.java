@@ -105,7 +105,7 @@ public class ResellerServiceImpl implements ResellerService {
         //
         boolean isCloudBty = true;
         Battery battery = addBattery(submitBtySpecReq.getBtySN(), submitBtySpecReq.getBtyImei(), submitBtySpecReq.getBtySimNo(), iccid, isCloudBty,
-                reseller.getUserId(), reseller.getCityId());
+                reseller.getUserId(), reseller.getCityId(), submitBtySpecReq.getBtyQuantity());
 
         //
         UserBattery userBattery = new UserBattery();
@@ -140,7 +140,7 @@ public class ResellerServiceImpl implements ResellerService {
         return user;
     }
 
-    private Battery addBattery(String btySn, String imei, String simNo, String iccid, boolean isCloudBty, int resellerId, int cityId) {
+    private Battery addBattery(String btySn, String imei, String simNo, String iccid, boolean isCloudBty, int resellerId, int cityId, Integer btyQuantity) {
         Date now = new Date();
         Battery battery = new Battery();
         battery.setSn(btySn);
@@ -155,6 +155,7 @@ public class ResellerServiceImpl implements ResellerService {
         battery.setSaleStatus(true);
         battery.setCreateDate(now);
         battery.setSaleDate(now);
+        battery.setBtyQuantity(btyQuantity == null ? 4 : btyQuantity);
 
         return batteryService.addBattery(battery);
     }

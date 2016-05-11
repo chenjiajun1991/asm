@@ -169,6 +169,18 @@ public class UserCodeServiceImpl implements UserCodeService {
     }
 
     @Override
+    public boolean sendWarningMsg(String mobilePhone, String btyImei, String voltage) throws CrudException {
+
+        int type = UserCodeType.BTY_VOLTAGE_WARNING.getType();
+        boolean send = needToSendMsg(mobilePhone, btyImei, type);
+        if (send) {
+            defaultUmsSmsService.sendVoltageWarningMsg(mobilePhone, btyImei, voltage);
+        }
+
+        return send;
+    }
+
+    @Override
     public boolean sendMovingMsg(String mobilePhone, String btyImei) throws CrudException {
         int type = UserCodeType.BTY_MOVING.getType();
         Calendar now = Calendar.getInstance();

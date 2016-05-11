@@ -105,7 +105,7 @@ public class BatteryServiceImpl implements BatteryService {
             sendWarningMsg(battery);
         }
 
-        if (Double.parseDouble(voltage) < (BtyQuantity * 10.5d)) {
+        if (Double.parseDouble(voltage) < (BtyQuantity * 10.5d + 1)) {
             sendVolageWarningMsg(battery, voltage);
         }
 

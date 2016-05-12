@@ -52,6 +52,7 @@ public class ListUserBtysController {
 
             return ResponseUtils.getNormalResp(respData);
         } catch (IllegalParamsException e) {
+            logger.error("fetch my btys exception, " + req.getUserPhone(), e);
             return ResponseUtils.getParamsErrorResp(e.getMessage());
         } catch (CrudException e) {
             logger.error("fetch my btys exception, " + req.getUserPhone(), e);

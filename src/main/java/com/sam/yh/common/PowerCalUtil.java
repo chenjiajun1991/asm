@@ -2,7 +2,7 @@ package com.sam.yh.common;
 
 public class PowerCalUtil {
 
-    public static int calPower(String voltage, int btyQuantity) {
+    public static String calPower(String voltage, int btyQuantity) {
         double temp = (Double.parseDouble(voltage) - 10.5d * btyQuantity) / btyQuantity;
         int power = 0;
         if (temp < 0) {
@@ -16,7 +16,7 @@ public class PowerCalUtil {
         } else {
             power = 4;
         }
-        return power;
+        return String.valueOf(power);
     }
 
     /*

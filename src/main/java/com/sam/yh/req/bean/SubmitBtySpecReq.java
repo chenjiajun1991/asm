@@ -14,7 +14,7 @@ public class SubmitBtySpecReq implements Serializable {
     private String btyImei;
     private String btySimNo;
     private String resellerPhone;
-    private Integer btyQuantity;
+    private String btyQuantity;
 
     public String getUserName() {
         return userName;
@@ -64,11 +64,11 @@ public class SubmitBtySpecReq implements Serializable {
         this.resellerPhone = resellerPhone;
     }
 
-    public Integer getBtyQuantity() {
+    public String getBtyQuantity() {
         return btyQuantity;
     }
 
-    public void setBtyQuantity(Integer btyQuantity) {
+    public void setBtyQuantity(String btyQuantity) {
         this.btyQuantity = btyQuantity;
     }
 

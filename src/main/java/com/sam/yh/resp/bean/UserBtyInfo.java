@@ -15,7 +15,7 @@ public class UserBtyInfo implements Serializable {
     private String latitude;
     private String temperature;
     private String voltage;
-    private Integer power;
+    private String power;
 
     public String getBtyPubSn() {
         return btyPubSn;
@@ -73,11 +73,11 @@ public class UserBtyInfo implements Serializable {
         this.voltage = voltage;
     }
 
-    public Integer getPower() {
+    public String getPower() {
         return power;
     }
 
-    public void setPower(Integer power) {
+    public void setPower(String power) {
         this.power = power;
     }
 

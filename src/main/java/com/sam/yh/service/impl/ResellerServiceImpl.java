@@ -140,7 +140,7 @@ public class ResellerServiceImpl implements ResellerService {
         return user;
     }
 
-    private Battery addBattery(String btySn, String imei, String simNo, String iccid, boolean isCloudBty, int resellerId, int cityId, Integer btyQuantity) {
+    private Battery addBattery(String btySn, String imei, String simNo, String iccid, boolean isCloudBty, int resellerId, int cityId, String btyQuantity) {
         Date now = new Date();
         Battery battery = new Battery();
         battery.setSn(btySn);
@@ -155,7 +155,7 @@ public class ResellerServiceImpl implements ResellerService {
         battery.setSaleStatus(true);
         battery.setCreateDate(now);
         battery.setSaleDate(now);
-        battery.setBtyQuantity(btyQuantity == null ? 4 : btyQuantity);
+        battery.setBtyQuantity(btyQuantity == null ? 4 : Integer.valueOf(btyQuantity));
 
         return batteryService.addBattery(battery);
     }

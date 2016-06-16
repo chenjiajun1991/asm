@@ -16,4 +16,5 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectByPhone(String mobilePhone);
+    
 }

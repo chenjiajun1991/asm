@@ -101,6 +101,13 @@ public class ResellerServiceImpl implements ResellerService {
             user = addLockedUserBySys(submitBtySpecReq.getUserName(), submitBtySpecReq.getUserPhone());
             userCodeService.sendSignupAuthCode(submitBtySpecReq.getUserPhone());
         }
+        
+        //当用户已注册时更新用户姓名
+        if(user!= null){
+        	user.setUserName(submitBtySpecReq.getUserName());
+        	userMapper.updateByPrimaryKey(user);
+        }
+        
 
         //
         boolean isCloudBty = true;

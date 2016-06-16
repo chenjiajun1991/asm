@@ -13,6 +13,14 @@
     <result column="imei" property="bytImei" jdbcType="VARCHAR" />
     <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
   </resultMap>
+  
+  <!-- 查询当天卖出去的电池 -->
+  <resultMap id="BtySaleResultMap" type="com.sam.yh.model.UserBatteryInfo" >
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
   <sql id="Base_Column_List" >
     user_id, battery_id, buy_date
   </sql>
@@ -43,6 +51,16 @@
     on u.battery_id = b.id
     where u.user_id = #{userId}
   </select>
+  
+<!-- 查询当天卖出去的电池 -->
+<select id="selectByBuyDate" resultMap="BtySaleResultMap" parameterType="java.util.Map">
+select 
+    <include refid="Base_Column_List" />
+    from user_battery
+    where  buy_date &gt;= #{startDate,jdbcType=TIMESTAMP}  and buy_date &lt; #{endDate,jdbcType=TIMESTAMP}
+    order by buy_date
+</select>
+  
   <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
     select 
     b.pub_sn as pub_sn,

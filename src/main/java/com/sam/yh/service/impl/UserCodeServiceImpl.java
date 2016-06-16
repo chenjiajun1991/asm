@@ -169,12 +169,12 @@ public class UserCodeServiceImpl implements UserCodeService {
     }
 
     @Override
-    public boolean sendWarningMsg(String mobilePhone, String btyImei, String voltage) throws CrudException {
+    public boolean sendWarningMsg(String mobilePhone, String btyImei, String voltage,int flag) throws CrudException {
 
         int type = UserCodeType.BTY_VOLTAGE_WARNING.getType();
         boolean send = needToSendMsg(mobilePhone, btyImei, type);
         if (send) {
-            defaultUmsSmsService.sendVoltageWarningMsg(mobilePhone, btyImei, voltage);
+        	send=defaultUmsSmsService.sendVoltageWarningMsg(mobilePhone, btyImei, voltage,flag);
         }
 
         return send;
@@ -214,7 +214,7 @@ public class UserCodeServiceImpl implements UserCodeService {
             send = true;
         }
 
-        int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes() + 1) : 1;
+        int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes()+1) : 1;
         if (now.after(userCode.getExpiryDate()) && sendTimes <= SamConstants.MXA_WARNING_SEND_TIME) {
             userCode.setSendTimes(userCode.getSendTimes() + 1);
             userCode.setSendDate(now);
@@ -222,6 +222,18 @@ public class UserCodeServiceImpl implements UserCodeService {
 
             userCodeMapper.updateByPrimaryKey(userCode);
             send = true;
+        }
+        
+        if(type==UserCodeType.BTY_VOLTAGE_WARNING.getType()){
+        	if(sendTimes <= SamConstants.MXA_WARNING_SEND_TIME){
+        		 userCode.setSendTimes(userCode.getSendTimes() + 1);
+                 userCode.setSendDate(now);
+                 userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+
+                 userCodeMapper.updateByPrimaryKey(userCode);
+                 send = true;
+        	}
+        	
         }
         return send;
     }

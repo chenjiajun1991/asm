@@ -1,5 +1,6 @@
 package com.sam.yh.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.sam.yh.common.DistanceUtils;
 import com.sam.yh.common.TempUtils;
+import com.sam.yh.common.baidugps.SendGpsToBaiduServer;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.dao.BatteryInfoMapper;
@@ -50,10 +52,14 @@ public class BatteryServiceImpl implements BatteryService {
 
     @Resource
     private UserCodeService userCodeService;
-
+    
     @Resource
     private Long MoveDis;
-
+    
+    @Resource
+    private SendGpsToBaiduServer sendGpsToBaiduServer;
+    
+  
     @Override
     public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException {
         if (batteryInfoReqVo == null) {
@@ -89,7 +95,24 @@ public class BatteryServiceImpl implements BatteryService {
             temBattery.setBtyQuantity(BtyQuantity);
             batteryMapper.updateByPrimaryKeySelective(temBattery);
         }
-
+        
+        //当电压过高或过低时发短信提示用户
+        if(BtyQuantity==4){
+        	if(Double.parseDouble(voltage)>60d){
+        		sendVolageWarningMsg(battery, voltage, 1);
+        	}else if(Double.parseDouble(voltage)<41.5d){
+        		sendVolageWarningMsg(battery, voltage, 0);
+        	}
+        }else if(BtyQuantity==5){
+            if(Double.parseDouble(voltage)>75d){
+            	sendVolageWarningMsg(battery, voltage, 1);
+        	}else if(Double.parseDouble(voltage)<52d){
+        		sendVolageWarningMsg(battery, voltage, 0);
+        	}
+        }
+        
+        
+   
         // TODO
         // info.setSampleDate(batteryInfoReqVo.getSampleDate());
         info.setSampleDate(new Date());
@@ -100,13 +123,31 @@ public class BatteryServiceImpl implements BatteryService {
         batteryInfoMapper.insert(info);
 
         updateBatteryInfoNst(info);
+        
+        
+        //若经纬度信息不为零，发送电池信息到百度鹰眼服务器
+        if(Double.parseDouble(batteryInfoReqVo.getLatitude())!=0&&Double.parseDouble(batteryInfoReqVo.getLongitude())!=0){
+        	
+        	String result=sendGpsToBaiduServer.sendGPStoBaiDu(batteryInfoReqVo.getImei(), 
+            		Double.parseDouble(batteryInfoReqVo.getLatitude()),Double.parseDouble(batteryInfoReqVo.getLongitude()) ,
+            		System.currentTimeMillis()/1000);
+        	try {
+				String s=new String(result.getBytes(),"utf-8");
+				logger.info("sendGpsToBaiduServer:" +s);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        		
+        }
+        
 
         if (TempUtils.isWarning(batteryInfoReqVo.getTemperature())) {
             sendWarningMsg(battery);
         }
 
         if (Double.parseDouble(voltage) < (BtyQuantity * 10.5d + 1)) {
-            sendVolageWarningMsg(battery, voltage);
+//            sendVolageWarningMsg(battery, voltage);
         }
 
         if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())) {
@@ -186,11 +227,11 @@ public class BatteryServiceImpl implements BatteryService {
         userCodeService.sendWarningMsg(user.getMobilePhone(), battery.getImei());
     }
 
-    private void sendVolageWarningMsg(Battery battery, String voltage) throws CrudException {
+    private void sendVolageWarningMsg(Battery battery, String voltage,int flag) throws CrudException {
 
         UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
         User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
-        userCodeService.sendWarningMsg(user.getMobilePhone(), battery.getImei(), voltage);
+        userCodeService.sendWarningMsg(user.getMobilePhone(), battery.getImei(), voltage,flag);
     }
 
     private void sendMovingMsg(Battery battery) throws CrudException {

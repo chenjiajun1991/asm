@@ -17,5 +17,5 @@ public interface BatteryInfoMapper {
     BatteryInfo selectByBtyId(Integer btyId);
 
     List<ResellerBtyInfo> selectByReseller(Integer resellerId);
-
+    
 }

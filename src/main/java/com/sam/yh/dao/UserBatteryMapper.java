@@ -1,9 +1,11 @@
 package com.sam.yh.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sam.yh.model.PubBattery;
 import com.sam.yh.model.UserBattery;
+import com.sam.yh.model.UserBatteryInfo;
 import com.sam.yh.model.UserBatteryKey;
 
 public interface UserBatteryMapper {
@@ -24,4 +26,6 @@ public interface UserBatteryMapper {
     UserBattery selectByBtyId(Integer batteryId);
     
     List<PubBattery> selectBtysByUserId(Integer userId);
+    
+    List<UserBatteryInfo> selectByBuyDate(Map<String,Object> map);
 }

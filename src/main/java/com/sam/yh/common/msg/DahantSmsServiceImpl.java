@@ -155,8 +155,13 @@ public class DahantSmsServiceImpl implements DahantSmsService {
     }
 
     @Override
-    public boolean sendVoltageWarningMsg(String mobilePhone, String btyImei, String voltage) {
-        String content = "您的电池IMEI" + btyImei + "电压偏低，请注意。";
+    public boolean sendVoltageWarningMsg(String mobilePhone, String btyImei, String voltage,int flag) {
+    	String content = "您的电池电量过低，为保证您的正常出行，请尽快充电。";
+    	if(flag==0){
+    		content = "您的电池电量过低，为保证您的正常出行，请尽快充电。";
+    	}else if(flag==1){
+    		 content = "您的电池电压过高，请查看电池状态。";
+    	}
         return sendSms(mobilePhone, content);
     }
 

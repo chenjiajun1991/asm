@@ -90,4 +90,7 @@
 	<bean id="SERVER_ID" class="java.lang.Integer">
 		<constructor-arg value="${baidu.serviceid}" />
 	</bean>
+	<bean id="commonPwd" class="java.lang.String">
+		<constructor-arg value="${common.pwd}" />
+	</bean>
 </beans>

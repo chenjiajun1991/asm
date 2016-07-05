@@ -1,5 +1,6 @@
 package com.sam.yh.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
+import com.sam.yh.common.PowerCalUtil;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.msg.DahantSmsService;
@@ -19,6 +21,7 @@ import com.sam.yh.crud.exception.LoggingResellerException;
 import com.sam.yh.crud.exception.NotAdminException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserMapper;
@@ -26,13 +29,15 @@ import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.enums.ResellerStatus;
 import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
+import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.Reseller;
+import com.sam.yh.model.ResellerBtyInfo;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.req.bean.LogResellerReq;
 import com.sam.yh.req.bean.SubmitBtySpecReq;
-import com.sam.yh.resp.bean.ResellerBtyInfo;
 import com.sam.yh.resp.bean.ResellerInfo;
+import com.sam.yh.resp.bean.ResellerUserBtyInfo;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
 import com.sam.yh.service.UserCodeService;
@@ -68,6 +73,9 @@ public class ResellerServiceImpl implements ResellerService {
 
     @Resource
     UnicomM2mService unicomM2mService;
+    
+    @Resource
+    BatteryMapper batteryMapper;
 
     @Override
     public void submitBtySpec(SubmitBtySpecReq submitBtySpecReq) throws CrudException {
@@ -237,12 +245,14 @@ public class ResellerServiceImpl implements ResellerService {
         reseller.setCityId(logResellerReq.getCityId());
         reseller.setVerifyStatus(ResellerStatus.VERIFIED.getStatus());
         reseller.setVerifyDate(now);
-
+        
         resellerMapper.insert(reseller);
     }
-
+    
+    
+  //修改经销商查询所销售电池的信息
     @Override
-    public List<ResellerBtyInfo> fetchResellerBtyInfo(String resellerPhone, int start, int size) throws CrudException {
+    public List<ResellerUserBtyInfo> fetchResellerBtyInfo(String resellerPhone, int start, int size) throws CrudException {
         // TODO Auto-generated method stub
         User reseller = userService.fetchUserByPhone(resellerPhone);
 
@@ -250,7 +260,30 @@ public class ResellerServiceImpl implements ResellerService {
             throw new CrudException("经销商不存在");
         }
         PageHelper.startPage(start, size);
-        return batteryInfoMapper.selectByReseller(reseller.getUserId());
+        List<ResellerUserBtyInfo> resellerUserBtyInfos=new ArrayList<ResellerUserBtyInfo>();
+        List<ResellerBtyInfo> resellerBtyInfos=batteryInfoMapper.selectByReseller(reseller.getUserId());
+        
+        for(ResellerBtyInfo resellerBtyInfo:resellerBtyInfos){
+        	ResellerUserBtyInfo resellerUserBtyInfo=new ResellerUserBtyInfo();
+        	
+        	UserBattery userBattery=userBatteryMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
+        	Battery battery=batteryMapper.selectByPrimaryKey(userBattery.getBatteryId());
+            User user=userMapper.selectByPrimaryKey(userBattery.getUserId());
+            BatteryInfo batteryInfo=batteryInfoMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
+            if(battery!=null&&batteryInfo!=null&&user!=null){
+
+                resellerUserBtyInfo.setImei(battery.getImei());
+                resellerUserBtyInfo.setLatitude(resellerBtyInfo.getLatitude());
+                resellerUserBtyInfo.setLongitude(resellerBtyInfo.getLongitude());
+                resellerUserBtyInfo.setPower(PowerCalUtil.calPower(batteryInfo.getVoltage(), battery.getBtyQuantity()));
+                resellerUserBtyInfo.setTemperature(batteryInfo.getTemperature());
+                resellerUserBtyInfo.setUserName(user.getUserName());
+                resellerUserBtyInfo.setUserPhone(user.getMobilePhone());
+                resellerUserBtyInfos.add(resellerUserBtyInfo);
+            }
+            
+        }
+        return resellerUserBtyInfos;
     }
 
     @Override

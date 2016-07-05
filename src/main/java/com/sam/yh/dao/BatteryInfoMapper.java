@@ -3,7 +3,8 @@ package com.sam.yh.dao;
 import java.util.List;
 
 import com.sam.yh.model.BatteryInfo;
-import com.sam.yh.resp.bean.ResellerBtyInfo;
+import com.sam.yh.model.ResellerBtyInfo;
+
 
 public interface BatteryInfoMapper {
     int deleteByPrimaryKey(Long id);

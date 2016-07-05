@@ -29,8 +29,10 @@
     where id = 
     (select max(id) from battery_info where battery_id = #{btyId,jdbcType=INTEGER})
   </select>
-  <select id="selectByReseller" resultType="com.sam.yh.resp.bean.ResellerBtyInfo" parameterType="java.lang.Integer" >
+<!--   修改，查询结果中增加电池ID -->
+  <select id="selectByReseller" resultType="com.sam.yh.model.ResellerBtyInfo" parameterType="java.lang.Integer" >
     select 
+    i.battery_id as battery_id,
     i.longitude as longitude,
     i.latitude as latitude
     from battery_info i

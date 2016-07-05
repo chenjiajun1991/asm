@@ -19,6 +19,7 @@ import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.req.bean.ResellerBtyInfoReq;
 import com.sam.yh.resp.bean.ResellerBtyInfo;
 import com.sam.yh.resp.bean.ResellerBtyInfoResp;
+import com.sam.yh.resp.bean.ResellerUserBtyInfo;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.service.ResellerService;
@@ -42,9 +43,10 @@ public class ResellerBtyInfoController {
         try {
             validateResellerArgs(req);
 
+            //修改经销商所有电池的信息
             // TODO
-            List<ResellerBtyInfo> reslut = resellerService.fetchResellerBtyInfo(req.getResellerPhone(), req.getPageNo(), req.getSize());
-
+            List<ResellerUserBtyInfo> reslut = resellerService.fetchResellerBtyInfo(req.getResellerPhone(), req.getPageNo(), req.getSize());
+           
             ResellerBtyInfoResp respData = new ResellerBtyInfoResp();
             respData.setBtyInfo(reslut);
             respData.setTotal(resellerService.countSoldBtys(req.getResellerPhone()));

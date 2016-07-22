@@ -93,4 +93,7 @@
 	<bean id="commonPwd" class="java.lang.String">
 		<constructor-arg value="${common.pwd}" />
 	</bean>
+	<bean id="servicePhone" class="java.lang.String">
+		<constructor-arg value="${service.phone}" />
+	</bean>
 </beans>

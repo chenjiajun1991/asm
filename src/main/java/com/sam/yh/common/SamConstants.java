@@ -27,4 +27,9 @@ public class SamConstants {
     public static final int MAX_FOLLOW_COUNT = 10;
 
     public static final long MAX_WAIT_SECONDS = 2;
+    
+    /**
+     * 同一类信息发送给客服最大的次数
+     */
+    public static final int MXA_WARNING_SEND_SERVICE_TIME = 2;
 }

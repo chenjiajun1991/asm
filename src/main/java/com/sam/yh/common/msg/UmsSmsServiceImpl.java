@@ -1,7 +1,5 @@
 package com.sam.yh.common.msg;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -70,7 +68,9 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     @Override
     public boolean sendWarningMsg(String mobilePhone, String btyImei) {
         // TODO
-        String content = "您的电池IMEI" + btyImei + "温度或电压出现异常，请登录APP查看。";
+//        String content = "您的电池IMEI" + btyImei + "温度或电压出现异常，请登陆APP查看。";
+       
+        String content = "您的电池温度过高，请及时查看电池状态。";
         return sendSms(mobilePhone, content);
     }
 
@@ -108,5 +108,19 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     public String getSms() {
         return "";
     }
+
+  //增加一个剪断信号线电压突变报警
+	@Override
+	public boolean sendViolentDestroyClient(String mobilePhone) {
+		String content = "您的电池正在被暴力破坏,请立即查看。";
+		return sendSms(mobilePhone, content);
+	}
+
+	@Override
+	public boolean sendViolentDestroyService(String mobilePhone,
+			String btyImei, String userName, String userPhone) {
+		String content = "用户"+userName+"的电池IMEI"+btyImei+"信号线被剪断，手机号"+userPhone+"，请及时与用户联系。";
+		return sendSms(mobilePhone, content);
+	}
 
 }

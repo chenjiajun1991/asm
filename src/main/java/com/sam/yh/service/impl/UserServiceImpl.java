@@ -26,6 +26,7 @@ import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
+import com.sam.yh.dao.UserCodeMapper;
 import com.sam.yh.dao.UserFollowMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
@@ -39,6 +40,7 @@ import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.UserBatteryKey;
+import com.sam.yh.model.UserCode;
 import com.sam.yh.model.UserFollow;
 import com.sam.yh.model.UserFollowKey;
 import com.sam.yh.service.BatteryService;
@@ -78,6 +80,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private ResellerMapper resellerMapper;
+    
+    @Resource
+    private UserCodeMapper userCodeMapper;
 
     @Resource
     private String adminPhones;
@@ -455,6 +460,10 @@ public class UserServiceImpl implements UserService {
         battery.setLockDate(new Date());
 
         batteryMapper.updateByPrimaryKeySelective(battery);
-
+        
+        //解锁时清空 user_code中移动次数的计数器
+        UserCode userCode=userCodeService.fetchByUserName(btyImei, UserCodeType.BTY_MOVING.getType());
+        userCode.setSendTimes(0);
+        userCodeMapper.updateByPrimaryKey(userCode);
     }
 }

@@ -1,6 +1,5 @@
 package com.sam.yh.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,7 +25,7 @@ import com.sam.yh.service.UserCodeService;
 
 @Service
 public class UserCodeServiceImpl implements UserCodeService {
-
+	
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -181,13 +180,15 @@ public class UserCodeServiceImpl implements UserCodeService {
         return send;
     }
 
+    //重新写一下布防移动报警
+    
     @Override
     public boolean sendMovingMsg(String mobilePhone, String btyImei) throws CrudException {
         int type = UserCodeType.BTY_MOVING.getType();
-        Calendar now = Calendar.getInstance();
-        if (now.get(Calendar.HOUR_OF_DAY) < 7) {
-            return false;
-        }
+//        Calendar now = Calendar.getInstance();
+//        if (now.get(Calendar.HOUR_OF_DAY) < 7) {
+//            return false;
+//        }
         boolean send = needToSendMsg(mobilePhone, btyImei, type);
         if (send) {
             send = defaultUmsSmsService.sendMovingMsg(mobilePhone, btyImei);
@@ -214,20 +215,21 @@ public class UserCodeServiceImpl implements UserCodeService {
             userCodeMapper.insert(userCode);
             send = true;
         }
-
-        int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes()+1) : 1;
-        if (now.after(userCode.getExpiryDate()) && sendTimes <= SamConstants.MXA_WARNING_SEND_TIME) {
-            userCode.setSendTimes(userCode.getSendTimes() + 1);
-            userCode.setSendDate(now);
-            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
-
-            userCodeMapper.updateByPrimaryKey(userCode);
-            send = true;
-        }
         
+        int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes()+1) : 1;
+//        if (now.after(userCode.getExpiryDate()) && sendTimes <= SamConstants.MXA_WARNING_SEND_TIME) {
+//        	
+//            userCode.setSendTimes(userCode.getSendTimes() + 1);
+//            userCode.setSendDate(now);
+//            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+//
+//            userCodeMapper.updateByPrimaryKey(userCode);
+//            send = true;
+//        }
+//        
         if(type==UserCodeType.BTY_VOLTAGE_WARNING.getType()){
         	if(sendTimes <= SamConstants.MXA_WARNING_SEND_TIME){
-        		 userCode.setSendTimes(userCode.getSendTimes() + 1);
+        		 userCode.setSendTimes(sendTimes);
                  userCode.setSendDate(now);
                  userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
 
@@ -236,7 +238,87 @@ public class UserCodeServiceImpl implements UserCodeService {
         	}
         	
         }
+        
+        if(type==UserCodeType.BTY_DISTORY.getType()){
+        	if(userCode.getSendTimes() < SamConstants.MXA_WARNING_SEND_TIME){
+       		    userCode.setSendTimes(userCode.getSendTimes()+1);
+                userCode.setSendDate(now);
+                userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+                
+                userCodeMapper.updateByPrimaryKey(userCode);
+                send = true;
+       	    }
+        }
+        
+        if(type==UserCodeType.BTY_DISTORY_SERVICE.getType()){
+        	if(userCode.getSendTimes()<SamConstants.MXA_WARNING_SEND_SERVICE_TIME){
+        		userCode.setSendTimes(userCode.getSendTimes() + 1);
+                userCode.setSendDate(now);
+                userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+                
+                userCodeMapper.updateByPrimaryKey(userCode);
+                send = true;
+        	}
+        }
+        
+        if(type==UserCodeType.BTY_WARNING.getType()){
+        	if(sendTimes <= SamConstants.MXA_WARNING_SEND_TIME){
+        		userCode.setSendTimes(sendTimes);
+                userCode.setSendDate(now);
+                userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+                userCodeMapper.updateByPrimaryKey(userCode);
+                send = true;
+        	}
+        }
+        
+        if(type==UserCodeType.BTY_MOVING.getType()){
+        	if(userCode.getSendTimes() <SamConstants.MXA_WARNING_SEND_TIME){
+        		userCode.setSendTimes(userCode.getSendTimes()+1);
+                userCode.setSendDate(now);
+                userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+                userCodeMapper.updateByPrimaryKey(userCode);
+                send = true;
+        	   }
+        	
+        		Calendar now1 = Calendar.getInstance();
+                if (now1.get(Calendar.HOUR_OF_DAY) ==7) {
+                	if(now1.get(Calendar.MINUTE)<4){
+                		send=true;
+                	}
+                }
+        }
         return send;
     }
+    
+    //增加一个剪断信号线电压突变报警
+	@Override
+	public boolean sendViolentDestroyClient(String mobilePhone,String btyImei)
+			throws CrudException {
+		int type=UserCodeType.BTY_DISTORY.getType();
+		boolean send=needToSendMsg(mobilePhone, btyImei, type);
+		if(send){
+			defaultUmsSmsService.sendViolentDestroyClient(mobilePhone);
+		}
+		return send;
+	}
+
+	@Override
+	public boolean sendViolentDestroyService(String mobilePhone,
+			String btyImei, String userName, String userPhone)
+			throws CrudException {
+		boolean send=false;
+		int type1=UserCodeType.BTY_DISTORY.getType();
+		int type2=UserCodeType.BTY_DISTORY_SERVICE.getType();
+		 UserCode userCode = fetchByUserName(btyImei, type1);
+		 int times=userCode.getSendTimes();
+		 if(times==1||times==3){
+			  send=needToSendMsg(mobilePhone, btyImei, type2);
+			 if(send){
+				 defaultUmsSmsService.sendViolentDestroyService(mobilePhone, btyImei, userName, userPhone);
+			 }
+		 }
+		
+		return send;
+	}
 
 }

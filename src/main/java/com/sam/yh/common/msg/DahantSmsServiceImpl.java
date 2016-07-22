@@ -165,4 +165,18 @@ public class DahantSmsServiceImpl implements DahantSmsService {
         return sendSms(mobilePhone, content);
     }
 
+    //增加一个剪断信号线电压突变报警
+	@Override
+	public boolean sendViolentDestroyClient(String mobilePhone) {
+		String content = "您的电池正在被暴力破坏,请立即查看。";
+		return sendSms(mobilePhone, content);
+	}
+
+	@Override
+	public boolean sendViolentDestroyService(String mobilePhone,
+			String btyImei, String userName, String userPhone) {
+		String content = "用户"+userName+"的电池IMEI"+btyImei+"信号线被剪断，手机号"+userPhone+"，请及时与用户联系。";
+		return sendSms(mobilePhone, content);
+	}
+
 }

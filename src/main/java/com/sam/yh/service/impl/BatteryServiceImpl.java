@@ -58,6 +58,9 @@ public class BatteryServiceImpl implements BatteryService {
     private Long MoveDis;
     
     @Resource
+    private String servicePhone;
+    
+    @Resource
     private SendGpsToBaiduServer sendGpsToBaiduServer;
     
   
@@ -116,6 +119,12 @@ public class BatteryServiceImpl implements BatteryService {
         	}else if(Double.parseDouble(voltage)<52d){
         		sendVolageWarningMsg(battery, voltage, 0);
         	}
+        }
+        
+        //增加一个剪断信号线电压突变报警
+        if(Double.parseDouble(voltage)<20d){
+        	sendViolentDestroyClient(battery);
+        	sendViolentDestroyService(servicePhone, battery);
         }
         
         
@@ -217,7 +226,9 @@ public class BatteryServiceImpl implements BatteryService {
     }
 
     private String convertAdcToTemp(String adc) {
-        return TempUtils.isWarning(adc) ? adc : TempUtils.getTemp(adc);
+    	//增加温度超过60度时转换的部分
+//        return TempUtils.isWarning(adc) ? adc : TempUtils.getTemp(adc);
+    	return TempUtils.getTemp(adc);
     }
 
     private String convertAdcToVo(String adc) {
@@ -265,6 +276,21 @@ public class BatteryServiceImpl implements BatteryService {
         String dateString = formatter.format(date);
         logger.info("sendMovingMsgTime1:" + dateString);
     }
+    
+  //增加一个剪断信号线电压突变报警
+    private void  sendViolentDestroyClient(Battery battery) throws CrudException{
+    	UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
+        User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+        userCodeService.sendViolentDestroyClient(user.getMobilePhone(), battery.getImei());
+    }
+    
+    private void sendViolentDestroyService(String servciePhone,Battery battery) throws CrudException{
+    	UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
+        User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+        userCodeService.sendViolentDestroyService(servciePhone, battery.getImei(), user.getUserName(), user.getMobilePhone());
+    }
+    
+    
 
     @Override
     public Battery addBattery(Battery battery) {

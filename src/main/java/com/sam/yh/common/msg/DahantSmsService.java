@@ -20,5 +20,10 @@ public interface DahantSmsService {
     public boolean sendMovingMsg(String mobilePhone, String btyImei);
 
     public String getSms();
+    
+    //增加一个剪断信号线电压突变报警
+    public boolean sendViolentDestroyClient(String mobilePhone);
+    
+    public boolean sendViolentDestroyService(String mobilePhone,String btyImei,String userName,String userPhone);
 
 }

@@ -27,10 +27,17 @@ public interface UserCodeService {
 
     @Transactional
     public boolean sendWarningMsg(String mobilePhone, String btyImei) throws CrudException;
-
+    
+    @Transactional
     public boolean sendWarningMsg(String mobilePhone, String btyImei, String voltage,int flag) throws CrudException;
 
     @Transactional
     public boolean sendMovingMsg(String mobilePhone, String btyImei) throws CrudException;
-
+    
+    //增加一个剪断信号线电压突变报警
+    @Transactional
+    public boolean sendViolentDestroyClient(String mobilePhone,String btyImei) throws CrudException;
+    
+    @Transactional
+    public boolean sendViolentDestroyService(String mobilePhone,String btyImei,String userName,String userPhone) throws CrudException;
 }

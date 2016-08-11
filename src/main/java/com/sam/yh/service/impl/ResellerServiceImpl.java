@@ -21,6 +21,7 @@ import com.sam.yh.crud.exception.LoggingResellerException;
 import com.sam.yh.crud.exception.NotAdminException;
 import com.sam.yh.crud.exception.SubmitBtySpecException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
@@ -30,6 +31,7 @@ import com.sam.yh.enums.ResellerStatus;
 import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.ResellerBtyInfo;
 import com.sam.yh.model.User;
@@ -76,6 +78,9 @@ public class ResellerServiceImpl implements ResellerService {
     
     @Resource
     BatteryMapper batteryMapper;
+    
+    @Resource
+    BatteryInfoNstMapper batteryInfoNstMapper;
 
     @Override
     public void submitBtySpec(SubmitBtySpecReq submitBtySpecReq) throws CrudException {
@@ -269,12 +274,18 @@ public class ResellerServiceImpl implements ResellerService {
         	UserBattery userBattery=userBatteryMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
         	Battery battery=batteryMapper.selectByPrimaryKey(userBattery.getBatteryId());
             User user=userMapper.selectByPrimaryKey(userBattery.getUserId());
-            BatteryInfo batteryInfo=batteryInfoMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
+            
+            //修改返回电池最后一次上报数据的信息
+            //   BatteryInfo batteryInfo=batteryInfoMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
+            BatteryInfoNst batteryInfo=batteryInfoNstMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
+            
             if(battery!=null&&batteryInfo!=null&&user!=null){
 
                 resellerUserBtyInfo.setImei(battery.getImei());
-                resellerUserBtyInfo.setLatitude(resellerBtyInfo.getLatitude());
-                resellerUserBtyInfo.setLongitude(resellerBtyInfo.getLongitude());
+//                resellerUserBtyInfo.setLatitude(resellerBtyInfo.getLatitude());
+//                resellerUserBtyInfo.setLongitude(resellerBtyInfo.getLongitude());
+                resellerUserBtyInfo.setLatitude(batteryInfo.getLatitude());
+                resellerUserBtyInfo.setLongitude(batteryInfo.getLongitude());
                 resellerUserBtyInfo.setPower(PowerCalUtil.calPower(batteryInfo.getVoltage(), battery.getBtyQuantity()));
                 resellerUserBtyInfo.setTemperature(batteryInfo.getTemperature());
                 resellerUserBtyInfo.setUserName(user.getUserName());

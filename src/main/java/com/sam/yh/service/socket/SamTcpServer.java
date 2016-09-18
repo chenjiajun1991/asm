@@ -57,6 +57,12 @@ public class SamTcpServer {
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
         // 保持长连接状态
         bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+        
+        
+        //测试一下BUG
+//        bootstrap.option(ChannelOption.ALLOW_HALF_CLOSURE,true); 
+        
+        
 
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 

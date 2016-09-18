@@ -202,6 +202,10 @@ public class UserCodeServiceImpl implements UserCodeService {
         UserCode userCode = fetchByUserName(btyImei, type);
 
         Date now = new Date();
+        
+        Date delay=new Date();
+		delay.setHours(delay.getHours()-7);
+        
         if (userCode == null) {
             userCode = new UserCode();
             userCode.setMobilePhone(btyImei);
@@ -216,7 +220,10 @@ public class UserCodeServiceImpl implements UserCodeService {
             send = true;
         }
         
-        int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes()+1) : 1;
+        //为了避免骚扰每一天短信提醒不从零点开始，从早晨七点开始算每一天的开始
+        int sendTimes = DateUtils.isSameDay(delay, userCode.getSendDate()) ? (userCode.getSendTimes()+1) : 1;
+        
+//        int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes()+1) : 1;
 //        if (now.after(userCode.getExpiryDate()) && sendTimes <= SamConstants.MXA_WARNING_SEND_TIME) {
 //        	
 //            userCode.setSendTimes(userCode.getSendTimes() + 1);
@@ -272,7 +279,7 @@ public class UserCodeServiceImpl implements UserCodeService {
         }
         
         if(type==UserCodeType.BTY_MOVING.getType()){
-        	if(userCode.getSendTimes() <SamConstants.MXA_WARNING_SEND_TIME){
+        	if(userCode.getSendTimes() <=SamConstants.MXA_WARNING_SEND_TIME){
         		userCode.setSendTimes(userCode.getSendTimes()+1);
                 userCode.setSendDate(now);
                 userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
@@ -280,12 +287,12 @@ public class UserCodeServiceImpl implements UserCodeService {
                 send = true;
         	   }
         	
-        		Calendar now1 = Calendar.getInstance();
-                if (now1.get(Calendar.HOUR_OF_DAY) ==7) {
-                	if(now1.get(Calendar.MINUTE)<4){
-                		send=true;
-                	}
-                }
+//        		Calendar now1 = Calendar.getInstance();
+//                if (now1.get(Calendar.HOUR_OF_DAY) ==7) {
+//                	if(now1.get(Calendar.MINUTE)<4){
+//                		send=true;
+//                	}
+//                }
         }
         return send;
     }

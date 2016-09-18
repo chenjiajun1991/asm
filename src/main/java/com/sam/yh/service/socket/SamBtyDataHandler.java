@@ -71,6 +71,7 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
             }
             batteryService.uploadBatteryInfo(infoReq);
             response = "got it\n";
+            logger.info("GOT IT COMPLETE:" + request);
         }
 
         // We do not need to write a ChannelBuffer here.
@@ -82,13 +83,35 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
         // if the client has sent 'bye'.
         if (close) {
             future.addListener(ChannelFutureListener.CLOSE);
+            logger.info("CONNECT CLOSE:" + request);
         }
     }
+    
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
     }
+    
+    
+    /*
+     * (non-Javadoc)
+     * .覆盖了 handlerRemoved() 事件处理方法。
+     * 每当从服务端收到客户端断开时
+     */
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        // TODO Auto-generated method stub
+        super.handlerRemoved(ctx);
+        if(ctx.channel()!=null){
+        	ctx.channel().close();
+        	 channels.remove(ctx.channel());
+        	 
+             logger.info("CONNECT CLOSE:" + ctx.channel());
+        }
+         
+    }
+    
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {

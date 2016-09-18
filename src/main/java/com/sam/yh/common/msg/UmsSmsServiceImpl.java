@@ -1,6 +1,9 @@
 package com.sam.yh.common.msg;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -90,7 +93,14 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     @Override
     public boolean sendMovingMsg(String mobilePhone, String btyImei) {
         // TODO
-        String content = "您的电池IMEI" + btyImei + "设置位置锁定后发生异常移动，请登录APP查看最新地点。如您忘记关闭布防，请及时关闭。";
+    	//需要多次发送布防报警信息，加一个时间变量来区别不是同一个内容的短信
+    	
+    	Date date=new Date();
+    	SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        String dateString = formatter.format(date);
+        String content = "您的电池IMEI" + btyImei + "设置位置锁定后发生异常移动，请登录APP查看最新地点。如您忘记关闭布防，请及时关闭。"+" "+dateString;
+        
+//        String content = "您的电池IMEI" + btyImei + "设置位置锁定后发生异常移动，请登录APP查看最新地点。如您忘记关闭布防，请及时关闭。";
         return sendSms(mobilePhone, content);
     }
 

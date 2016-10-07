@@ -12,6 +12,7 @@ import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
     private static final Logger logger = LoggerFactory.getLogger(SamBtyDataHandler.class);
 
     private static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    
+    public static ConcurrentHashMap<String, Channel> channelMap = new ConcurrentHashMap<String, Channel>();
+    
     // private static ConcurrentHashMap<String, Channel> channelMap = new
     // ConcurrentHashMap<String, Channel>();
 
@@ -43,10 +47,10 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
         ctx.flush();
     }
 
+   
+    
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {
-        // Generate and write a response.
-
         String response;
         boolean close = false;
         logger.info("TEST REQUEST:" + request);
@@ -59,19 +63,19 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
             response = "got it\n";
         } else {
             BatteryInfoReq infoReq = BtyDataConverter.convert(request);
-            /*
-             * if (infoReq != null && infoReq.getImei() != null) {
-             * channelMap.put(infoReq.getImei(), ctx.channel()); }
-             */
-            for (Channel c : channels) {
+
+            if (infoReq != null && infoReq.getImei() != null) {
+                ctx.attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
+                channelMap.put(infoReq.getImei(), ctx.channel());
+            }
+
+            /*for (Channel c : channels) {
                 if (c == ctx.channel()) {
                     c.attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
-                    ;
                 }
-            }
+            }*/
             batteryService.uploadBatteryInfo(infoReq);
             response = "got it\n";
-            logger.info("GOT IT COMPLETE:" + request);
         }
 
         // We do not need to write a ChannelBuffer here.
@@ -83,9 +87,11 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
         // if the client has sent 'bye'.
         if (close) {
             future.addListener(ChannelFutureListener.CLOSE);
-            logger.info("CONNECT CLOSE:" + request);
         }
     }
+    
+    
+    
     
 
     @Override
@@ -93,29 +99,14 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
         ctx.flush();
     }
     
-    
-    /*
-     * (non-Javadoc)
-     * .覆盖了 handlerRemoved() 事件处理方法。
-     * 每当从服务端收到客户端断开时
-     */
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        // TODO Auto-generated method stub
-        super.handlerRemoved(ctx);
-        if(ctx.channel()!=null){
-        	ctx.channel().close();
-        	 channels.remove(ctx.channel());
-        	 
-             logger.info("CONNECT CLOSE:" + ctx.channel());
-        }
-         
-    }
-    
+ 
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error(ExceptionUtils.getStackTrace(cause));
+        if(channels.contains(ctx.channel())){
+        	channels.remove(ctx.channel());
+        }
         ctx.close();
     }
 

@@ -4,14 +4,19 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import com.sam.yh.common.DistanceUtils;
+import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.TempUtils;
 import com.sam.yh.common.baidugps.SendGpsToBaiduServer;
 import com.sam.yh.crud.exception.CrudException;
@@ -63,16 +68,36 @@ public class BatteryServiceImpl implements BatteryService {
     @Resource
     private SendGpsToBaiduServer sendGpsToBaiduServer;
     
-  
+ 
+ 
     @Override
-    public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException {
+    public Future<Battery> uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException {
         if (batteryInfoReqVo == null) {
             return null;
         }
         logger.info("Upload battery info request:" + batteryInfoReqVo);
         Battery battery = fetchBtyByIMEI(batteryInfoReqVo.getImei());
         if (battery == null) {
-            return null;
+        	//test
+//        	 Date now = new Date();
+//             battery = new Battery();
+//             battery.setSn(batteryInfoReqVo.getImei());
+//             battery.setPubSn(RandomCodeUtils.genBtyPubSn());
+//             battery.setImei(batteryInfoReqVo.getImei());
+//             battery.setIccid("123456");
+//             battery.setSimNo(batteryInfoReqVo.getImei());
+//             battery.setBtyType(true);
+//             battery.setStatus(BatteryStatus.NORMAL.getStatus());
+//             battery.setResellerId(33);
+//             battery.setCityId(100);
+//             battery.setSaleStatus(true);
+//             battery.setCreateDate(now);
+//             battery.setSaleDate(now);
+//             battery.setBtyQuantity(4);
+//
+//            addBattery(battery);
+        	 	
+            return new AsyncResult<Battery>(null);
         }
         if (battery.getImsi() == null || battery.getGsmSimNo() == null) {
             if (batteryInfoReqVo.getImsi() != null) {
@@ -90,16 +115,21 @@ public class BatteryServiceImpl implements BatteryService {
         info.setTemperature(convertAdcToTemp(batteryInfoReqVo.getTemperature()));
         String voltage = convertAdcToVo(batteryInfoReqVo.getVoltage());
         info.setVoltage(voltage);
+        
         // 临时代码，调整电池的节数
         int BtyQuantity = battery.getBtyQuantity() == null ? 4 : battery.getBtyQuantity();
+        Date BtySaleDate = battery.getSaleDate();
+        Date now  = new Date();
+        
         //调整4节组的临界电压值
-        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 61.5d) {
+        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 61.5d && now.before(DateUtils.addHours(BtySaleDate, 2))) {
             Battery temBattery = new Battery();
             temBattery.setId(battery.getId());
             BtyQuantity = 5;
             temBattery.setBtyQuantity(BtyQuantity);
             batteryMapper.updateByPrimaryKeySelective(temBattery);
         }
+        
         
         //当电压过高或过低时发短信提示用户
         if(BtyQuantity==4){
@@ -120,6 +150,7 @@ public class BatteryServiceImpl implements BatteryService {
         		sendVolageWarningMsg(battery, voltage, 0);
         	}
         }
+        
         
         //增加一个剪断信号线电压突变报警
         if(Double.parseDouble(voltage)<20d){
@@ -188,7 +219,7 @@ public class BatteryServiceImpl implements BatteryService {
             }
         }
 
-        return battery;
+        return new AsyncResult<Battery>(battery);
     }
 
     private BatteryInfoNst updateBatteryInfoNst(BatteryInfo btyInfo) {

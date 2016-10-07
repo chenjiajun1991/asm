@@ -1,5 +1,8 @@
 package com.sam.yh.service;
 
+import java.util.concurrent.Future;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sam.yh.crud.exception.CrudException;
@@ -9,8 +12,9 @@ import com.sam.yh.req.bean.BatteryInfoReq;
 
 public interface BatteryService {
 
-    @Transactional
-    public Battery uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException;
+//    @Transactional
+	@Async("asyncExecutor")
+    public Future<Battery> uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException;
 
     @Transactional
     public Battery addBattery(Battery battery);

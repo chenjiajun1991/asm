@@ -14,6 +14,13 @@
     						http://www.springframework.org/schema/tx/spring-tx.xsd
     						http://www.springframework.org/schema/task
     						http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+    						
+    					
+    <task:annotation-driven executor="asyncExecutor" />
+    <task:executor id="asyncExecutor" pool-size="5-10"
+        queue-capacity="800" keep-alive="300" rejection-policy="CALLER_RUNS" />				
+    						
+    			
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">

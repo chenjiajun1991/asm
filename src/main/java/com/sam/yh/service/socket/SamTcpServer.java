@@ -1,6 +1,7 @@
 package com.sam.yh.service.socket;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -10,6 +11,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
@@ -30,6 +32,14 @@ public class SamTcpServer {
 
     private static final StringDecoder DECODER = new StringDecoder();
     private static final StringEncoder ENCODER = new StringEncoder();
+    
+    
+  //test 
+    /**用于分配处理业务线程的线程组个数 */  
+    protected static final int BIZGROUPSIZE = Runtime.getRuntime().availableProcessors()*2; //默认  
+    /** 业务出现线程大小*/  
+    protected static final int BIZTHREADSIZE = 4;  
+    
 
     private ChannelFuture channelFuture;
     private NioEventLoopGroup bossGroup;
@@ -43,8 +53,15 @@ public class SamTcpServer {
     @PostConstruct
     public void start() throws Exception {
         logger.info("Starting tcp server ");
-        bossGroup = new NioEventLoopGroup();
-        workerGroup = new NioEventLoopGroup();
+        
+//        bossGroup = new NioEventLoopGroup();
+//        workerGroup = new NioEventLoopGroup();
+        
+        //test
+        bossGroup = new NioEventLoopGroup(BIZGROUPSIZE);
+        workerGroup = new NioEventLoopGroup(BIZGROUPSIZE);
+        
+        
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup);
 
@@ -56,14 +73,13 @@ public class SamTcpServer {
         // 通过NoDelay禁用Nagle,使消息立即发出去，不用等待到一定的数据量才发出去
         bootstrap.option(ChannelOption.TCP_NODELAY, true);
         // 保持长连接状态
-        bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-        
-        
-        //测试一下BUG
-//        bootstrap.option(ChannelOption.ALLOW_HALF_CLOSURE,true); 
-        
-        
+        bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true)
+        .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+        .childOption(ChannelOption.SO_SNDBUF, 64*1024)
+        .childOption(ChannelOption.SO_RCVBUF, 64*1024);
 
+       
+              
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 
             @Override
@@ -74,9 +90,10 @@ public class SamTcpServer {
                 // the encoder and decoder are static as these are sharable
                 pipeline.addLast(DECODER);
                 pipeline.addLast(ENCODER);
-
+                     
                 // and then business logic.
-                pipeline.addLast(SamBtyDataHandler);
+                pipeline.addLast(SamBtyDataHandler);   
+                
             }
         });
         channelFuture = bootstrap.bind(samPort).sync();

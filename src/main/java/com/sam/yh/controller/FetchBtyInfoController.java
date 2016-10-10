@@ -156,7 +156,10 @@ public class FetchBtyInfoController {
 		}
 		boolean hasConn = false;
 		ConcurrentHashMap<String, Channel> channelMap = SamBtyDataHandler.channelMap;
-		logger.info("长连接IMEISet, {}", JSON.toJSON(channelMap.keySet()));
+		
+//		logger.info("长连接IMEISet, {}", JSON.toJSON(channelMap.keySet()));
+		logger.info("长连接IMEI-ADDR-Map, {}", JSON.toJSON(SamBtyDataHandler.channelAddrMap));
+		
 		Channel channel = channelMap.get(battery.getImei());
 		if (channel != null) {
 			channel.writeAndFlush("tellme" + battery.getImei() + "\n");

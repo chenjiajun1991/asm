@@ -27,96 +27,79 @@ import com.sam.yh.service.BatteryService;
 @Sharable
 public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 
-    private static final Logger logger = LoggerFactory.getLogger(SamBtyDataHandler.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(SamBtyDataHandler.class);
 
-    private static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-    
-    public static ConcurrentHashMap<String, Channel> channelMap = new ConcurrentHashMap<String, Channel>();
-    
-    // private static ConcurrentHashMap<String, Channel> channelMap = new
-    // ConcurrentHashMap<String, Channel>();
+	private static ChannelGroup channels = new DefaultChannelGroup(
+			GlobalEventExecutor.INSTANCE);
 
-    @Autowired
-    BatteryService batteryService;
+	public static ConcurrentHashMap<String, Channel> channelMap = new ConcurrentHashMap<String, Channel>();
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        // Send greeting for a new connection.
-        channels.add(ctx.channel());
-        ctx.write("Welcome, It is " + new Date() + " now.\r\n");
-        ctx.flush();
-    }
+	@Autowired
+	BatteryService batteryService;
 
-   
-    
-    @Override
-    public void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {
-        String response;
-        boolean close = false;
-        logger.info("TEST REQUEST:" + request);
-        if (request.isEmpty()) {
-            response = "Please type something.\r\n";
-        } else if ("bye".equals(request.toLowerCase())) {
-            response = "Have a good day!\n";
-            close = true;
-        } else if ("heartbeat".equals(request.toLowerCase())) {
-            response = "got it\n";
-        } else {
-            BatteryInfoReq infoReq = BtyDataConverter.convert(request);
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		// Send greeting for a new connection.
+		channels.add(ctx.channel());
+		ctx.write("Welcome, It is " + new Date() + " now.\r\n");
+		ctx.flush();
+	}
 
-            if (infoReq != null && infoReq.getImei() != null) {
-                ctx.attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
-                channelMap.put(infoReq.getImei(), ctx.channel());
-            }
+	@Override
+	public void channelRead0(ChannelHandlerContext ctx, String request)
+			throws Exception {
+		String response;
+		boolean close = false;
+		logger.info("TEST REQUEST:" + request);
+		if (request.isEmpty()) {
+			response = "Please type something.\r\n";
+		} else if ("bye".equals(request.toLowerCase())) {
+			response = "Have a good day!\n";
+			close = true;
+		} else if ("heartbeat".equals(request.toLowerCase())) {
+			response = "got it\n";
+		} else {
+			BatteryInfoReq infoReq = BtyDataConverter.convert(request);
 
-            /*for (Channel c : channels) {
-                if (c == ctx.channel()) {
-                    c.attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
-                }
-            }*/
-            batteryService.uploadBatteryInfo(infoReq);
-            response = "got it\n";
-        }
+			if (infoReq != null && infoReq.getImei() != null) {
+				ctx.attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
+				channelMap.put(infoReq.getImei(), ctx.channel());
+			}
 
-        // We do not need to write a ChannelBuffer here.
-        // We know the encoder inserted at TelnetPipelineFactory will do the
-        // conversion.
-        ChannelFuture future = ctx.write(response);
+			if (channels.contains(ctx.channel())) {
+				ctx.channel().attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
+			}
+			batteryService.uploadBatteryInfo(infoReq);
+			response = "got it\n";
+		}
 
-        // Close the connection after sending 'Have a good day!'
-        // if the client has sent 'bye'.
-        if (close) {
-            future.addListener(ChannelFutureListener.CLOSE);
-        }
-    }
-    
-    
-    
-    
+		// We do not need to write a ChannelBuffer here.
+		// We know the encoder inserted at TelnetPipelineFactory will do the
+		// conversion.
+		ChannelFuture future = ctx.write(response);
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
-    }
-    
- 
+		// Close the connection after sending 'Have a good day!'
+		// if the client has sent 'bye'.
+		if (close) {
+			future.addListener(ChannelFutureListener.CLOSE);
+		}
+	}
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error(ExceptionUtils.getStackTrace(cause));
-        if(channels.contains(ctx.channel())){
-        	channels.remove(ctx.channel());
-        }
-        ctx.close();
-    }
+	@Override
+	public void channelReadComplete(ChannelHandlerContext ctx) {
+		ctx.flush();
+	}
 
-    /*
-     * public static ConcurrentHashMap<String, Channel> getChannelMap() { return
-     * channelMap; }
-     */
-
-    public static ChannelGroup getChannels() {
-        return channels;
-    }
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+		logger.error(ExceptionUtils.getStackTrace(cause));
+		if (channels.contains(ctx.channel())) {
+			channels.remove(ctx.channel());
+			String  imei = (String)ctx.channel().attr(AttributeKey.valueOf("IMEI")).get();
+			channelMap.remove(imei);
+		}
+		ctx.close();
+	}
 
 }

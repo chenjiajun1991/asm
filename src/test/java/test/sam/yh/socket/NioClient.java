@@ -135,7 +135,7 @@ public class NioClient {
 					recvMessage(socketchnl, clientNo);
 
 					// send data to server...
-					TimeUnit.MILLISECONDS.sleep(2);
+					TimeUnit.MILLISECONDS.sleep(1);
 					int index = (Integer) clientInfo.get("index");
 					index += 1;
 					sendMessageToSrv(socketchnl, clientNo, index);

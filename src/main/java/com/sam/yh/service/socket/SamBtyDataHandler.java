@@ -11,7 +11,10 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -34,6 +37,8 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 			GlobalEventExecutor.INSTANCE);
 
 	public static ConcurrentHashMap<String, Channel> channelMap = new ConcurrentHashMap<String, Channel>();
+	
+	public static ConcurrentHashMap<String, List<String>> channelAddrMap = new ConcurrentHashMap<String, List<String>>();
 
 	@Autowired
 	BatteryService batteryService;
@@ -65,6 +70,9 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 			if (infoReq != null && infoReq.getImei() != null) {
 				ctx.attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
 				channelMap.put(infoReq.getImei(), ctx.channel());
+				//记录远程IP和端口
+                logRemoteAddr(infoReq.getImei(), ctx.channel());
+				
 			}
 
 			if (channels.contains(ctx.channel())) {
@@ -85,6 +93,23 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 			future.addListener(ChannelFutureListener.CLOSE);
 		}
 	}
+	
+	private void logRemoteAddr(String imei, Channel channel) {
+        InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
+        String host = remoteAddr.getAddress().getHostAddress();
+        int port = remoteAddr.getPort();
+
+        List<String> addrs = channelAddrMap.get(imei);
+        if (addrs == null) {
+            addrs = new ArrayList<String>();
+        }
+
+        addrs.add(host + ":" + port);
+        channelAddrMap.put(imei, addrs);
+    }
+	
+	
+	
 
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) {

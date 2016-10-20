@@ -211,7 +211,7 @@ public class BatteryServiceImpl implements BatteryService {
 //            sendVolageWarningMsg(battery, voltage);
         }
 
-        if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())) {
+        if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())&&Double.parseDouble(batteryInfoReqVo.getLongitude())!=0) {
             long moveDis = (long) DistanceUtils.GetDistance(batteryInfoReqVo.getLongitude(), batteryInfoReqVo.getLatitude(), battery.getLockLongitude(),
                     battery.getLockLatitude());
             if (moveDis > MoveDis) {

@@ -425,8 +425,11 @@ public class UserServiceImpl implements UserService {
         if (BatteryStatus.LOCKED.getStatus().equals(battery.getStatus())) {
             throw new BtyLockException("电池已经锁定，请先解锁");
         }
+        
+        //布防时记录下最后一次有效的位置
 
-        BatteryInfo latestInfo = batteryInfoMapper.selectByBtyId(battery.getId());
+//        BatteryInfo latestInfo = batteryInfoMapper.selectByBtyId(battery.getId());
+        BatteryInfoNst latestInfo = batteryInfoNstMapper.selectByBtyId(battery.getId());
 
         battery.setStatus(BatteryStatus.LOCKED.getStatus());
         battery.setLockLongitude(latestInfo.getLongitude());

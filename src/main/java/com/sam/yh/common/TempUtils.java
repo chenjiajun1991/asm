@@ -11,7 +11,7 @@ public class TempUtils {
     private static Pair[] initArr() {
         Pair[] result = new Pair[56];
        
-        result[0] = new Pair(110, 60);
+        result[0] = new Pair(25, 20);  //当收不到数据为零时显示默认值25度
         result[1] = new Pair(105, 70);
         result[2] = new Pair(100, 80);
         result[3] = new Pair(95, 100);

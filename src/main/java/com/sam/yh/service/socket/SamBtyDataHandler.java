@@ -14,9 +14,12 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +41,9 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 
 	public static ConcurrentHashMap<String, Channel> channelMap = new ConcurrentHashMap<String, Channel>();
 	
-	public static ConcurrentHashMap<String, List<String>> channelAddrMap = new ConcurrentHashMap<String, List<String>>();
+//	public static ConcurrentHashMap<String, Set<String>> channelAddrMap = new ConcurrentHashMap<String, Set<String>>();
+	
+	public static ConcurrentHashMap<String, String>  channelAddrMap = new ConcurrentHashMap<String, String>();
 
 	@Autowired
 	BatteryService batteryService;
@@ -85,7 +90,10 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 		// We do not need to write a ChannelBuffer here.
 		// We know the encoder inserted at TelnetPipelineFactory will do the
 		// conversion.
-		ChannelFuture future = ctx.write(response);
+//		ChannelFuture future = ctx.write(response);
+		
+		ChannelFuture future = ctx.writeAndFlush(response);
+		
 
 		// Close the connection after sending 'Have a good day!'
 		// if the client has sent 'bye'.
@@ -94,21 +102,22 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 		}
 	}
 	
-	private void logRemoteAddr(String imei, Channel channel) {
-        InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
-        String host = remoteAddr.getAddress().getHostAddress();
-        int port = remoteAddr.getPort();
-
-        List<String> addrs = channelAddrMap.get(imei);
-        if (addrs == null) {
-            addrs = new ArrayList<String>();
-        }
-
-        addrs.add(host + ":" + port);
-        channelAddrMap.put(imei, addrs);
-    }
-	
-	
+//	private void logRemoteAddr(String imei, Channel channel) {
+//        InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
+//        String host = remoteAddr.getAddress().getHostAddress();
+//        int port = remoteAddr.getPort();
+//
+//        String addr = host + ":" + port;
+//        Set<String> addrs = channelAddrMap.get(imei);
+//        if (addrs == null) {
+//            addrs = new HashSet<String>();
+//            addrs.add(addr);
+//            channelAddrMap.put(imei, addrs);
+//        } else {
+//            addrs.add(addr);
+//        }
+//    }
+//	
 	
 
 	@Override
@@ -126,5 +135,19 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 		}
 		ctx.close();
 	}
+	
+	private void logRemoteAddr(String imei, Channel channel) {
+        InetSocketAddress remoteAddr = (InetSocketAddress) channel.remoteAddress();
+        String host = remoteAddr.getAddress().getHostAddress();
+        int port = remoteAddr.getPort();
+
+        String addr = host + ":" + port;
+        String existAddr = channelAddrMap.get(imei);
+        if (existAddr != null && !StringUtils.equals(addr, existAddr)) {
+            logger.error("iemi[{}]重复连接", imei);
+        }
+        channelAddrMap.put(imei, addr);
+    }
+	
 
 }

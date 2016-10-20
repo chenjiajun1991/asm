@@ -41,8 +41,8 @@ public class UserSigninController {
     private static final Logger logger = LoggerFactory.getLogger(UserSigninController.class);
 
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
-    public SamResponse signin(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
-
+    public SamResponse signin(HttpServletRequest httpServletRequest,  @RequestParam("jsonReq")String jsonReq) {
+    	
         logger.info("Request json String:" + jsonReq);
 
         UserSigninReq req = JSON.parseObject(jsonReq, UserSigninReq.class);

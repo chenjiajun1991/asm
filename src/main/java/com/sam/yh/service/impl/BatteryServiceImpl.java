@@ -122,7 +122,7 @@ public class BatteryServiceImpl implements BatteryService {
         Date now  = new Date();
         
         //调整4节组的临界电压值
-        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 61.5d && now.before(DateUtils.addHours(BtySaleDate, 2))) {
+        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 62d && now.before(DateUtils.addHours(BtySaleDate, 2))) {
             Battery temBattery = new Battery();
             temBattery.setId(battery.getId());
             BtyQuantity = 5;
@@ -133,13 +133,13 @@ public class BatteryServiceImpl implements BatteryService {
         
         //当电压过高或过低时发短信提示用户
         if(BtyQuantity==4){
-        	if(Double.parseDouble(voltage)>60d){
+        	if(Double.parseDouble(voltage)>62d){
         		sendVolageWarningMsg(battery, voltage, 1);
         	}else if(Double.parseDouble(voltage)<41.5d){
         		sendVolageWarningMsg(battery, voltage, 0);
         	}
         }else if(BtyQuantity==5){
-            if(Double.parseDouble(voltage)>75d){
+            if(Double.parseDouble(voltage)>77.5d){
             	sendVolageWarningMsg(battery, voltage, 1);
             	 Date date=new Date();
             	 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -153,7 +153,7 @@ public class BatteryServiceImpl implements BatteryService {
         
         
         //增加一个剪断信号线电压突变报警
-        if(Double.parseDouble(voltage)<20d){
+        if(Double.parseDouble(voltage)<15.5d){
         	sendViolentDestroyClient(battery);
         	sendViolentDestroyService(servicePhone, battery);
         }

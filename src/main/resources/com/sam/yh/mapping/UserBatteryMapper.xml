@@ -21,6 +21,21 @@
     <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
   </resultMap>
   
+  <!-- web后台查询所有电池详细的销售信息 -->
+  <resultMap id="AllBtySaleResultMap" type="com.sam.yh.model.web.BtySaleInfoModel" >
+    <id column="id" property="btyId" jdbcType="INTEGER" />
+   <result column="imei" property="btyImei" jdbcType="VARCHAR" />
+   <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
+    <result column="sn" property="btySn" jdbcType="VARCHAR" />
+    <result column="bty_quantity" property="btyQuantity" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_phone" property="userphone" jdbcType="VARCHAR" />
+    <result column="reseller_name" property="resellerName" jdbcType="VARCHAR" />
+    <result column="reseller_phone" property="resellerPhone" jdbcType="VARCHAR" />
+    <result column="sale_date" property="saleDate" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
   <sql id="Base_Column_List" >
     user_id, battery_id, buy_date
   </sql>
@@ -60,6 +75,34 @@ select
     where  buy_date &gt;= #{startDate,jdbcType=TIMESTAMP}  and buy_date &lt; #{endDate,jdbcType=TIMESTAMP}
     order by buy_date
 </select>
+
+<!-- 查询所有电池的详细销售信息 -->
+<select id="selectAllBtySaleInfo" resultMap="AllBtySaleResultMap">
+     select
+     bu.id as id,
+     bu.imei as imei, 
+     bu.sim_no as sim_no,
+     bu.sn as sn,
+     bu.bty_quantity as bty_quantity, 
+     u.user_name as user_name, 
+     u.mobile_phone as user_phone, 
+     bu.reseller_name as reseller_name, 
+     bu.reseller_phone as reseller_phone, 
+     bu.sale_date as sale_date
+     from(
+     select 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
+     from (
+     select 
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     r.user_name as reseller_name, r.mobile_phone as reseller_phone  
+     from battery b left join user r on b.reseller_id = r.user_id) br
+     left join user_battery ub on br.id = ub.battery_id ) bu
+     left join user u on bu.user_id = u.user_id
+     order by bu.id
+</select>
+
   
   <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
     select 

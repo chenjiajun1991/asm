@@ -11,6 +11,7 @@ public class BtySaleInfoModel {
 	 private String resellerName;
 	 private String resellerPhone;
 	 private String saleDate;
+	 
 	public Integer getBtyId() {
 		return btyId;
 	}
@@ -71,6 +72,6 @@ public class BtySaleInfoModel {
 	public void setSaleDate(String saleDate) {
 		this.saleDate = saleDate;
 	}
-	 
+
 	 
 }

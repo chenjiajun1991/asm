@@ -1,6 +1,7 @@
 package com.sam.yh.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
+import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.model.User;
+import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.service.UserService;
 import com.sam.yh.service.WebService;
 
@@ -26,6 +29,9 @@ public class WebServiceImpl implements WebService{
     
     @Resource
     private UserMapper userMapper;
+    
+    @Resource
+    private UserBatteryMapper userBatteryMapper;
 
 	@Override
 	public User adminLogin(String account, String hassPwd)
@@ -48,6 +54,15 @@ public class WebServiceImpl implements WebService{
         userMapper.updateByPrimaryKeySelective(user);
         
         return user;
+	}
+
+	//查询所有电池的销售信息
+	@Override
+	public List<BtySaleInfoModel> fetchAllSaleInfo() throws CrudException {
+
+		List<BtySaleInfoModel> btySaleinfo = userBatteryMapper.selectAllBtySaleInfo();
+		
+		return btySaleinfo;
 	}
 	
 }

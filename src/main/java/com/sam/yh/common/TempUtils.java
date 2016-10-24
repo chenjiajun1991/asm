@@ -19,13 +19,13 @@ public class TempUtils {
         result[5] = new Pair(88, 130);
         result[6] = new Pair(82, 150);
         result[7] = new Pair(76, 160);
-        result[8] = new Pair(72, 170);
-        result[9] = new Pair(71, 175);
-        result[10] = new Pair(70, 180);
-        result[11] = new Pair(69, 185);
-        result[12] = new Pair(68, 190);
-        result[13] = new Pair(64, 200);
-        result[14] = new Pair(62, 210);
+        result[8] = new Pair(72, 161);
+        result[9] = new Pair(71, 163);
+        result[10] = new Pair(70, 165);
+        result[11] = new Pair(69, 168);
+        result[12] = new Pair(68, 170);
+        result[13] = new Pair(64, 175);
+        result[14] = new Pair(62, 178);
 //        
 //        result[15] = new Pair(60, 50);
 //        result[16] = new Pair(58, 70);
@@ -40,10 +40,10 @@ public class TempUtils {
 //        result[25] = new Pair(40, 265);
         
         
-        result[15] = new Pair(60, 215);
-        result[16] = new Pair(58, 220);
-        result[17] = new Pair(56, 225);
-        result[18] = new Pair(55, 230);
+        result[15] = new Pair(60, 180);
+        result[16] = new Pair(58, 185);
+        result[17] = new Pair(56, 188);
+        result[18] = new Pair(55, 190);
         
         result[19] = new Pair(52, 240);
         result[20] = new Pair(50, 250);

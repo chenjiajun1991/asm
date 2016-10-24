@@ -38,7 +38,7 @@ public class SamTcpServer {
     /**用于分配处理业务线程的线程组个数 */  
     protected static final int BIZGROUPSIZE = Runtime.getRuntime().availableProcessors()*2; //默认  
     /** 业务出现线程大小*/  
-    protected static final int BIZTHREADSIZE = 4;  
+    protected static final int BIZTHREADSIZE = 8;  
     
 
     private ChannelFuture channelFuture;

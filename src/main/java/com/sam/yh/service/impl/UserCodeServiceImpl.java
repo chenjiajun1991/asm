@@ -1,6 +1,5 @@
 package com.sam.yh.service.impl;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -185,6 +184,7 @@ public class UserCodeServiceImpl implements UserCodeService {
     @Override
     public boolean sendMovingMsg(String mobilePhone, String btyImei) throws CrudException {
         int type = UserCodeType.BTY_MOVING.getType();
+        
 //        Calendar now = Calendar.getInstance();
 //        if (now.get(Calendar.HOUR_OF_DAY) < 7) {
 //            return false;
@@ -193,7 +193,19 @@ public class UserCodeServiceImpl implements UserCodeService {
         if (send) {
             send = defaultUmsSmsService.sendMovingMsg(mobilePhone, btyImei);
         }
-
+        
+        Date now=new Date();
+        UserCode userCode = fetchByUserName(btyImei, type);
+        if(userCode.getSendTimes()==2&&now.after(userCode.getExpiryDate())){
+        	userCode.setSendTimes(userCode.getSendTimes()+1);
+            userCode.setSendDate(now);
+            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+            userCodeMapper.updateByPrimaryKey(userCode);
+        
+            send = defaultUmsSmsService.sendMovingRemindMsg(mobilePhone, btyImei);
+            
+        }
+        
         return send;
     }
 
@@ -236,7 +248,9 @@ public class UserCodeServiceImpl implements UserCodeService {
 //        
         if(type==UserCodeType.BTY_VOLTAGE_WARNING.getType()){
         	if(sendTimes <= SamConstants.MXA_WARNING_SEND_TIME){
-        		 userCode.setSendTimes(sendTimes);
+//        		 userCode.setSendTimes(sendTimes);
+        		//每天发送一次
+        		 userCode.setSendTimes(userCode.getSendTimes()+1);
                  userCode.setSendDate(now);
                  userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
 
@@ -270,7 +284,9 @@ public class UserCodeServiceImpl implements UserCodeService {
         
         if(type==UserCodeType.BTY_WARNING.getType()){
         	if(sendTimes <= SamConstants.MXA_WARNING_SEND_TIME){
-        		userCode.setSendTimes(sendTimes);
+//        		userCode.setSendTimes(sendTimes);
+        		//调整每天仅发送一次
+        		userCode.setSendTimes(userCode.getSendTimes()+1);
                 userCode.setSendDate(now);
                 userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
                 userCodeMapper.updateByPrimaryKey(userCode);
@@ -279,20 +295,13 @@ public class UserCodeServiceImpl implements UserCodeService {
         }
         
         if(type==UserCodeType.BTY_MOVING.getType()){
-        	if(userCode.getSendTimes() <=SamConstants.MXA_WARNING_SEND_TIME){
+        	if(userCode.getSendTimes() < 2){
         		userCode.setSendTimes(userCode.getSendTimes()+1);
                 userCode.setSendDate(now);
                 userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
                 userCodeMapper.updateByPrimaryKey(userCode);
                 send = true;
         	   }
-        	
-//        		Calendar now1 = Calendar.getInstance();
-//                if (now1.get(Calendar.HOUR_OF_DAY) ==7) {
-//                	if(now1.get(Calendar.MINUTE)<4){
-//                		send=true;
-//                	}
-//                }
         }
         return send;
     }

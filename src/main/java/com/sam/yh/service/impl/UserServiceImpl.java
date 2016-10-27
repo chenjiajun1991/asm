@@ -139,7 +139,11 @@ public class UserServiceImpl implements UserService {
     public User signin(String mobilePhone, String hassPwd, String deviceInfo) throws CrudException {
 
         User user = fetchUserByPhone(mobilePhone);
-        if (user == null || user.getLockStatus()) {
+//        if (user == null || user.getLockStatus()) {
+//            throw new UserSignupException("用户不存在");
+//        }
+        //不需要锁定状态
+        if (user == null) {
             throw new UserSignupException("用户不存在");
         }
 

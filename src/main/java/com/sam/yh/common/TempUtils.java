@@ -25,7 +25,7 @@ public class TempUtils {
         result[11] = new Pair(69, 168);
         result[12] = new Pair(68, 170);
         result[13] = new Pair(64, 175);
-        result[14] = new Pair(62, 178);
+        result[14] = new Pair(62, 185);
 //        
 //        result[15] = new Pair(60, 50);
 //        result[16] = new Pair(58, 70);
@@ -40,11 +40,11 @@ public class TempUtils {
 //        result[25] = new Pair(40, 265);
         
         
-        result[15] = new Pair(60, 180);
-        result[16] = new Pair(58, 185);
-        result[17] = new Pair(56, 188);
-        result[18] = new Pair(55, 190);
-        
+        result[15] = new Pair(60, 188);
+        result[16] = new Pair(58, 190);
+        result[17] = new Pair(56, 195);
+        result[18] = new Pair(55, 210);
+       
         result[19] = new Pair(52, 240);
         result[20] = new Pair(50, 250);
         result[21] = new Pair(48, 260);
@@ -92,7 +92,7 @@ public class TempUtils {
     public static boolean isWarning(String original) {
         int ori = Integer.valueOf(original);
         int length = pairs.length;
-        return (ori < pairs[18].original || ori > pairs[55].original);
+        return (ori < pairs[15].original && ori > pairs[1].original);
     }
 
     public static String getTemp(String original) {

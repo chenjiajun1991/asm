@@ -64,7 +64,8 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     @Override
     public boolean sendBuyInfo(String mobilePhone) {
         // TODO
-        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪，请点击下载" + apkShortUrl + "，回复TD拒收";
+    	//        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪，请点击下载" + apkShortUrl + "，回复TD拒收";
+        String content = "您购买的亚亨蓄电池已经成功录入系统，初始密码为88888888，请您下载APP并跟踪，请点击下载" + apkShortUrl + "，回复TD拒收";
         return sendSms(mobilePhone, content);
     }
 

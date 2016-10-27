@@ -26,6 +26,18 @@
     from user_code
     where mobile_phone = #{0,jdbcType=VARCHAR} and code_type = #{1,jdbcType=INTEGER}
   </select>
+  
+  <!-- 通过mobilePhone查询所有的验证码 -->
+   <select id="selectByMobilePhone" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List" />
+    from user_code
+    where mobile_phone = #{mobilePhone,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from user_code
     where id = #{id,jdbcType=INTEGER}

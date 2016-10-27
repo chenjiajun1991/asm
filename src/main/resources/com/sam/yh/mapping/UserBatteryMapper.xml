@@ -103,7 +103,63 @@ select
      order by bu.id
 </select>
 
-  
+<!-- 根据imei号来查询电池的销售信息 -->
+<select id="selectBtySaleInfoByImei" resultMap="AllBtySaleResultMap" parameterType="java.lang.String">
+select
+     bu.id as id,
+     bu.imei as imei, 
+     bu.sim_no as sim_no,
+     bu.sn as sn,
+     bu.bty_quantity as bty_quantity, 
+     u.user_name as user_name, 
+     u.mobile_phone as user_phone, 
+     bu.reseller_name as reseller_name, 
+     bu.reseller_phone as reseller_phone, 
+     bu.sale_date as sale_date
+     from(
+     select 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
+     from (
+     select 
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     r.user_name as reseller_name, r.mobile_phone as reseller_phone  
+     from battery b left join user r on b.reseller_id = r.user_id where imei=#{imei,jdbcType=VARCHAR}) br
+     left join user_battery ub on br.id = ub.battery_id ) bu
+     left join user u on bu.user_id = u.user_id
+     order by bu.id
+
+</select>
+
+<!-- 根据手机号来查询电池的销售信息 -->
+<select id="selectBtySaleInfoByPhone" resultMap="AllBtySaleResultMap" parameterType="java.lang.String">
+select
+     bu.id as id,
+     bu.imei as imei, 
+     bu.sim_no as sim_no,
+     bu.sn as sn,
+     bu.bty_quantity as bty_quantity, 
+     u.user_name as user_name, 
+     u.mobile_phone as user_phone, 
+     bu.reseller_name as reseller_name, 
+     bu.reseller_phone as reseller_phone, 
+     bu.sale_date as sale_date
+     from(
+     select 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
+     from (
+     select 
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     r.user_name as reseller_name, r.mobile_phone as reseller_phone  
+     from battery b left join user r on b.reseller_id = r.user_id ) br
+     left join user_battery ub on br.id = ub.battery_id ) bu
+     left join user u on bu.user_id = u.user_id where u.mobile_phone = #{mobilePhone,jdbcType=VARCHAR}
+     order by bu.id
+
+</select>
+
+
   <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
     select 
     b.pub_sn as pub_sn,

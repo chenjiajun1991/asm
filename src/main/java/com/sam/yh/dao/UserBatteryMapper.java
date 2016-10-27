@@ -32,4 +32,9 @@ public interface UserBatteryMapper {
     
     //查询所有电池的销售信息
     List<BtySaleInfoModel> selectAllBtySaleInfo();
+    
+    BtySaleInfoModel selectBtySaleInfoByImei(String imei);
+    
+    List<BtySaleInfoModel> selectBtySaleInfoByPhone(String mobilePhone);
+    
 }

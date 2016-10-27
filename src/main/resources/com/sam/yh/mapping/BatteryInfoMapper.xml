@@ -46,6 +46,27 @@
     on i.id = gb.id
   </select>
   
+  <!-- 按电池id和数量降序查询 -->
+  <select id="selectBtyByIdAndCountDesc" resultMap="BaseResultMap" parameterType="com.sam.yh.model.web.BtyCountInfo">
+   select 
+   <include refid="Base_Column_List" />
+    from battery_info 
+    where battery_id = #{id,jdbcType=BIGINT} 
+    order by receive_date desc 
+    limit #{count,jdbcType=BIGINT}
+  </select>
+  
+   <!-- 按电池id和数量升序查询 -->
+  <select id="selectBtyByIdAndCountAsc" resultMap="BaseResultMap" parameterType="com.sam.yh.model.web.BtyCountInfo">
+   select 
+   <include refid="Base_Column_List" />
+    from battery_info 
+    where battery_id = #{id,jdbcType=BIGINT} 
+    order by receive_date asc 
+    limit #{count,jdbcType=BIGINT}
+  </select>
+  
+  
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from battery_info

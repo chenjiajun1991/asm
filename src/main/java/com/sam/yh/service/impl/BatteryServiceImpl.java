@@ -276,7 +276,7 @@ public class BatteryServiceImpl implements BatteryService {
         }
 
         float adcVol = Float.valueOf(convertAdcToVo(batteryInfoReqVo.getVoltage()));
-        if (adcVol < 10 || adcVol > 90) {
+        if (adcVol < 42 || adcVol > 77.5) {
             status = BatteryStatus.V_ABNORMAL;
         }
 

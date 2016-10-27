@@ -1,9 +1,6 @@
 package com.sam.yh.controller.web;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Set;
 
@@ -26,9 +23,13 @@ import com.sam.yh.controller.BtySaleInfoController;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.req.bean.web.FetchAllSaleInfoReq;
+import com.sam.yh.req.bean.web.FetchBtyByImeiReq;
+import com.sam.yh.req.bean.web.FetchBtyByPhoneReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.resp.bean.web.FetchAllSaleInfoResp;
+import com.sam.yh.resp.bean.web.FetchBtyByImeiResp;
+import com.sam.yh.resp.bean.web.FetchBtyByPhoneResp;
 import com.sam.yh.service.WebService;
 
 @RestController
@@ -68,6 +69,59 @@ public class FetchBtySaleInfoController {
            
         }
     }
+    
+    @RequestMapping(value = "/byimei", method = RequestMethod.POST)
+    public SamResponse fetchBtyByImei(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+
+        logger.info("Request json String:" + jsonReq);
+        FetchBtyByImeiReq req = JSON.parseObject(jsonReq, FetchBtyByImeiReq.class);
+        try {
+    	
+        	BtySaleInfoModel btySaleInfo=webService.fetBtyByImei(req.getImei());
+          
+         	FetchBtyByImeiResp respData = new FetchBtyByImeiResp();
+         	
+            respData.setBtySaleInfo(btySaleInfo);
+       
+            return ResponseUtils.getNormalResp(respData);
+        }  catch (Exception e) {
+        	if(e instanceof CrudException){
+        		 logger.error("fetchBatteryAllSaleinfo exception, " +  e);
+        		return ResponseUtils.getServiceErrorResp(e.getMessage());
+        	}else{
+        		return ResponseUtils.getSysErrorResp();
+        	}
+           
+        }
+    }
+    
+    @RequestMapping(value = "/byphone", method = RequestMethod.POST)
+    public SamResponse fetchBtyByPhone(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+
+        logger.info("Request json String:" + jsonReq);
+        FetchBtyByPhoneReq req = JSON.parseObject(jsonReq, FetchBtyByPhoneReq.class);
+        try {
+    	
+        	List<BtySaleInfoModel> btySaleInfos = webService.fetchBtyByPhone(req.getMobilePhone());
+          
+         	FetchBtyByPhoneResp respData = new FetchBtyByPhoneResp();
+         	
+            respData.setBtySaleInfos(btySaleInfos);
+       
+            return ResponseUtils.getNormalResp(respData);
+        }  catch (Exception e) {
+        	if(e instanceof CrudException){
+        		 logger.error("fetchBatteryAllSaleinfo exception, " +  e);
+        		return ResponseUtils.getServiceErrorResp(e.getMessage());
+        	}else{
+        		return ResponseUtils.getSysErrorResp();
+        	}
+           
+        }
+    }
+    
+    
+    
     private void validateArgs(FetchAllSaleInfoReq fetchAllSaleInfoReq) throws IllegalParamsException {
         if (!isAdminPhone(fetchAllSaleInfoReq.getAccount())) {
             throw new IllegalParamsException("你无权查看销售信息！");

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.ResellerBtyInfo;
+import com.sam.yh.model.web.BtyCountInfo;
 
 
 public interface BatteryInfoMapper {
@@ -18,5 +19,9 @@ public interface BatteryInfoMapper {
     BatteryInfo selectByBtyId(Integer btyId);
 
     List<ResellerBtyInfo> selectByReseller(Integer resellerId);
+    
+    List<BatteryInfo> selectBtyByIdAndCountDesc(BtyCountInfo btyCountInfo);
+    
+    List<BatteryInfo> selectBtyByIdAndCountAsc(BtyCountInfo btyCountInfo);
     
 }

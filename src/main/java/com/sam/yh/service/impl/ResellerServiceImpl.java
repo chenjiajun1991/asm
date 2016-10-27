@@ -112,7 +112,9 @@ public class ResellerServiceImpl implements ResellerService {
         User user = userService.fetchUserByPhone(submitBtySpecReq.getUserPhone());
         if (user == null) {
             user = addLockedUserBySys(submitBtySpecReq.getUserName(), submitBtySpecReq.getUserPhone());
-            userCodeService.sendSignupAuthCode(submitBtySpecReq.getUserPhone());
+            
+            //当用户未注册时，发送注册验证码之后会导致后面的发送APP下载地址无法发送，原因是USM那边会提示发送速度过快，所以暂时禁用
+//            userCodeService.sendSignupAuthCode(submitBtySpecReq.getUserPhone());
         }
         
         //当用户已注册时更新用户姓名
@@ -143,7 +145,9 @@ public class ResellerServiceImpl implements ResellerService {
         Date now = new Date();
         String uuid = UUID.randomUUID().toString();
         String salt = RandomCodeUtils.genSalt();
-        String initPwd = RandomCodeUtils.genInitPwd();
+        //设置初始密码为88888888
+//        String initPwd = RandomCodeUtils.genInitPwd();
+        String initPwd = "88888888";
         User user = new User();
         user.setUuid(StringUtils.replace(uuid, "-", ""));
         user.setUserName(userName);

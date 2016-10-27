@@ -1,5 +1,7 @@
 package com.sam.yh.dao;
 
+import java.util.List;
+
 import com.sam.yh.model.UserCode;
 
 public interface UserCodeMapper {
@@ -16,4 +18,6 @@ public interface UserCodeMapper {
     int updateByPrimaryKey(UserCode record);
 
     UserCode selectByUserNameAndType(String mobilePhone, int type);
+    
+    List<UserCode> selectByMobilePhone(String mobilePhone);
 }

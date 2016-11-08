@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.TroubleUserBatteryMapper" >
+
+<resultMap id="BaseResultMap" type="com.sam.yh.model.TroubleUserBattery" >
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="remove_date" property="removeDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+    <sql id="Base_Column_List" >
+    battery_id,  user_id, remove_date
+   </sql>
+  
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from trouble_user_battery
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from trouble_user_battery
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByBtyId" parameterType="java.lang.Integer" >
+    delete from trouble_user_battery
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  
+   <insert id="insert" parameterType="com.sam.yh.model.TroubleUserBattery">
+    insert into trouble_user_battery (
+    battery_id, user_id, remove_date )
+      values ( #{batteryId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},#{removeDate,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <update id="updateByBtyId" parameterType="com.sam.yh.model.TroubleUserBattery">
+    update trouble_user_battery
+    set  user_id = #{userId,jdbcType=INTEGER},
+    remove_date = #{removeDate,jdbcType=TIMESTAMP}
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

@@ -182,6 +182,13 @@ select
     where user_id = #{userId,jdbcType=INTEGER}
       and battery_id = #{batteryId,jdbcType=INTEGER}
   </delete>
+  
+  <delete id="deleteByBtyId" parameterType="java.lang.Integer" >
+    delete from user_battery
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  
+  
   <insert id="insert" parameterType="com.sam.yh.model.UserBattery" >
     insert into user_battery (user_id, battery_id, buy_date
       )
@@ -229,4 +236,11 @@ select
     where user_id = #{userId,jdbcType=INTEGER}
       and battery_id = #{batteryId,jdbcType=INTEGER}
   </update>
+  <update id="updateByBtyId" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    set buy_date = #{buyDate,jdbcType=TIMESTAMP},
+    user_id = #{userId,jdbcType=INTEGER}
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  
 </mapper>

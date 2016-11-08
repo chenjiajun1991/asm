@@ -37,4 +37,8 @@ public interface UserBatteryMapper {
     
     List<BtySaleInfoModel> selectBtySaleInfoByPhone(String mobilePhone);
     
+    int deleteByBtyId(int batteryId);
+    
+    int updateByBtyId(UserBattery userBattery);
+    
 }

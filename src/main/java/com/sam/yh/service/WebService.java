@@ -10,6 +10,7 @@ import com.sam.yh.model.User;
 import com.sam.yh.model.web.BatteryLocInfo;
 import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.model.web.CodeInfoModel;
+import com.sam.yh.model.web.TroubleBtyInfo;
 
 public interface WebService {
 	    @Transactional
@@ -29,4 +30,22 @@ public interface WebService {
 	    
 	    @Transactional
 	    public List<CodeInfoModel> fetchUserCode(String userPhone) throws CrudException;
+	    
+	    @Transactional
+	    public void removeBattery(String imei,String reason) throws CrudException;
+	    
+	    @Transactional
+	    public List<TroubleBtyInfo> fetchAllTroBty() throws CrudException;
+	        
+	    @Transactional
+	    public List<TroubleBtyInfo> fetchTroBtyByImeiOrPhone(String parms) throws CrudException;
+	    
+	    @Transactional
+	    public void updateBattery (int btyId, String btyImei,String btySimNO,String btySn, int btyQuantity)throws CrudException;
+	    
+	    @Transactional
+	    public void updateUserBattery (int btyId, String userName,String userPhone)throws CrudException;
+	    
+	    @Transactional
+	    public void updateBtyReseller (int btyId, String resellerName,String resellerPhone)throws CrudException;
 }

@@ -41,4 +41,7 @@ public interface BatteryService {
 
     @Transactional
     public BatteryInfoNst fetchBtyInfo(String btySimNo) throws CrudException;
+    
+    @Transactional
+    public int fetchRssi(int btyId) throws CrudException;
 }

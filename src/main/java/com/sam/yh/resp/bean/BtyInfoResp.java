@@ -14,6 +14,7 @@ public class BtyInfoResp implements Serializable {
     private String voltage;
     private String power;
     private String lastestDate;
+    private int rssi;
 
     public String getLongitude() {
         return longitude;
@@ -62,8 +63,17 @@ public class BtyInfoResp implements Serializable {
     public void setLastestDate(String lastestDate) {
         this.lastestDate = lastestDate;
     }
+    
+  
+	public int getRssi() {
+		return rssi;
+	}
 
-    @Override
+	public void setRssi(int rssi) {
+		this.rssi = rssi;
+	}
+
+	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

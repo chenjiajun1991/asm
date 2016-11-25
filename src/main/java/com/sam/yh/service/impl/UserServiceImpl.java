@@ -470,7 +470,10 @@ public class UserServiceImpl implements UserService {
         
         //解锁时清空 user_code中移动次数的计数器
         UserCode userCode=userCodeService.fetchByUserName(btyImei, UserCodeType.BTY_MOVING.getType());
-        userCode.setSendTimes(0);
-        userCodeMapper.updateByPrimaryKey(userCode);
+        if(userCode !=null){
+        	userCode.setSendTimes(0);
+            userCodeMapper.updateByPrimaryKey(userCode);
+        }
+        
     }
 }

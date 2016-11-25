@@ -56,7 +56,7 @@ public class FetchBtyInfoController {
 
 		try {
 			validateBtyArgs(req);
-
+      //返回值中增加一个信号强度
 			BatteryInfoNst info = batteryService
 					.fetchBtyInfo(req.getBtySimNo());
 			BtyInfoResp respData = new BtyInfoResp();
@@ -64,6 +64,7 @@ public class FetchBtyInfoController {
 			respData.setLongitude(info.getLongitude());
 			respData.setTemperature(info.getTemperature());
 			respData.setVoltage(info.getVoltage());
+			
 			Battery battery = batteryService.fetchBtyById(info.getBatteryId());
 			respData.setPower(PowerCalUtil.calPower(info.getVoltage(),
 					battery.getBtyQuantity()));
@@ -72,6 +73,9 @@ public class FetchBtyInfoController {
 					"yyyy-MM-dd HH:mm:ss");
 			String dateString = formatter.format(info.getReceiveDate());
 			respData.setLastestDate(dateString);
+			
+			int rssi = batteryService.fetchRssi(info.getBatteryId());
+			respData.setRssi(rssi);
 
 			return ResponseUtils.getNormalResp(respData);
 		} catch (IllegalParamsException e) {
@@ -119,7 +123,10 @@ public class FetchBtyInfoController {
 					"yyyy-MM-dd HH:mm:ss");
 			String dateString = formatter.format(info.getReceiveDate());
 			respData.setLastestDate(dateString);
-
+			//增加一个信号强度
+			int rssi = batteryService.fetchRssi(info.getBatteryId());
+			respData.setRssi(rssi);
+			
 			logger.info("Response json String:"
 					+ JSON.toJSONString(ResponseUtils.getNormalResp(respData)));
 			return ResponseUtils.getNormalResp(respData);

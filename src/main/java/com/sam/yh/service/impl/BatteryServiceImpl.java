@@ -384,4 +384,38 @@ public class BatteryServiceImpl implements BatteryService {
         return batteryMapper.selectByPrimaryKey(id);
     }
 
+	@Override
+	public int fetchRssi(int btyId) throws CrudException {
+		 int rssi = 1;
+		 BatteryInfoNst btyInfoNst = batteryInfoNstMapper.selectByBtyId(btyId);
+		 if(btyInfoNst == null){
+			 throw new FetchBtyInfoException("未接收到此电池发送的信息");
+		 }
+		 
+		 BatteryInfo btyInfo = batteryInfoMapper.selectByBtyId(btyId);
+		 if(btyInfo == null){
+			 throw new FetchBtyInfoException("未接收到此电池发送的信息");
+		 }
+		 
+		 Date now = new Date();
+		 //最后一次上报数据的时间与现在间隔3分钟以内
+		if(DateUtils.addMinutes(btyInfoNst.getReceiveDate(), 3).after(now)){
+			if(btyInfoNst.getLongitude().equals(btyInfo.getLongitude())){
+				rssi = 0;
+			}else {
+				rssi = 1;
+			}
+		}
+		
+		if(DateUtils.addMinutes(btyInfoNst.getReceiveDate(), 3).before(now) && DateUtils.addMinutes(btyInfoNst.getReceiveDate(), 30).after(now)){
+			rssi = 1;
+		}
+		
+		if(DateUtils.addMinutes(btyInfoNst.getReceiveDate(), 30).before(now)){
+			rssi = 2;
+		}
+		
+		return rssi;
+	}
+
 }

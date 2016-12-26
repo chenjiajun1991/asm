@@ -96,4 +96,7 @@
 	<bean id="servicePhone" class="java.lang.String">
 		<constructor-arg value="${service.phone}" />
 	</bean>
+	<bean id="superAdmin" class="java.lang.String">
+		<constructor-arg value="${super.admin}" />
+	</bean>
 </beans>

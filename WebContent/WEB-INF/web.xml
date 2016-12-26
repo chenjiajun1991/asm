@@ -53,6 +53,15 @@
 	<listener>
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
 	</listener>
+	
+	
+		<!-- tomcat下 配置多个项目 -->
+	<context-param>
+      <param-name>webAppRootKey</param-name>
+      <param-value> app.root </param-value>
+    </context-param>
+	
+	
 
 	<!-- Spring MVC servlet -->
 	<servlet>

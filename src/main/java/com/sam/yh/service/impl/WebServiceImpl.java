@@ -54,6 +54,9 @@ public class WebServiceImpl implements WebService{
     private String commonPwd;
     
     @Resource
+    private String superAdmin;
+    
+    @Resource
     private BatteryMapper  batteryMapper;
     
     @Resource
@@ -572,6 +575,15 @@ public class WebServiceImpl implements WebService{
 			battery.setResellerId(reseller.getUserId());
 			batteryMapper.updateByPrimaryKey(battery);	
 		}
+	}
+
+	@Override
+	public void deleteBattery(String admin) throws CrudException {
+		// TODO Auto-generated method stub
+		if(!admin.endsWith(superAdmin)){
+			throw new CrudException("该功能暂未开放！");
+		}
+		
 	}
 
 }

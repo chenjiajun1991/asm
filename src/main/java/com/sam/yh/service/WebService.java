@@ -35,6 +35,10 @@ public interface WebService {
 	    public void removeBattery(String imei,String reason) throws CrudException;
 	    
 	    @Transactional
+	    public void deleteBattery(String admin) throws CrudException;
+	    
+	    
+	    @Transactional
 	    public List<TroubleBtyInfo> fetchAllTroBty() throws CrudException;
 	        
 	    @Transactional

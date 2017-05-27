@@ -177,11 +177,20 @@ public class DahantSmsServiceImpl implements DahantSmsService {
 			String btyImei, String userName, String userPhone) {
 		String content = "用户"+userName+"的电池IMEI"+btyImei+"信号线被剪断，手机号"+userPhone+"，请及时与用户联系。";
 		return sendSms(mobilePhone, content);
+		
 	}
 
 	@Override
 	public boolean sendMovingRemindMsg(String mobilePhone, String btyImei) {
 		String content = "请及时查看车辆是否移动,并确认车辆停放后是否重新布防,若不是,重新关闭再开启后生效,若不使用,请及时关闭布防.";
+		return sendSms(mobilePhone, content);
+	}
+
+	@Override
+	public boolean sendWarnFireMsg(String mobilePhone,String btyImei,String userName,String userPhone) {
+		// TODO Auto-generated method stub
+		String content = "用户"+userName+"的电池IMEI"+btyImei+",电池有着火风险,手机号"+userPhone+",请及时与用户联系。";
+		
 		return sendSms(mobilePhone, content);
 	}
 

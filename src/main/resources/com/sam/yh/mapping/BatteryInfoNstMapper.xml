@@ -8,13 +8,16 @@
     <result column="latitude" property="latitude" jdbcType="VARCHAR" />
     <result column="temperature" property="temperature" jdbcType="VARCHAR" />
     <result column="voltage" property="voltage" jdbcType="VARCHAR" />
+    <result column="speed" property="speed" jdbcType="VARCHAR" />
+    <result column="gsm_signal" property="gsmSignal" jdbcType="VARCHAR" /> 
+     <result column="verno" property="verno" jdbcType="VARCHAR" /> 
     <result column="status" property="status" jdbcType="CHAR" />
     <result column="extension" property="extension" jdbcType="VARCHAR" />
     <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
     <result column="sample_date" property="sampleDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, battery_id, longitude, latitude, temperature, voltage, status, extension, receive_date, 
+    id, battery_id, longitude, latitude, temperature, voltage, speed,gsm_signal, verno, status, extension, receive_date, 
     sample_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -64,6 +67,15 @@
       <if test="voltage != null" >
         voltage,
       </if>
+       <if test="speed != null" >
+        speed,
+      </if>
+       <if test="gsmSignal != null" >
+        gsm_signal,
+      </if>
+       <if test="verno != null" >
+        verno,
+      </if>
       <if test="status != null" >
         status,
       </if>
@@ -96,6 +108,15 @@
       <if test="voltage != null" >
         #{voltage,jdbcType=VARCHAR},
       </if>
+        <if test="speed != null" >
+        #{speed,jdbcType=VARCHAR},
+      </if>
+       <if test="gsmSignal != null" >
+        #{gsmSignal,jdbcType=VARCHAR},
+      </if>
+       <if test="verno != null" >
+        #{verno,jdbcType=VARCHAR},
+      </if>
       <if test="status != null" >
         #{status,jdbcType=CHAR},
       </if>
@@ -127,6 +148,16 @@
       </if>
       <if test="voltage != null" >
         voltage = #{voltage,jdbcType=VARCHAR},
+      </if>
+     <if test="speed != null" >
+        speed = #{speed,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="gsmSignal != null" >
+        gsm_signal = #{gsmSignal,jdbcType=VARCHAR},
+      </if>
+      <if test="verno != null" >
+        verno = #{verno,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=CHAR},

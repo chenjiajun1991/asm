@@ -17,7 +17,7 @@
     						
     					
     <task:annotation-driven executor="asyncExecutor" />
-    <task:executor id="asyncExecutor" pool-size="5-10"
+    <task:executor id="asyncExecutor" pool-size="5-15"
         queue-capacity="800" keep-alive="300" rejection-policy="CALLER_RUNS" />				
     						
     			
@@ -80,5 +80,6 @@
 		<task:scheduled ref="fetchReplaySmsTask" method="run"
 			cron="0 */10 * * * ?" />
 	</task:scheduled-tasks>
+
 	
 </beans> 

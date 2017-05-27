@@ -1,6 +1,7 @@
 package com.sam.yh.resp.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -16,6 +17,7 @@ public class UserBtyInfo implements Serializable {
     private String temperature;
     private String voltage;
     private String power;
+    private String receiveDate;
 
     public String getBtyPubSn() {
         return btyPubSn;
@@ -80,8 +82,17 @@ public class UserBtyInfo implements Serializable {
     public void setPower(String power) {
         this.power = power;
     }
+    
+    
+	public String getReceiveDate() {
+		return receiveDate;
+	}
 
-    @Override
+	public void setReceiveDate(String receiveDate) {
+		this.receiveDate = receiveDate;
+	}
+
+	@Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

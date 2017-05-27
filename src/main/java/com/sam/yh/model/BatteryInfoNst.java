@@ -14,6 +14,12 @@ public class BatteryInfoNst {
     private String temperature;
 
     private String voltage;
+    
+    private String speed;
+    
+    private String gsmSignal;
+    
+    private String verno;
 
     private String status;
 
@@ -22,6 +28,7 @@ public class BatteryInfoNst {
     private Date receiveDate;
 
     private Date sampleDate;
+    
 
     public Long getId() {
         return id;
@@ -102,4 +109,31 @@ public class BatteryInfoNst {
     public void setSampleDate(Date sampleDate) {
         this.sampleDate = sampleDate;
     }
+
+	public String getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(String speed) {
+		this.speed = speed;
+	}
+
+	public String getGsmSignal() {
+		return gsmSignal;
+	}
+
+	public void setGsmSignal(String gsmSignal) {
+		this.gsmSignal = gsmSignal;
+	}
+
+	public String getVerno() {
+		return verno;
+	}
+
+	public void setVerno(String verno) {
+		this.verno = verno;
+	}
+	
+	
+    
 }

@@ -1,5 +1,7 @@
 package com.sam.yh.dao;
 
+import java.util.List;
+
 import com.sam.yh.model.Battery;
 
 public interface BatteryMapper {
@@ -10,6 +12,10 @@ public interface BatteryMapper {
     int insertSelective(Battery record);
 
     Battery selectByPrimaryKey(Integer id);
+    
+    List<Battery> selectAllBty();
+    
+    List<Battery> selectByResellerId(Integer resellerId);
 
     int updateByPrimaryKeySelective(Battery record);
 

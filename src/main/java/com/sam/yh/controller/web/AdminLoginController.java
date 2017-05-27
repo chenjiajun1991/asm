@@ -20,6 +20,7 @@ import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
+import com.sam.yh.dao.UserMapper;
 import com.sam.yh.model.User;
 import com.sam.yh.req.bean.web.AdminLoginReq;
 import com.sam.yh.resp.bean.ResponseUtils;
@@ -35,6 +36,10 @@ public class AdminLoginController {
 
 	    @Resource
 	    private String adminPhones;
+	    
+	    @Resource
+	    private UserMapper userMapper;
+	    
 
 	    private static final Logger logger = LoggerFactory.getLogger(AdminLoginController.class);
 
@@ -70,7 +75,7 @@ public class AdminLoginController {
 	    } 
 	    
 	    private void validateSigninArgs( AdminLoginReq adminLoginReq) throws IllegalParamsException {
-	        if (!isAdminPhone(adminLoginReq.getAccount())) {
+	        if (!isAdminPhone(adminLoginReq.getAccount()) && !isResellerPhone(adminLoginReq.getAccount())) {
 	            throw new IllegalParamsException("对不起，你无权登录！");
 	        }
 
@@ -86,6 +91,21 @@ public class AdminLoginController {
 	        }
 	        Set<String> admins = Sets.newHashSet(phones);
 	        return admins.contains(userPhone);
+	    }
+	    
+	    private boolean isResellerPhone(String userPhone) throws IllegalParamsException{
+	    	
+	       User user = userMapper.selectByPhone(userPhone);
+	       
+	       if(user == null){
+	    	   throw new IllegalParamsException("用户不存在！");
+	       }
+	       
+	       if(user.getUserType().equals("1")){
+	    	   return true;
+	       }
+	       
+	       return false;
 	    }
 
 }

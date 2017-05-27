@@ -4,6 +4,8 @@ public class FetchLocInfoReq {
 	private String imei;
 	private int count;
 	private int flag;
+	private String account;
+	
 	public String getImei() {
 		return imei;
 	}
@@ -22,6 +24,14 @@ public class FetchLocInfoReq {
 	public void setFlag(int flag) {
 		this.flag = flag;
 	}
+	public String getAccount() {
+		return account;
+	}
+	public void setAccount(String account) {
+		this.account = account;
+	}
+	
+	
 	
 
 }

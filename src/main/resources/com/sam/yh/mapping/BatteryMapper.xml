@@ -27,6 +27,14 @@
     id, sn, status, bty_type, pub_sn, imei, sim_no, imsi, gsim_no, iccid, reseller_id, sale_status, city_id, 
     lock_longitude, lock_latitude, create_date, sale_date, lock_date, expiry_date, bty_quantity
   </sql>
+  
+    <select id="selectAllBty" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+   </select>
+  
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -57,6 +65,16 @@
     from battery
     where pub_sn = #{pubSn,jdbcType=VARCHAR}
   </select>
+  
+   <select id="selectByResellerId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from battery
+    where reseller_id = #{resellerId,jdbcType=INTEGER}
+  </select>
+  
+  
+  
   <select id="countByReseller" resultType="int" parameterType="java.lang.Integer" >
     select 
     count(1)

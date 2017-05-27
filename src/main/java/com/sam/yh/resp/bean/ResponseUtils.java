@@ -94,5 +94,12 @@ public class ResponseUtils {
 
         return resp;
     }
+    
+    //test
+    public static SendBtyInfo getSendResp(Object respObj){
+    	SendBtyInfo resp = new SendBtyInfo();
+    	resp.setMsg(respObj);
+    	return resp;
+    }
 
 }

@@ -8,6 +8,7 @@ import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.User;
 import com.sam.yh.model.web.BatteryLocInfo;
+import com.sam.yh.model.web.BreakBtyInfo;
 import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.model.web.CodeInfoModel;
 import com.sam.yh.model.web.TroubleBtyInfo;
@@ -18,6 +19,9 @@ public interface WebService {
 	    
 	    @Transactional
 	    public List<BtySaleInfoModel> fetchAllSaleInfo() throws CrudException;
+	    
+	    @Transactional
+	    public List<BtySaleInfoModel> fetchResellerSaleInfo(String resellerPhone) throws CrudException;
 	    
 	    @Transactional
 	    public BtySaleInfoModel fetBtyByImei(String imei) throws CrudException;
@@ -52,4 +56,10 @@ public interface WebService {
 	    
 	    @Transactional
 	    public void updateBtyReseller (int btyId, String resellerName,String resellerPhone)throws CrudException;
+	    
+	    @Transactional
+	    public List <BreakBtyInfo> fetchAllBreakBtyInfo() throws CrudException;
+	    
+	    @Transactional
+	    public List <BreakBtyInfo> fetchBreakBtyInfoByReseller(String resellerPhone) throws CrudException;
 }

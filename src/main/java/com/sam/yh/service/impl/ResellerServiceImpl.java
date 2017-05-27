@@ -85,13 +85,31 @@ public class ResellerServiceImpl implements ResellerService {
     @Override
     public void submitBtySpec(SubmitBtySpecReq submitBtySpecReq) throws CrudException {
         if (batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei()) != null) {
-            throw new SubmitBtySpecException("请检查电池IMEI号");
+        	
+        	Battery battery = batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei());
+        	
+        	UserBattery userBattery = userBatteryMapper.selectByBtyId(battery.getId());
+        	
+        	if(userBattery == null){
+        		 throw new SubmitBtySpecException("电池IMEI号被绑定，请联系客服");
+        	}else{
+        		User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+        		if(user.getMobilePhone().equals(submitBtySpecReq.getUserPhone())){
+        			throw new SubmitBtySpecException("你已添加成功，请勿重复添加");
+        		}else{
+        			
+        			 throw new SubmitBtySpecException("电池IMEI号已被使用，请联系客服");
+        			 
+        		}
+        		
+        	}  
         }
+          
         if (batteryService.fetchBtyBySimNo(submitBtySpecReq.getBtySimNo()) != null) {
             throw new SubmitBtySpecException("请检查电池sim卡号");
         }
         if (batteryService.fetchBtyBySN(submitBtySpecReq.getBtySN()) != null) {
-            throw new SubmitBtySpecException("请检查电池序列号");
+            throw new SubmitBtySpecException("电池序列号已被使用");
         }
 
         //
@@ -202,7 +220,11 @@ public class ResellerServiceImpl implements ResellerService {
                 throw new LoggingResellerException("经销商手机号码已存在");
             } else if (StringUtils.equals(UserType.NORMAL_USER.getType(), userType)) {
                 user.setUserType(UserType.RESELLER.getType());
-
+                
+                //针对于先注册后添加经销商无姓名的修改
+                if(logResellerReq.getResellerName() != null){
+                	 user.setUserName(logResellerReq.getResellerName());
+                }
                 userMapper.updateByPrimaryKeySelective(user);
 
                 createReseller(user.getUserId(), logResellerReq);
@@ -270,30 +292,53 @@ public class ResellerServiceImpl implements ResellerService {
         }
         PageHelper.startPage(start, size);
         List<ResellerUserBtyInfo> resellerUserBtyInfos=new ArrayList<ResellerUserBtyInfo>();
-        List<ResellerBtyInfo> resellerBtyInfos=batteryInfoMapper.selectByReseller(reseller.getUserId());
         
-        for(ResellerBtyInfo resellerBtyInfo:resellerBtyInfos){
+        //效率太低，弃用
+//        List<ResellerBtyInfo> resellerBtyInfos=batteryInfoMapper.selectByReseller(reseller.getUserId());
+        
+        List<Battery> batteryLists = batteryMapper.selectByResellerId(reseller.getUserId());
+        
+//        for(ResellerBtyInfo resellerBtyInfo:resellerBtyInfos){
+          for(Battery battery: batteryLists){	
+        	
         	ResellerUserBtyInfo resellerUserBtyInfo=new ResellerUserBtyInfo();
         	
-        	UserBattery userBattery=userBatteryMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
-        	Battery battery=batteryMapper.selectByPrimaryKey(userBattery.getBatteryId());
+        	UserBattery userBattery=userBatteryMapper.selectByBtyId(battery.getId());
+        	
+//        	Battery battery=batteryMapper.selectByPrimaryKey(userBattery.getBatteryId());
+        	
             User user=userMapper.selectByPrimaryKey(userBattery.getUserId());
             
             //修改返回电池最后一次上报数据的信息
             //   BatteryInfo batteryInfo=batteryInfoMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
-            BatteryInfoNst batteryInfo=batteryInfoNstMapper.selectByBtyId(resellerBtyInfo.getBattery_id());
+            BatteryInfoNst batteryInfo=batteryInfoNstMapper.selectByBtyId(battery.getId());
             
-            if(battery!=null&&batteryInfo!=null&&user!=null){
+            if(battery!=null){
+            
 
                 resellerUserBtyInfo.setImei(battery.getImei());
 //                resellerUserBtyInfo.setLatitude(resellerBtyInfo.getLatitude());
 //                resellerUserBtyInfo.setLongitude(resellerBtyInfo.getLongitude());
-                resellerUserBtyInfo.setLatitude(batteryInfo.getLatitude());
-                resellerUserBtyInfo.setLongitude(batteryInfo.getLongitude());
-                resellerUserBtyInfo.setPower(PowerCalUtil.calPower(batteryInfo.getVoltage(), battery.getBtyQuantity()));
-                resellerUserBtyInfo.setTemperature(batteryInfo.getTemperature());
-                resellerUserBtyInfo.setUserName(user.getUserName());
-                resellerUserBtyInfo.setUserPhone(user.getMobilePhone());
+            	if(batteryInfo !=null){
+            	    resellerUserBtyInfo.setLatitude(batteryInfo.getLatitude());
+                    resellerUserBtyInfo.setLongitude(batteryInfo.getLongitude());
+                    resellerUserBtyInfo.setPower(PowerCalUtil.calPower(batteryInfo.getVoltage(), battery.getBtyQuantity()));
+                    resellerUserBtyInfo.setTemperature(batteryInfo.getTemperature());
+            	}else{
+            		resellerUserBtyInfo.setLatitude("0");
+                    resellerUserBtyInfo.setLongitude("0");
+                    resellerUserBtyInfo.setPower("4");
+                    resellerUserBtyInfo.setTemperature("25");
+            	}
+            	
+            	if(user != null){
+            		resellerUserBtyInfo.setUserName(user.getUserName());
+                    resellerUserBtyInfo.setUserPhone(user.getMobilePhone());
+            	}else{
+            		resellerUserBtyInfo.setUserName("--");
+                    resellerUserBtyInfo.setUserPhone("--");
+            	}
+                   
                 resellerUserBtyInfos.add(resellerUserBtyInfo);
             }
             

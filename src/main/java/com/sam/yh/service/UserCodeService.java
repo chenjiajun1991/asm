@@ -40,4 +40,7 @@ public interface UserCodeService {
     
     @Transactional
     public boolean sendViolentDestroyService(String mobilePhone,String btyImei,String userName,String userPhone) throws CrudException;
+    
+    @Transactional
+    public boolean sendWarnFire(String mobilePhone,String btyImei,String userName,String userPhone) throws CrudException;
 }

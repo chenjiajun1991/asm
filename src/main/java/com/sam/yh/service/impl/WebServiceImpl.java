@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.TroubleBatteryMapper;
@@ -25,6 +27,7 @@ import com.sam.yh.dao.UserCodeMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.TroubleBattery;
 import com.sam.yh.model.TroubleUserBattery;
@@ -32,6 +35,7 @@ import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.UserCode;
 import com.sam.yh.model.web.BatteryLocInfo;
+import com.sam.yh.model.web.BreakBtyInfo;
 import com.sam.yh.model.web.BtyCountInfo;
 import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.model.web.CodeInfoModel;
@@ -69,6 +73,9 @@ public class WebServiceImpl implements WebService{
     private BatteryInfoMapper batteryInfoMapper;
     
     @Resource
+    private BatteryInfoNstMapper batteryInfoNstMapper;
+    
+    @Resource
     private UserCodeMapper userCodeMapper;
     
     @Resource
@@ -79,6 +86,25 @@ public class WebServiceImpl implements WebService{
     
     @Resource
     private ResellerMapper resellerMapper;
+    
+    private static final int testResellerId = 24;
+    
+    private static final int disconnetHour = 3;
+    
+    private static final String NOT_RECEIVED = "未收到电池信息";
+    
+    private static final String DISCONNET = "离线";
+    
+    private static final String SINGLE_DROP = "单落";
+    
+    private static final String BROWNOUT = "电压过低";
+    
+    private static final String OVERTENSION = "电压过高";
+    
+    private static final String EXCESS_TEMPUTER = "温度过高";
+    
+    private static final String WRAN_FIRE = "着火风险";
+    
 
 	@Override
 	public User adminLogin(String account, String hassPwd)
@@ -146,9 +172,9 @@ public class WebServiceImpl implements WebService{
 	public List<BatteryLocInfo> fetchBtyLocInfo(String imei,int count ,int flag) throws CrudException {
 		
 		Battery battery = batteryMapper.selectByIMEI(imei);
-		TroubleBattery troubleBattery = troubleBatteryMapper.selectBtyByIMEI(imei);
+		List<TroubleBattery> troubleBatteryList = troubleBatteryMapper.selectBtyByIMEI(imei);
 		
-		if(battery==null && troubleBattery == null){
+		if(battery==null && troubleBatteryList == null){
 				throw new CrudException("电池不存在！");
 		}
 		
@@ -158,7 +184,13 @@ public class WebServiceImpl implements WebService{
 		if(battery != null){
 			btyCountInfo.setId(battery.getId());
 		}else{
-			btyCountInfo.setId(troubleBattery.getBatteryId());
+			if(troubleBatteryList.size()>0){
+				
+				btyCountInfo.setId(troubleBatteryList.get(troubleBatteryList.size()-1).getBatteryId());
+				
+			}else{
+				throw new CrudException("电池不存在！");
+			}
 		}
 		
 		btyCountInfo.setCount(count);
@@ -437,36 +469,41 @@ public class WebServiceImpl implements WebService{
 		}
 		
 		if(parms.length()==15 || parms.length()==20){
-			TroubleBattery troubleBattery = troubleBatteryMapper.selectBtyByIMEI(parms);
-			if(troubleBattery==null){
+			List<TroubleBattery> troubleBatteryList = troubleBatteryMapper.selectBtyByIMEI(parms);
+			if(troubleBatteryList==null){
 				throw new CrudException("解绑的电池中没有该电池！");
 			}
-			TroubleUserBattery troubleUserBattery = troubleUserBatteryMapper.selectByBtyId(troubleBattery.getBatteryId());
 			
-			if(troubleUserBattery == null){
-				throw new CrudException("解绑电池没有查到对应的用户信息!");
-			}
-			 User user = userMapper.selectByPrimaryKey(troubleUserBattery.getUserId());
-			 User reseller = userMapper.selectByPrimaryKey(troubleBattery.getResellerId());
-			 
-			 TroubleBtyInfo troubleBtyInfo = new TroubleBtyInfo();
-			 
-			    troubleBtyInfo.setBtyId(troubleBattery.getBatteryId());
-	    		troubleBtyInfo.setBtyImei(troubleBattery.getImei());
-	    	    troubleBtyInfo.setBtySimNo(troubleBattery.getSimNo());
-	    	    troubleBtyInfo.setBtySn(troubleBattery.getSn());
-	    	    troubleBtyInfo.setBtyQuantity(troubleBattery.getBtyQuantity());
-	    	    troubleBtyInfo.setUserName(user.getUserName());
-	    	    troubleBtyInfo.setUserphone(user.getMobilePhone());
-	    	    troubleBtyInfo.setResellerName(reseller.getUserName());
-	    	    troubleBtyInfo.setResellerPhone(reseller.getMobilePhone());
-	    	    String stringSaleDate = formatter.format(troubleBattery.getSaleDate());
-	    	    String stringRemoveDate = formatter.format(troubleBattery.getRemoveDate());
-	    	    troubleBtyInfo.setSaleDate(stringSaleDate);
-	    	    troubleBtyInfo.setRemoveDate(stringRemoveDate);
-	    	    troubleBtyInfo.setReason(troubleBattery.getReason());
-	    	    
-	    	    troubleBtyInfos.add(troubleBtyInfo);
+			for(TroubleBattery troubleBattery : troubleBatteryList){
+				
+				TroubleUserBattery troubleUserBattery = troubleUserBatteryMapper.selectByBtyId(troubleBattery.getBatteryId());
+				
+				if(troubleUserBattery != null){
+					
+					 User user = userMapper.selectByPrimaryKey(troubleUserBattery.getUserId());
+					 User reseller = userMapper.selectByPrimaryKey(troubleBattery.getResellerId());
+					 TroubleBtyInfo troubleBtyInfo = new TroubleBtyInfo();
+					 troubleBtyInfo.setBtyId(troubleBattery.getBatteryId());
+			    		troubleBtyInfo.setBtyImei(troubleBattery.getImei());
+			    	    troubleBtyInfo.setBtySimNo(troubleBattery.getSimNo());
+			    	    troubleBtyInfo.setBtySn(troubleBattery.getSn());
+			    	    troubleBtyInfo.setBtyQuantity(troubleBattery.getBtyQuantity());
+			    	    troubleBtyInfo.setUserName(user.getUserName());
+			    	    troubleBtyInfo.setUserphone(user.getMobilePhone());
+			    	    troubleBtyInfo.setResellerName(reseller.getUserName());
+			    	    troubleBtyInfo.setResellerPhone(reseller.getMobilePhone());
+			    	    String stringSaleDate = formatter.format(troubleBattery.getSaleDate());
+			    	    String stringRemoveDate = formatter.format(troubleBattery.getRemoveDate());
+			    	    troubleBtyInfo.setSaleDate(stringSaleDate);
+			    	    troubleBtyInfo.setRemoveDate(stringRemoveDate);
+			    	    troubleBtyInfo.setReason(troubleBattery.getReason());
+			    	    
+			    	    troubleBtyInfos.add(troubleBtyInfo);
+					
+				}
+				
+			}	 
+			    
 		}
 		
 		if(troubleBtyInfos == null || troubleBtyInfos.size() == 0){
@@ -584,6 +621,223 @@ public class WebServiceImpl implements WebService{
 			throw new CrudException("该功能暂未开放！");
 		}
 		
+	}
+	
+
+	@Override
+	public List<BtySaleInfoModel> fetchResellerSaleInfo(String resellerPhone)
+			throws CrudException {
+		// TODO Auto-generated method stub
+		
+        List<BtySaleInfoModel> btySaleinfos = userBatteryMapper.selectAllBtySaleInfo();
+        
+        List<BtySaleInfoModel> btyResellerSaleInfos = new ArrayList<BtySaleInfoModel>();
+        
+        for(BtySaleInfoModel btySaleinfo : btySaleinfos){
+        	
+        	if(btySaleinfo.getResellerPhone().equals(resellerPhone)){
+        		btyResellerSaleInfos.add(btySaleinfo);
+        	}
+        	
+        }
+		
+		return btyResellerSaleInfos;
+		
+	}
+
+	@Override
+	public List<BreakBtyInfo> fetchAllBreakBtyInfo() throws CrudException {
+		// TODO Auto-generated method stub
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		List<BreakBtyInfo> breakBtyInfos = new ArrayList<BreakBtyInfo>();
+		
+		List<Battery> batteryList = batteryMapper.selectAllBty();
+		
+		for(Battery battery : batteryList){
+			
+			if(battery.getResellerId() != testResellerId){
+				
+				UserBattery userBattery = userBatteryMapper.selectByBtyId(battery.getId());
+				
+				if(userBattery != null){
+					
+					User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+					User reseller = userMapper.selectByPrimaryKey(battery.getResellerId());
+					
+					if(user != null && reseller != null){
+						
+						BreakBtyInfo breakBtyInfo = new BreakBtyInfo();
+						
+						breakBtyInfo.setBtyId(battery.getId());
+						breakBtyInfo.setBtyImei(battery.getImei());
+						breakBtyInfo.setBtySimNo(battery.getSimNo());
+						breakBtyInfo.setBtySn(battery.getSn());
+						breakBtyInfo.setBtyQuantity(battery.getBtyQuantity());
+						breakBtyInfo.setUserName(user.getUserName());
+						breakBtyInfo.setUserphone(user.getMobilePhone());
+						breakBtyInfo.setResellerName(reseller.getUserName());
+						breakBtyInfo.setResellerPhone(reseller.getMobilePhone());
+						breakBtyInfo.setSaleDate(formatter.format(battery.getSaleDate()));
+							
+						BatteryInfoNst batteryInfoNst = batteryInfoNstMapper.selectByBtyId(battery.getId());
+						if(batteryInfoNst == null){
+							breakBtyInfo.setLongitude("--");
+							breakBtyInfo.setLatitude("--");
+							breakBtyInfo.setVoltage("--");
+						    breakBtyInfo.setTemperature("--");
+						    breakBtyInfo.setReceiveDate("--");
+						    breakBtyInfo.setMsg(NOT_RECEIVED);
+							
+						    breakBtyInfos.add(breakBtyInfo);
+						}else{
+							
+							breakBtyInfo.setLongitude(batteryInfoNst.getLongitude());
+							breakBtyInfo.setLatitude(batteryInfoNst.getLatitude());
+							breakBtyInfo.setVoltage(batteryInfoNst.getVoltage());
+						    breakBtyInfo.setTemperature(batteryInfoNst.getTemperature());
+						    breakBtyInfo.setReceiveDate(formatter.format(batteryInfoNst.getReceiveDate()));
+						    
+						    Date now = new Date();
+						    if(now.after(DateUtils.addHours(batteryInfoNst.getReceiveDate(), disconnetHour))){
+						    	
+						    	String msg =  DISCONNET;
+						    	
+						    	if(Float.parseFloat(batteryInfoNst.getVoltage())< 15 ){
+						    		msg = msg +","+SINGLE_DROP+","+WRAN_FIRE;
+						    	}
+						    	
+						    	
+						    	if(Float.parseFloat(batteryInfoNst.getTemperature()) > 65){
+						    		msg = msg +","+EXCESS_TEMPUTER;
+						    	}
+						    	
+						    	if(battery.getBtyQuantity() == 4){
+						    		
+						    		if(Float.parseFloat(batteryInfoNst.getVoltage())> 15  && Float.parseFloat(batteryInfoNst.getVoltage())< 42){
+						    			
+						    			msg = msg +","+BROWNOUT;
+						    			
+						    		}
+						    		
+						    		if(Float.parseFloat(batteryInfoNst.getVoltage()) > 62){
+						    			msg = msg +","+OVERTENSION;
+						    		}
+						    	}
+						    	
+						    	if(battery.getBtyQuantity() == 5){
+						    		
+                                    if(Float.parseFloat(batteryInfoNst.getVoltage())> 15  && Float.parseFloat(batteryInfoNst.getVoltage())< 52.5){
+						    			
+						    			msg = msg +","+BROWNOUT;
+						    			
+						    		}
+						    		
+						    		if(Float.parseFloat(batteryInfoNst.getVoltage()) > 75){
+						    			msg = msg +","+OVERTENSION;
+						    		}
+						    		
+						    	}
+						    	 breakBtyInfo.setMsg(msg);
+						    	 breakBtyInfos.add(breakBtyInfo);
+						    		
+						    }else{
+						    	
+						    	
+                                String msg =  "";
+						    	
+						    	if(Float.parseFloat(batteryInfoNst.getVoltage())< 15 ){
+						    		msg = msg +","+SINGLE_DROP;
+						    	}
+						    	
+						    	
+						    	if(Float.parseFloat(batteryInfoNst.getTemperature()) > 65){
+						    		msg = msg +","+EXCESS_TEMPUTER;
+						    	}
+						    	
+						    	if(battery.getBtyQuantity() == 4){
+						    		
+						    		if(Float.parseFloat(batteryInfoNst.getVoltage())> 15  && Float.parseFloat(batteryInfoNst.getVoltage())< 42){
+						    			
+						    			msg = msg +","+BROWNOUT;
+						    			
+						    		}
+						    		
+						    		if(Float.parseFloat(batteryInfoNst.getVoltage()) > 62){
+						    			msg = msg +","+OVERTENSION;
+						    		}
+						    	}
+						    	
+						    	if(battery.getBtyQuantity() == 5){
+						    		
+                                    if(Float.parseFloat(batteryInfoNst.getVoltage())> 15  && Float.parseFloat(batteryInfoNst.getVoltage())< 52.5){
+						    			
+						    			msg = msg +","+BROWNOUT;
+						    			
+						    		}
+						    		
+						    		if(Float.parseFloat(batteryInfoNst.getVoltage()) > 75){
+						    			msg = msg +","+OVERTENSION;
+						    		}
+						    		
+						    	}
+						    	
+						    	if(msg.length() > 0){
+						    		breakBtyInfo.setMsg(msg);
+						    		breakBtyInfos.add(breakBtyInfo);
+						    	}
+						    	
+						    }
+						    
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		return breakBtyInfos;
+	}
+
+	@Override
+	public List<BreakBtyInfo> fetchBreakBtyInfoByReseller(String resellerPhone)
+			throws CrudException {
+
+       User user = userMapper.selectByPhone(resellerPhone);
+       
+       if(user == null){
+    	   throw new CrudException("经销商不存在！");
+       }
+       
+       Reseller reseller = resellerMapper.selectByPrimaryKey(user.getUserId());
+       
+       if(reseller == null){
+    	   throw new CrudException("该用户不是经销商！");
+       }
+       
+       List<BreakBtyInfo> breakBtyInfos = new ArrayList<BreakBtyInfo>();
+       
+       
+       List<BreakBtyInfo> breakBtyInfoList = fetchAllBreakBtyInfo();
+       
+       for(BreakBtyInfo breakBtyInfo : breakBtyInfoList){
+    	   Battery battery = batteryMapper.selectByIMEI(breakBtyInfo.getBtyImei());
+    	   if(battery.getResellerId() == reseller.getUserId()){
+    		   breakBtyInfos.add(breakBtyInfo);
+    		   
+    		   
+    		   
+    		   
+    	   }
+    	   
+       }
+		
+		return breakBtyInfos;
 	}
 
 }

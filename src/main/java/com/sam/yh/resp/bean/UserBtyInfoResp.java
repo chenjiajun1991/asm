@@ -16,6 +16,8 @@ public class UserBtyInfoResp {
         this.selfBtyInfo = selfBtyInfo;
     }
 
+
+    
     public List<UserBtyInfo> getFriendsBtyInfo() {
         return friendsBtyInfo;
     }

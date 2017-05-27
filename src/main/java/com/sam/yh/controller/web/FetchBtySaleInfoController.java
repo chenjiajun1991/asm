@@ -1,6 +1,7 @@
 package com.sam.yh.controller.web;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,12 @@ import com.google.common.collect.Sets;
 import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.controller.BtySaleInfoController;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.dao.BatteryMapper;
+import com.sam.yh.dao.UserBatteryMapper;
+import com.sam.yh.dao.UserMapper;
+import com.sam.yh.model.Battery;
+import com.sam.yh.model.User;
+import com.sam.yh.model.UserBattery;
 import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.req.bean.web.FetchAllSaleInfoReq;
 import com.sam.yh.req.bean.web.FetchBtyByImeiReq;
@@ -40,6 +47,15 @@ public class FetchBtySaleInfoController {
 	
 	@Resource
 	private String adminPhones;
+	
+    @Resource
+    private UserMapper userMapper;
+    
+    @Resource
+    private BatteryMapper batteryMapper;
+    
+    @Resource
+    private UserBatteryMapper userBatteryMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(BtySaleInfoController.class);
 
@@ -51,7 +67,17 @@ public class FetchBtySaleInfoController {
         try {
         	validateArgs(req);
         	
-            List<BtySaleInfoModel> btySaleInfos = webService.fetchAllSaleInfo();
+        	List<BtySaleInfoModel> btySaleInfos = null;
+        	
+        	if(isAdminPhone(req.getAccount())){
+        		
+        		 btySaleInfos = webService.fetchAllSaleInfo();
+        		
+        	}else if(isResellerPhone(req.getAccount())){
+        		
+        		btySaleInfos = webService.fetchResellerSaleInfo(req.getAccount());
+        		
+        	}
  
          	FetchAllSaleInfoResp respData =new FetchAllSaleInfoResp();
             respData.setBtySaleInfos(btySaleInfos);
@@ -76,6 +102,8 @@ public class FetchBtySaleInfoController {
         logger.info("Request json String:" + jsonReq);
         FetchBtyByImeiReq req = JSON.parseObject(jsonReq, FetchBtyByImeiReq.class);
         try {
+        	
+        	validateImei(req.getImei(), req.getAccount());
     	
         	BtySaleInfoModel btySaleInfo=webService.fetBtyByImei(req.getImei());
           
@@ -101,6 +129,11 @@ public class FetchBtySaleInfoController {
         logger.info("Request json String:" + jsonReq);
         FetchBtyByPhoneReq req = JSON.parseObject(jsonReq, FetchBtyByPhoneReq.class);
         try {
+        	
+        	
+        	
+        	validatePhone(req.getMobilePhone(),req.getAccount());
+        	
     	
         	List<BtySaleInfoModel> btySaleInfos = webService.fetchBtyByPhone(req.getMobilePhone());
           
@@ -120,10 +153,60 @@ public class FetchBtySaleInfoController {
         }
     }
     
+     
+	private void validatePhone(String userPhone , String account) throws CrudException {
+           if(!isAdminPhone(account)){
+			
+			User user = userMapper.selectByPhone(userPhone);
+			if(user == null){
+				throw new CrudException("用户不存在！");
+			}
+			
+			User reseller = userMapper.selectByPhone(account);
+			
+			List<UserBattery> userBatterys = userBatteryMapper.selectByUserId(user.getUserId());
+			
+			List<Integer> btyResellerIds = new ArrayList<Integer>();
+			
+			for(UserBattery userBattery : userBatterys){
+				
+				Battery battery = batteryMapper.selectByPrimaryKey(userBattery.getBatteryId());
+				
+				btyResellerIds.add(battery.getResellerId());
+			}
+			
+			if(!btyResellerIds.contains(reseller.getUserId())){
+				throw new CrudException("该用户尚未和你购买过电池！");
+			}
+					
+		}
+    }
+	
+	
+	
+	private void validateImei(String imei , String account) throws CrudException {
+        if(!isAdminPhone(account)){
+			
+			Battery battery = batteryMapper.selectByIMEI(imei);
+			if(battery == null){
+				throw new CrudException("IMEI号不存在！");
+			}
+			
+			User reseller = userMapper.selectByPhone(account);
+			
+			
+			if(!battery.getResellerId().equals(reseller.getUserId())){
+				throw new CrudException("该电池不是由你出售的，你暂时无权查看！");
+			}
+					
+		}
+ }
     
     
-    private void validateArgs(FetchAllSaleInfoReq fetchAllSaleInfoReq) throws IllegalParamsException {
-        if (!isAdminPhone(fetchAllSaleInfoReq.getAccount())) {
+    
+
+	private void validateArgs(FetchAllSaleInfoReq fetchAllSaleInfoReq) throws IllegalParamsException {
+        if (!isAdminPhone(fetchAllSaleInfoReq.getAccount()) && !isResellerPhone(fetchAllSaleInfoReq.getAccount())) {
             throw new IllegalParamsException("你无权查看销售信息！");
         } 
     }
@@ -136,5 +219,20 @@ public class FetchBtySaleInfoController {
         Set<String> admins = Sets.newHashSet(phones);
         return admins.contains(userPhone);
     }
+    
+    private boolean isResellerPhone(String userPhone) throws IllegalParamsException{
+    	
+	       User user = userMapper.selectByPhone(userPhone);
+	       
+	       if(user == null){
+	    	   throw new IllegalParamsException("用户不存在！");
+	       }
+	       
+	       if(user.getUserType().equals("1")){
+	    	   return true;
+	       }
+	       
+	       return false;
+	    }
    
 }

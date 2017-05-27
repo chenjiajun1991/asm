@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.parser.impl.InformixParser;
 import com.sam.yh.common.DistanceUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.TempUtils;
@@ -26,6 +27,7 @@ import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
+import com.sam.yh.foreign.connection.SendGpsToC1Server;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.BatteryInfoNst;
@@ -68,6 +70,9 @@ public class BatteryServiceImpl implements BatteryService {
     @Resource
     private SendGpsToBaiduServer sendGpsToBaiduServer;
     
+    @Resource
+    private SendGpsToC1Server sendGpsToC1Server;
+    
  
  
     @Override
@@ -96,6 +101,8 @@ public class BatteryServiceImpl implements BatteryService {
 //             battery.setBtyQuantity(4);
 //
 //            addBattery(battery);
+        	
+        	 logger.info("电池还没有绑定:" + batteryInfoReqVo);
         	 	
             return new AsyncResult<Battery>(null);
         }
@@ -121,15 +128,31 @@ public class BatteryServiceImpl implements BatteryService {
         Date BtySaleDate = battery.getSaleDate();
         Date now  = new Date();
         
-        //调整4节组的临界电压值
-        if (BtyQuantity == 4 && Double.parseDouble(voltage) > 62d && now.before(DateUtils.addHours(BtySaleDate, 2))) {
-            Battery temBattery = new Battery();
-            temBattery.setId(battery.getId());
-            BtyQuantity = 5;
-            temBattery.setBtyQuantity(BtyQuantity);
-            batteryMapper.updateByPrimaryKeySelective(temBattery);
+        //动态调整电池组数
+        if(now.before(DateUtils.addHours(BtySaleDate, 2))){
+        	
+        	 if(Double.parseDouble(voltage) > 40d){
+            	 if(BtyQuantity == 5 && Double.parseDouble(voltage) < 52d ){
+                 	
+                 	BtyQuantity = 4;
+                     battery.setBtyQuantity(BtyQuantity);
+                     batteryMapper.updateByPrimaryKeySelective(battery);
+                 }
+            	
+            }
+        	
+        	
+        	 if (BtyQuantity == 4 && Double.parseDouble(voltage) > 62d ) {
+                 
+                 BtyQuantity = 5;
+                 battery.setBtyQuantity(BtyQuantity);
+                 batteryMapper.updateByPrimaryKeySelective(battery);
+             }
+        	 	
         }
         
+        
+      
         
         //当电压过高或过低时发短信提示用户
         if(BtyQuantity==4){
@@ -158,16 +181,38 @@ public class BatteryServiceImpl implements BatteryService {
         	sendViolentDestroyService(servicePhone, battery);
         }
         
+
         
-   
+        
+        if(batteryInfoReqVo.getGsmsignal()!= null){
+          info.setGsmSignal(batteryInfoReqVo.getGsmsignal());
+        }else{
+        	info.setGsmSignal("--");
+        }
+        
+        if(batteryInfoReqVo.getSpeed() != null){
+        	info.setSpeed(batteryInfoReqVo.getSpeed());
+        }else{
+        	info.setSpeed("--");
+        }
+        
+        if(batteryInfoReqVo.getVerno() != null){
+        	info.setVerno(batteryInfoReqVo.getVerno());;
+        }else{
+        	info.setVerno("--");
+        }
+        
         // TODO
         // info.setSampleDate(batteryInfoReqVo.getSampleDate());
         info.setSampleDate(new Date());
         BatteryStatus status = getBatteryStatus(batteryInfoReqVo);
         info.setStatus(status.getStatus());
         info.setReceiveDate(new Date());
+        
 
-        batteryInfoMapper.insert(info);
+
+//        batteryInfoMapper.insert(info);
+        batteryInfoMapper.insertSelective(info);
 
         updateBatteryInfoNst(info);
         
@@ -218,6 +263,8 @@ public class BatteryServiceImpl implements BatteryService {
                 sendMovingMsg(battery);
             }
         }
+        
+        sendGpsToC1Server.sendBtyInfo(batteryInfoReqVo.getImei(), batteryInfoReqVo.getLongitude(), batteryInfoReqVo.getLatitude(), convertAdcToTemp(batteryInfoReqVo.getTemperature()), voltage);
 
         return new AsyncResult<Battery>(battery);
     }
@@ -250,6 +297,9 @@ public class BatteryServiceImpl implements BatteryService {
         }
         batteryInfoNst.setTemperature(btyInfo.getTemperature());
         batteryInfoNst.setVoltage(btyInfo.getVoltage());
+        batteryInfoNst.setGsmSignal(btyInfo.getGsmSignal());
+        batteryInfoNst.setSpeed(btyInfo.getSpeed());
+        batteryInfoNst.setVerno(btyInfo.getVerno());
         batteryInfoNst.setStatus(btyInfo.getStatus());
         batteryInfoNst.setReceiveDate(new Date());
         batteryInfoNst.setSampleDate(new Date());
@@ -318,7 +368,12 @@ public class BatteryServiceImpl implements BatteryService {
     private void sendViolentDestroyService(String servciePhone,Battery battery) throws CrudException{
     	UserBattery userBattery = userBatteryService.fetchUserByBtyId(battery.getId());
         User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
-        userCodeService.sendViolentDestroyService(servciePhone, battery.getImei(), user.getUserName(), user.getMobilePhone());
+        
+        if(battery.getResellerId() != 24 && battery.getResellerId() != 1251 && battery.getResellerId() != 36){
+        	
+        	  userCodeService.sendViolentDestroyService(servciePhone, battery.getImei(), user.getUserName(), user.getMobilePhone());
+        }
+        
     }
     
     

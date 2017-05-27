@@ -10,7 +10,7 @@ public interface TroubleBatteryMapper {
 	
 	TroubleBattery selectBtyById(int batteryId);
 	
-	TroubleBattery selectBtyByIMEI(String imei);
+	List<TroubleBattery> selectBtyByIMEI(String imei);
 	
 	 int deleteBtyById(int batteryId);
 	 

@@ -1,9 +1,11 @@
 package com.sam.yh.controller.web;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Sets;
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.model.Battery;
+import com.sam.yh.model.User;
 import com.sam.yh.model.web.BatteryLocInfo;
 import com.sam.yh.req.bean.web.FetchLocInfoReq;
 import com.sam.yh.resp.bean.ResponseUtils;
@@ -52,5 +57,5 @@ public class FetchBtyLocInfoController {
 	           
 	        }
 	    }
-
+	 
 }

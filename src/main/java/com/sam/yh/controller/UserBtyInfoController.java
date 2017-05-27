@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.util.AttributeKey;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -149,6 +150,11 @@ public class UserBtyInfoController {
 		userBtyInfo.setLatitude(pubBatteryInfo.getLatitude());
 		userBtyInfo.setTemperature(pubBatteryInfo.getTemperature());
 		userBtyInfo.setVoltage(pubBatteryInfo.getVoltage());
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(pubBatteryInfo.getReceiveDate());
+		userBtyInfo.setReceiveDate(dateString);
+		
 		Battery battery = batteryService.fetchBtyById(pubBatteryInfo
 				.getBatteryId());
 		userBtyInfo.setPower(PowerCalUtil.calPower(pubBatteryInfo.getVoltage(),

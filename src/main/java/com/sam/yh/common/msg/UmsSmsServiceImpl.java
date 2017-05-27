@@ -65,7 +65,9 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     public boolean sendBuyInfo(String mobilePhone) {
         // TODO
     	//        String content = "您购买的亚亨蓄电池已经成功录入系统，请您下载APP并跟踪，请点击下载" + apkShortUrl + "，回复TD拒收";
-        String content = "您购买的亚亨蓄电池已经成功录入系统，初始密码为88888888，请您下载APP并跟踪，请点击下载" + apkShortUrl + "，回复TD拒收";
+//        String content = "您购买的亚亨蓄电池已经成功录入系统，初始密码为88888888，请您下载APP并跟踪，请点击下载" + apkShortUrl + "，回复TD拒收";
+        
+        String content = "恭喜您购买的云电池已注册成功,账号:"+mobilePhone+"初始密码为:88888888,安卓用户请点击链接下载"+apkShortUrl+"苹果用户请在app store里输入 '亚亨云电池'搜索下载";
         return sendSms(mobilePhone, content);
     }
 
@@ -137,6 +139,14 @@ public class UmsSmsServiceImpl implements DahantSmsService {
 	@Override
 	public boolean sendMovingRemindMsg(String mobilePhone, String btyImei) {
 		String content = "请及时查看车辆是否移动,并确认车辆停放后是否重新布防,若不是,重新关闭再开启后生效,若不使用,请及时关闭布防.";
+		return sendSms(mobilePhone, content);
+	}
+
+	@Override
+	public boolean sendWarnFireMsg(String mobilePhone,String btyImei,String userName,String userPhone) {
+		
+        String content = "用户"+userName+"的电池IMEI"+btyImei+",电池有着火风险,手机号"+userPhone+",请及时与用户联系。";
+		
 		return sendSms(mobilePhone, content);
 	}
 

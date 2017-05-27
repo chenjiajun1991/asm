@@ -12,6 +12,10 @@ public class BatteryInfoReq implements Serializable {
     private String latitude;
     private String temperature;
     private String voltage;
+    
+    private String verno;
+    private String speed;
+    private String gsmsignal;
 
     public String getImei() {
         return imei;
@@ -68,11 +72,39 @@ public class BatteryInfoReq implements Serializable {
     public void setVoltage(String voltage) {
         this.voltage = voltage;
     }
+    
+    
 
-    @Override
-    public String toString() {
-        return "BatteryInfoReq [imei=" + imei + ", imsi=" + imsi + ", phonenumber=" + phonenumber + ", longitude=" + longitude + ", latitude=" + latitude
-                + ", temperature=" + temperature + ", voltage=" + voltage + "]";
-    }
+    public String getVerno() {
+		return verno;
+	}
 
+	public void setVerno(String verno) {
+		this.verno = verno;
+	}
+
+	public String getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(String speed) {
+		this.speed = speed;
+	}
+
+	public String getGsmsignal() {
+		return gsmsignal;
+	}
+
+	public void setGsmsignal(String gsmsignal) {
+		this.gsmsignal = gsmsignal;
+	}
+
+	@Override
+	public String toString() {
+		return "BatteryInfoReq [imei=" + imei + ", imsi=" + imsi
+				+ ", phonenumber=" + phonenumber + ", longitude=" + longitude
+				+ ", latitude=" + latitude + ", temperature=" + temperature
+				+ ", voltage=" + voltage + ", verno=" + verno + ", speed="
+				+ speed + ", gsmsignal=" + gsmsignal + "]";
+	}
 }

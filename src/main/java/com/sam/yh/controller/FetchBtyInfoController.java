@@ -29,6 +29,7 @@ import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfoNst;
+import com.sam.yh.req.bean.BtyImeiWriteReq;
 import com.sam.yh.req.bean.BtyInfoReq;
 import com.sam.yh.req.bean.BtyResetReq;
 import com.sam.yh.resp.bean.BtyInfoResp;
@@ -205,7 +206,35 @@ public class FetchBtyInfoController {
 			return ResponseUtils.getSysErrorResp();
 		}
 	}
+	
+	
+	//远程写IMEI号功能
+	@RequestMapping(value = "/writeImei", method = RequestMethod.POST)
+	public SamResponse fetchBtyInfoWriteImei(HttpServletRequest httpServletRequest,
+			@RequestParam("jsonReq") String jsonReq) {
+		logger.info("Request json String:" + jsonReq);
+		
+		BtyImeiWriteReq req = JSON.parseObject(jsonReq, BtyImeiWriteReq.class);
 
+		try {
+
+			boolean isSuccess = sendWriteReq(req.getPreImei(),req.getAltImei());
+
+			TimeUnit.SECONDS.sleep(SamConstants.MAX_WAIT_SECONDS);
+
+			BtyResetResp respData = new BtyResetResp();
+			respData.setSuccess(isSuccess);
+			Date date = new Date();
+			respData.setResetDate(date);
+
+			logger.info("Response json String:"
+					+ JSON.toJSONString(ResponseUtils.getNormalResp(respData)));
+			return ResponseUtils.getNormalResp(respData);
+		} catch (Exception e) {
+			logger.error("reset battery exception, " + req.getPreImei(), e);
+			return ResponseUtils.getSysErrorResp();
+		}
+	}
 	private boolean sendResetReq(String btyImei) {
 		Battery battery = batteryService.fetchBtyByIMEI(btyImei);
 		if (battery == null) {
@@ -223,6 +252,26 @@ public class FetchBtyInfoController {
 
 		if (!hasConn) {
 			logger.error("未获取到长连接, " + btyImei);
+		}
+		return hasConn;
+	}
+	
+	private boolean sendWriteReq(String preImei,String altImei) {
+		
+		boolean hasConn = false;
+		
+		ConcurrentHashMap<String, Channel> channelMap = SamBtyDataHandler.channelMap;
+		Channel channel = channelMap.get(preImei);
+		if (channel != null) {
+			channel.writeAndFlush("wimei" + altImei + "\n");
+			logger.info("write message: " + "wimei" + altImei);
+			
+			hasConn = true;
+			logger.error("imei写入成功, " + altImei);
+		}
+
+		if (!hasConn) {
+			logger.error("未获取到长连接,无法写入, " + preImei);
 		}
 		return hasConn;
 	}

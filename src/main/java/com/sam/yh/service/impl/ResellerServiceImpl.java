@@ -8,6 +8,8 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -30,10 +32,8 @@ import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.enums.ResellerStatus;
 import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
-import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.model.Reseller;
-import com.sam.yh.model.ResellerBtyInfo;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.req.bean.LogResellerReq;
@@ -44,6 +44,7 @@ import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.ResellerService;
 import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
+import com.sam.yh.service.WebService;
 import com.sam.yh.unicom.sim.UnicomM2mService;
 
 @Service
@@ -81,28 +82,39 @@ public class ResellerServiceImpl implements ResellerService {
     
     @Resource
     BatteryInfoNstMapper batteryInfoNstMapper;
-
+    
+    @Resource
+    WebService webService;
+    
+    public static final Logger logger = LoggerFactory.getLogger(ResellerServiceImpl.class);
+    
     @Override
     public void submitBtySpec(SubmitBtySpecReq submitBtySpecReq) throws CrudException {
         if (batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei()) != null) {
         	
         	Battery battery = batteryService.fetchBtyByIMEI(submitBtySpecReq.getBtyImei());
         	
-        	UserBattery userBattery = userBatteryMapper.selectByBtyId(battery.getId());
-        	
-        	if(userBattery == null){
-        		 throw new SubmitBtySpecException("电池IMEI号被绑定，请联系客服");
-        	}else{
-        		User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
-        		if(user.getMobilePhone().equals(submitBtySpecReq.getUserPhone())){
-        			throw new SubmitBtySpecException("你已添加成功，请勿重复添加");
-        		}else{
-        			
-        			 throw new SubmitBtySpecException("电池IMEI号已被使用，请联系客服");
-        			 
-        		}
+        	if(battery != null && battery.getResellerId() == 24){
+        		webService.removeBattery(battery.getImei(), "工厂测试");
         		
-        	}  
+        	}else{
+        		UserBattery userBattery = userBatteryMapper.selectByBtyId(battery.getId());
+            	
+            	if(userBattery == null){
+            		 throw new SubmitBtySpecException("电池IMEI号被绑定，请联系客服");
+            	}else{
+            		User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+            		if(user.getMobilePhone().equals(submitBtySpecReq.getUserPhone())){
+            			throw new SubmitBtySpecException("你已添加成功，请勿重复添加");
+            		}else{
+            			
+            			 throw new SubmitBtySpecException("电池IMEI号已被使用，请联系客服");
+            			 
+            		}
+            		
+            	}  
+        	}
+        	
         }
           
         if (batteryService.fetchBtyBySimNo(submitBtySpecReq.getBtySimNo()) != null) {
@@ -130,7 +142,7 @@ public class ResellerServiceImpl implements ResellerService {
         User user = userService.fetchUserByPhone(submitBtySpecReq.getUserPhone());
         if (user == null) {
             user = addLockedUserBySys(submitBtySpecReq.getUserName(), submitBtySpecReq.getUserPhone());
-            
+            logger.info("Test add:" + "000000");
             //当用户未注册时，发送注册验证码之后会导致后面的发送APP下载地址无法发送，原因是USM那边会提示发送速度过快，所以暂时禁用
 //            userCodeService.sendSignupAuthCode(submitBtySpecReq.getUserPhone());
         }
@@ -139,6 +151,7 @@ public class ResellerServiceImpl implements ResellerService {
         if(user!= null){
         	user.setUserName(submitBtySpecReq.getUserName());
         	userMapper.updateByPrimaryKey(user);
+        	logger.info("Test add:" + "111111111");
         }
         
 
@@ -152,6 +165,8 @@ public class ResellerServiceImpl implements ResellerService {
         userBattery.setBatteryId(battery.getId());
         userBattery.setUserId(user.getUserId());
         userBattery.setBuyDate(new Date());
+        
+        logger.info("Test add:" + userBattery.toString());
 
         userBatteryMapper.insert(userBattery);
 

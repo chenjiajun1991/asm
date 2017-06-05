@@ -174,6 +174,7 @@ public class UserBtyInfoController {
 		if (channel != null) {
 			channel.writeAndFlush("tellme" + battery.getImei() + "\n");
 			hasConn = true;
+			logger.info("tellme, " + btyimei);
 		}
 
 		if (!hasConn) {

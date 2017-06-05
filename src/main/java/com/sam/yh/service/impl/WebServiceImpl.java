@@ -825,14 +825,13 @@ public class WebServiceImpl implements WebService{
        
        List<BreakBtyInfo> breakBtyInfoList = fetchAllBreakBtyInfo();
        
+       
        for(BreakBtyInfo breakBtyInfo : breakBtyInfoList){
     	   Battery battery = batteryMapper.selectByIMEI(breakBtyInfo.getBtyImei());
-    	   if(battery.getResellerId() == reseller.getUserId()){
-    		   breakBtyInfos.add(breakBtyInfo);
-    		   
-    		   
-    		   
-    		   
+    	   
+    	   
+    	   if(battery.getResellerId() .equals(user.getUserId())){
+    		   breakBtyInfos.add(breakBtyInfo);   
     	   }
     	   
        }

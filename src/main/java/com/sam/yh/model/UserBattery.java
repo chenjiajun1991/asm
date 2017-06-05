@@ -31,4 +31,13 @@ public class UserBattery extends UserBatteryKey {
     public void setBuyDate(Date buyDate) {
         this.buyDate = buyDate;
     }
+
+	@Override
+	public String toString() {
+		return "UserBattery [btyPubSn=" + btyPubSn + ", bytImei=" + bytImei
+				+ ", buyDate=" + buyDate + "]";
+	}
+    
+    
+
 }

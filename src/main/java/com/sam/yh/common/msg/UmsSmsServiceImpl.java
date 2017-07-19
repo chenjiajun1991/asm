@@ -150,4 +150,13 @@ public class UmsSmsServiceImpl implements DahantSmsService {
 		return sendSms(mobilePhone, content);
 	}
 
+	@Override
+	public boolean sendRemindOffLine(String mobilePhone) {
+		// TODO Auto-generated method stub
+		
+		 String content = "您的云电池经后台检测,gps定位数据存在异常,到店免费检测,如果电动车一直停放在地下室或信号不好区域可忽略此短信.";
+		
+		 return sendSms(mobilePhone, content);
+	}
+
 }

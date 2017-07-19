@@ -43,4 +43,7 @@ public interface UserCodeService {
     
     @Transactional
     public boolean sendWarnFire(String mobilePhone,String btyImei,String userName,String userPhone) throws CrudException;
+    
+    @Transactional
+    public boolean sendRemindOffLine(String mobilePhone , String btyImei) throws CrudException;
 }

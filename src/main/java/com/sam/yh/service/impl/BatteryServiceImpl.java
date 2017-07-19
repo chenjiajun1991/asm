@@ -25,12 +25,14 @@ import com.sam.yh.crud.exception.FetchBtyInfoException;
 import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
+import com.sam.yh.dao.UnbindBatteryMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.enums.BatteryStatus;
 import com.sam.yh.foreign.connection.SendGpsToC1Server;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.BatteryInfoNst;
+import com.sam.yh.model.UnbindBattery;
 import com.sam.yh.model.User;
 import com.sam.yh.model.UserBattery;
 import com.sam.yh.req.bean.BatteryInfoReq;
@@ -57,6 +59,9 @@ public class BatteryServiceImpl implements BatteryService {
 
     @Resource
     private UserMapper userMapper;
+    
+    @Resource
+    private UnbindBatteryMapper unbindBatteryMapper;
 
     @Resource
     private UserCodeService userCodeService;
@@ -102,19 +107,43 @@ public class BatteryServiceImpl implements BatteryService {
 //
 //            addBattery(battery);
         	
+        	checkUnBind(batteryInfoReqVo);
+        	
+        	uploadUnBindBtyInfo(batteryInfoReqVo);
+        	
+        	
         	 logger.info("电池还没有绑定:" + batteryInfoReqVo);
         	 	
             return new AsyncResult<Battery>(null);
         }
-        if (battery.getImsi() == null || battery.getGsmSimNo() == null) {
+        
+       
+        
+       
+//        if (battery.getImsi() == null || battery.getGsmSimNo() == null) {
+//            if (batteryInfoReqVo.getImsi() != null) {
+//                battery.setImsi(batteryInfoReqVo.getImsi());
+//            }
+//            if (batteryInfoReqVo.getPhonenumber() != null) {
+//                battery.setGsmSimNo(batteryInfoReqVo.getPhonenumber());
+//            }
+//            batteryMapper.updateByPrimaryKeySelective(battery);
+//        }
+        
+        //接收到的imsi不为空就写入
+        
             if (batteryInfoReqVo.getImsi() != null) {
-                battery.setImsi(batteryInfoReqVo.getImsi());
+            	//去掉第一位9
+                battery.setImsi(batteryInfoReqVo.getImsi().substring(1));
             }
             if (batteryInfoReqVo.getPhonenumber() != null) {
                 battery.setGsmSimNo(batteryInfoReqVo.getPhonenumber());
             }
             batteryMapper.updateByPrimaryKeySelective(battery);
-        }
+        
+        
+        
+        
         BatteryInfo info = new BatteryInfo();
         info.setBatteryId(battery.getId());
         info.setLongitude(batteryInfoReqVo.getLongitude());
@@ -471,6 +500,62 @@ public class BatteryServiceImpl implements BatteryService {
 		}
 		
 		return rssi;
+	}
+	
+	
+	public void checkUnBind(BatteryInfoReq batteryInfoReqVo){
+       UnbindBattery unbindBattery = unbindBatteryMapper.selectByIMEI(batteryInfoReqVo.getImei());
+		
+		if(unbindBattery == null){
+			unbindBattery = new UnbindBattery();
+			unbindBattery.setImei(batteryInfoReqVo.getImei());
+			unbindBatteryMapper.insertSelective(unbindBattery);
+		}
+	}
+	
+	
+	
+	public void uploadUnBindBtyInfo(BatteryInfoReq batteryInfoReqVo){
+		
+		UnbindBattery unbindBattery = unbindBatteryMapper.selectByIMEI(batteryInfoReqVo.getImei());
+		
+		if(unbindBattery != null){
+			BatteryInfo info = new BatteryInfo();
+			info.setBatteryId(unbindBattery.getId());
+			info.setLongitude(batteryInfoReqVo.getLongitude());
+			info.setLatitude(batteryInfoReqVo.getLatitude());
+			info.setTemperature(convertAdcToTemp(batteryInfoReqVo.getTemperature()));
+			String voltage = convertAdcToVo(batteryInfoReqVo.getVoltage());
+	        info.setVoltage(voltage);
+	        
+	        if(batteryInfoReqVo.getGsmsignal()!= null){
+	            info.setGsmSignal(batteryInfoReqVo.getGsmsignal());
+	          }else{
+	          	info.setGsmSignal("--");
+	          }
+	          
+	          if(batteryInfoReqVo.getSpeed() != null){
+	          	info.setSpeed(batteryInfoReqVo.getSpeed());
+	          }else{
+	          	info.setSpeed("--");
+	          }
+	          
+	          if(batteryInfoReqVo.getVerno() != null){
+	          	info.setVerno(batteryInfoReqVo.getVerno());;
+	          }else{
+	          	info.setVerno("--");
+	          }
+	          
+	          info.setSampleDate(new Date());
+	          BatteryStatus status = getBatteryStatus(batteryInfoReqVo);
+	          info.setStatus(status.getStatus());
+	          info.setReceiveDate(new Date());
+	         
+	          batteryInfoMapper.insertSelective(info);
+	          updateBatteryInfoNst(info);
+		}
+		
+
 	}
 
 }

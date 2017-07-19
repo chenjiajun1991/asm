@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.UnbindBatteryMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.UnbindBattery" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="imei" property="imei" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, imei
+  </sql>
+  
+    <select id="selectAllUnbindBty" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from unbind_battery
+   </select>
+  
+ 
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+     from unbind_battery
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="selectByIMEI" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from unbind_battery
+    where imei = #{imei,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from unbind_battery
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  
+  <insert id="insertSelective" parameterType="com.sam.yh.model.UnbindBattery" useGeneratedKeys="true" keyProperty="id">
+    insert into unbind_battery
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      
+      <if test="imei != null" >
+        imei,
+      </if>
+    
+    </trim>
+    
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+     
+      <if test="imei != null" >
+        #{imei,jdbcType=VARCHAR},
+      </if>
+      
+    </trim>
+  </insert>
+  
+</mapper>

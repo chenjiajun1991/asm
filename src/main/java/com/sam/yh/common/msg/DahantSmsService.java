@@ -29,5 +29,7 @@ public interface DahantSmsService {
     public boolean sendMovingRemindMsg(String mobilePhone, String btyImei);
     
     public boolean sendWarnFireMsg(String mobilePhone,String btyImei,String userName,String userPhone);
+    
+    public boolean sendRemindOffLine(String mobilePhone);
 
 }

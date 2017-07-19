@@ -41,6 +41,7 @@ import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.model.web.CodeInfoModel;
 import com.sam.yh.model.web.TroubleBtyInfo;
 import com.sam.yh.service.BatteryService;
+import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
 import com.sam.yh.service.WebService;
 
@@ -53,6 +54,9 @@ public class WebServiceImpl implements WebService{
 	
 	@Resource
 	BatteryService batteryService;
+	
+	@Resource
+	UserCodeService userCodeService;
 	
     @Resource
     private String commonPwd;
@@ -91,11 +95,17 @@ public class WebServiceImpl implements WebService{
     
     private static final int disconnetHour = 3;
     
+    private static final int disconnetDay = 5;
+    
+    private static final int disconnetRemindDay = 15;
+    
     private static final String NOT_RECEIVED = "未收到电池信息";
     
     private static final String DISCONNET = "离线";
     
-    private static final String SINGLE_DROP = "单落";
+    private static final String SINGLE_DROP1 = "单落(重接小黑线可恢复)";
+    
+    private static final String SINGLE_DROP2 = "单落(未配置外接保险丝)";
     
     private static final String BROWNOUT = "电压过低";
     
@@ -103,7 +113,7 @@ public class WebServiceImpl implements WebService{
     
     private static final String EXCESS_TEMPUTER = "温度过高";
     
-    private static final String WRAN_FIRE = "着火风险";
+//    private static final String WRAN_FIRE = "着火风险";
     
 
 	@Override
@@ -558,32 +568,30 @@ public class WebServiceImpl implements WebService{
 			throw new CrudException("该电池还没有绑定，无需更改,重新绑定即可！");
 		}
 		
-		User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+		User user = userMapper.selectByPhone(userPhone);
+		
 		if(user == null){
-			User user1 =new User();
-			user1.setUserId(userBattery.getUserId());
-			user1.setMobilePhone(userPhone);
-			user1.setUserName(userName);
-			user1.setUserType("0");
-			user1.setSalt("z2m85Jmhwh");
-			user1.setPassword(PwdUtils.genMd5Pwd(userPhone, "z2m85Jmhwh", "88888888"));
-		    userMapper.insert(user1);
+			
+			user = new User();
+			user.setUserName(userName);
+			user.setMobilePhone(userPhone);
+			user.setCreateDate(new Date());
+			user.setDeviceInfo("AAAAA");
+			user.setUserType("0");
+			user.setSalt("z2m85Jmhwh");
+			user.setPassword(PwdUtils.genMd5Pwd(userPhone, "z2m85Jmhwh", "88888888"));
+			
+			userMapper.insert(user);
+			
 		}
 		
-		if(user!=null){
-			User user2 = userMapper.selectByPhone(userPhone);
-			if(user2 == null){
-				user.setMobilePhone(userPhone);
-				user.setUserName(userName);
-				userMapper.updateByPrimaryKey(user);	
-			}else{
-				user2.setUserName(userName);
-				userMapper.updateByPrimaryKey(user2);
-				userBattery.setUserId(user2.getUserId());
-				userBatteryMapper.updateByBtyId(userBattery);
-
-			}
-		}
+		User userTemp = userMapper.selectByPhone(userPhone);
+		
+		userBattery.setUserId(userTemp.getUserId());
+		userTemp.setUserName(userName);
+		
+		userBatteryMapper.updateByBtyId(userBattery);
+		userMapper.updateByPrimaryKey(userTemp);
 		
 	}
 
@@ -700,12 +708,20 @@ public class WebServiceImpl implements WebService{
 						    breakBtyInfo.setReceiveDate(formatter.format(batteryInfoNst.getReceiveDate()));
 						    
 						    Date now = new Date();
-						    if(now.after(DateUtils.addHours(batteryInfoNst.getReceiveDate(), disconnetHour))){
+						    if(now.after(DateUtils.addDays(batteryInfoNst.getReceiveDate(), disconnetDay))){
 						    	
 						    	String msg =  DISCONNET;
 						    	
 						    	if(Float.parseFloat(batteryInfoNst.getVoltage())< 15 ){
-						    		msg = msg +","+SINGLE_DROP+","+WRAN_FIRE;
+//						    		msg = msg +","+SINGLE_DROP+","+WRAN_FIRE;
+						    		
+						    		if(battery.getImei().startsWith("7")){
+						    			msg = msg +","+SINGLE_DROP1;
+						    		}else{
+						    			msg = msg +","+SINGLE_DROP2;
+						    		}
+						    		
+						    		
 						    	}
 						    	
 						    	
@@ -748,9 +764,15 @@ public class WebServiceImpl implements WebService{
                                 String msg =  "";
 						    	
 						    	if(Float.parseFloat(batteryInfoNst.getVoltage())< 15 ){
-						    		msg = msg +","+SINGLE_DROP;
+//						    		msg = msg +","+SINGLE_DROP;
+						    		
+						    		if(battery.getImei().startsWith("7")){
+						    			msg = msg +","+SINGLE_DROP1;
+						    		}else{
+						    			msg = msg +","+SINGLE_DROP2;
+						    		}
+						    		
 						    	}
-						    	
 						    	
 						    	if(Float.parseFloat(batteryInfoNst.getTemperature()) > 65){
 						    		msg = msg +","+EXCESS_TEMPUTER;
@@ -837,6 +859,57 @@ public class WebServiceImpl implements WebService{
        }
 		
 		return breakBtyInfos;
+	}
+
+	@Override
+	public void remindOffLineBty() throws CrudException {
+		// TODO Auto-generated method stub
+		List<Battery> btyList = batteryMapper.selectAllBty();
+		
+		List<Battery> disConnectBtyList = new ArrayList<Battery>();
+		
+		for(Battery bty : btyList){
+			
+			BatteryInfoNst batteryInfoNst = batteryInfoNstMapper.selectByBtyId(bty.getId());
+			
+			if(batteryInfoNst != null){
+				Date date = batteryInfoNst.getReceiveDate();
+				
+				Date now = new Date();
+				
+				if(date != null){
+					 if(now.after(DateUtils.addDays(date, disconnetRemindDay))){
+						 
+						 disConnectBtyList.add(bty);
+						 
+					 }
+				}	
+			}	
+		}
+		
+		if(disConnectBtyList != null){
+			for(Battery bty : disConnectBtyList){
+				logger.info(" disConnectBty:" + bty.getImei());
+				
+				UserBattery userBattery = userBatteryMapper.selectByBtyId(bty.getId());
+				
+				if(userBattery != null){
+					User user = userMapper.selectByPrimaryKey(userBattery.getUserId());
+					
+					if(user != null){
+						
+						userCodeService.sendRemindOffLine(user.getMobilePhone(), bty.getImei());
+						
+					}
+				}
+				
+				
+				
+			}
+			
+			logger.info(" disConnectBty:" + disConnectBtyList.size());
+		}
+			
 	}
 
 }

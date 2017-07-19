@@ -92,7 +92,7 @@ public class TempUtils {
     public static boolean isWarning(String original) {
         int ori = Integer.valueOf(original);
         int length = pairs.length;
-        return (ori < pairs[3].original && ori > pairs[0].original);
+        return (ori < pairs[5].original && ori > pairs[0].original);
     }
 
     public static String getTemp(String original) {

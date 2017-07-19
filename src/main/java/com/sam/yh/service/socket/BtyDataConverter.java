@@ -1,5 +1,7 @@
 package com.sam.yh.service.socket;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -18,6 +20,25 @@ public class BtyDataConverter {
         }
         BatteryInfoReq req = new BatteryInfoReq();
         String[] arr = StringUtils.split(str, "&");
+        
+        
+//        //解决收到的请求前多一个符号无法解析问题
+//        String[] pairImsi = StringUtils.split(arr[0], "=");
+//        if(pairImsi.length >=2){
+//        	 try {
+//				BeanUtils.setProperty(req, "imsi", pairImsi[1]);
+//			} catch (IllegalAccessException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (InvocationTargetException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//        }
+//          
+        
+        
+        
         for (int i = 0; i < arr.length; i++) {
             String[] pair = StringUtils.split(arr[i], "=");
             try {

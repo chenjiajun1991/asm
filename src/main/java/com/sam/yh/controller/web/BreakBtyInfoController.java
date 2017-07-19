@@ -20,6 +20,7 @@ import com.google.common.collect.Sets;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.web.BreakBtyInfo;
 import com.sam.yh.req.bean.web.FetchAllBreakBtyInfoReq;
+import com.sam.yh.req.bean.web.RemindOffLineReq;
 import com.sam.yh.resp.bean.ResponseUtils;
 import com.sam.yh.resp.bean.SamResponse;
 import com.sam.yh.resp.bean.web.FetchAllBreakBtyResp;
@@ -59,6 +60,36 @@ public class BreakBtyInfoController {
 	        }  catch (Exception e) {
 	        	if(e instanceof CrudException){
 	        		 logger.error("fetchAllBreakBtyinfos exception, " +  e);
+	        		return ResponseUtils.getServiceErrorResp(e.getMessage());
+	        	}else{
+	        		return ResponseUtils.getSysErrorResp();
+	        	}
+	           
+	        }
+	    }
+	 
+	 
+	 @RequestMapping(value = "/remind/offline", method = RequestMethod.POST)
+	    public SamResponse RemindOffLineBty(HttpServletRequest httpServletRequest, @RequestParam("jsonReq") String jsonReq) {
+
+	        logger.info("Request json String:" + jsonReq);
+	        RemindOffLineReq req = JSON.parseObject(jsonReq, RemindOffLineReq.class);
+	        try {
+	        	
+	        	if(isAdminPhone(req.getUserPhone())){
+	        		
+	        		 webService.remindOffLineBty();
+	        		
+	        		 return ResponseUtils.getNormalResp("ok");
+	        		 
+	        	}else{
+	        		 return ResponseUtils.getNormalResp("你无权操作");
+	        	}
+	        	       
+	           
+	        }  catch (Exception e) {
+	        	if(e instanceof CrudException){
+	        		 logger.error("RemindOffLineBty exception, " +  e);
 	        		return ResponseUtils.getServiceErrorResp(e.getMessage());
 	        	}else{
 	        		return ResponseUtils.getSysErrorResp();

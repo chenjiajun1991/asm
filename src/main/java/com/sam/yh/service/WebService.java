@@ -62,4 +62,7 @@ public interface WebService {
 	    
 	    @Transactional
 	    public List <BreakBtyInfo> fetchBreakBtyInfoByReseller(String resellerPhone) throws CrudException;
+	    
+	    @Transactional
+	    public void remindOffLineBty() throws CrudException;
 }

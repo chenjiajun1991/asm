@@ -27,6 +27,7 @@
    <result column="imei" property="btyImei" jdbcType="VARCHAR" />
    <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
     <result column="sn" property="btySn" jdbcType="VARCHAR" />
+     <result column="imsi" property="btyImsi" jdbcType="VARCHAR" />
     <result column="bty_quantity" property="btyQuantity" jdbcType="VARCHAR" />
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="user_phone" property="userphone" jdbcType="VARCHAR" />
@@ -83,6 +84,7 @@ select
      bu.imei as imei, 
      bu.sim_no as sim_no,
      bu.sn as sn,
+     bu.imsi as imsi,
      bu.bty_quantity as bty_quantity, 
      u.user_name as user_name, 
      u.mobile_phone as user_phone, 
@@ -91,11 +93,11 @@ select
      bu.sale_date as sale_date
      from(
      select 
-     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn,br.imsi as imsi, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
      br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
      from (
      select 
-     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.imsi as imsi, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
      r.user_name as reseller_name, r.mobile_phone as reseller_phone  
      from battery b left join user r on b.reseller_id = r.user_id) br
      left join user_battery ub on br.id = ub.battery_id ) bu
@@ -110,6 +112,7 @@ select
      bu.imei as imei, 
      bu.sim_no as sim_no,
      bu.sn as sn,
+     bu.imsi as imsi,
      bu.bty_quantity as bty_quantity, 
      u.user_name as user_name, 
      u.mobile_phone as user_phone, 
@@ -118,11 +121,11 @@ select
      bu.sale_date as sale_date
      from(
      select 
-     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn,br.imsi as imsi, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
      br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
      from (
      select 
-     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.imsi as imsi, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
      r.user_name as reseller_name, r.mobile_phone as reseller_phone  
      from battery b left join user r on b.reseller_id = r.user_id where imei=#{imei,jdbcType=VARCHAR}) br
      left join user_battery ub on br.id = ub.battery_id ) bu
@@ -138,6 +141,7 @@ select
      bu.imei as imei, 
      bu.sim_no as sim_no,
      bu.sn as sn,
+     bu.imsi as imsi,
      bu.bty_quantity as bty_quantity, 
      u.user_name as user_name, 
      u.mobile_phone as user_phone, 
@@ -146,11 +150,11 @@ select
      bu.sale_date as sale_date
      from(
      select 
-     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn,  br.imsi as imsi, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
      br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
      from (
      select 
-     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.imsi as imsi,b.sale_date as sale_date,b.bty_quantity as bty_quantity,
      r.user_name as reseller_name, r.mobile_phone as reseller_phone  
      from battery b left join user r on b.reseller_id = r.user_id ) br
      left join user_battery ub on br.id = ub.battery_id ) bu

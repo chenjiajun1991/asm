@@ -5,6 +5,7 @@ public class BtySaleInfoModel {
 	 private String btyImei;
 	 private String btySimNo;
 	 private String btySn;
+	 private String btyImsi;
 	 private String btyQuantity;
 	 private String userName;
 	 private String userphone;
@@ -35,6 +36,12 @@ public class BtySaleInfoModel {
 	}
 	public void setBtySn(String btySn) {
 		this.btySn = btySn;
+	}
+	public String getBtyImsi() {
+		return btyImsi;
+	}
+	public void setBtyImsi(String btyImsi) {
+		this.btyImsi = btyImsi;
 	}
 	public String getBtyQuantity() {
 		return btyQuantity;

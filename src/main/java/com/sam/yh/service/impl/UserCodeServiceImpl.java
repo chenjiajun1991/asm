@@ -374,4 +374,39 @@ public class UserCodeServiceImpl implements UserCodeService {
 		return send;
 	}
 
+	@Override
+	public boolean sendRemindOffLine(String mobilePhone,String btyImei) throws CrudException {
+		// TODO Auto-generated method stub
+		boolean send = false;
+		int type=UserCodeType.BTY_OFFLINE_REMIND.getType();
+		UserCode userCode = fetchByUserName(btyImei, type);
+		
+		if(userCode == null){
+			
+		    send = true;
+			 
+			userCode = new UserCode();
+            userCode.setMobilePhone(btyImei);
+            userCode.setCodeType(type);
+            userCode.setDynamicCode(mobilePhone);
+            userCode.setSendTimes(1);
+            userCode.setStatus(true);
+            userCode.setSendDate(new Date());
+            userCode.setExpiryDate(DateUtils.addMinutes(new Date(), SamConstants.EXPIRY_TIME));
+
+            userCodeMapper.insert(userCode);
+            
+           
+			
+		}else{
+			 send = false;
+		}
+		
+		if(send){
+			defaultUmsSmsService.sendRemindOffLine(mobilePhone);
+		}
+		
+		return send;
+	}
+
 }
